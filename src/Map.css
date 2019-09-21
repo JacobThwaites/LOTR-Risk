@@ -82,3 +82,7 @@
     fill: #BD7914;
     cursor: pointer;
 }
+
+#gondor-mountains {
+    fill: url('./images/eriador_mountains.png');
+}
