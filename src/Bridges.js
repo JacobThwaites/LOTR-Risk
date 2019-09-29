@@ -3,6 +3,88 @@ import React from "react";
 const Bridges = () => {
   return (
     <>
+    <defs>
+    <pattern
+          id="diagonal-bridge"
+          x="0"
+          y="0"
+          width="1"
+          height="1"
+          viewBox="0 0 1024 576"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <image
+            width="1024"
+            height="576"
+            href={require("./images/testbridge.png")}
+            alt="a bridge"
+          />
+        </pattern>
+        <pattern
+          id="diagonal-bridge-2"
+          x="0"
+          y="0"
+          width="1"
+          height="1"
+          viewBox="0 0 1024 576"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <image
+            width="1024"
+            height="576"
+            href={require("./images/diagonal-bridge-2.png")}
+            alt="a bridge"
+          />
+        </pattern>
+        <pattern
+          id="horizontal-bridge"
+          x="0"
+          y="0"
+          width="1"
+          height="1"
+          viewBox="0 0 1024 576"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <image
+            width="1024"
+            height="576"
+            href={require("./images/horizontal-bridge.png")}
+            alt="a bridge"
+          />
+        </pattern>
+        <pattern
+          id="horizontal-bridge-2"
+          x="0"
+          y="0"
+          width="1"
+          height="1"
+          viewBox="0 0 1024 576"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <image
+            width="1024"
+            height="576"
+            href={require("./images/horizontal-bridge-2.png")}
+            alt="a bridge"
+          />
+        </pattern>
+        <pattern
+          id="vertical-bridge"
+          x="0"
+          y="0"
+          width="1"
+          height="1"
+          viewBox="0 0 1024 576"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <image
+            width="1024"
+            height="576"
+            href={require("./images/vertical-bridge.png")}
+            alt="a bridge"
+          />
+        </pattern>
+    </defs>
       <a className="bridge" id="tower-hills-bridge">
         <path
           fill="url(#diagonal-bridge)"
