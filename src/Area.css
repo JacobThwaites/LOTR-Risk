@@ -1,0 +1,80 @@
+.eriador {
+    fill: #CDD53C;
+}
+
+.eriador:hover {
+    fill: #A5AA2E;
+    cursor: pointer;
+}
+
+.arnor {
+    fill: #9E4126;
+}
+
+.arnor:hover {
+    fill: #E38B5E;
+    cursor: pointer;
+}
+
+.rhun {
+    fill: #725F49;
+}
+
+.rhun:hover {
+    fill: #2F2C1D;
+    cursor: pointer;
+}
+
+.mirkwood {
+    fill: #A3D065;
+}
+
+.mirkwood:hover {
+    fill: #39852A;
+    cursor: pointer;
+}
+
+.rohan {
+    fill: rgb(108, 182, 157);
+}
+
+.rohan:hover {
+    fill: #4D8B55;
+    cursor: pointer;
+}
+
+.rhovanion {
+    fill: #D2992E;
+}
+
+.rhovanion:hover {
+    fill: #BB7C1E;
+    cursor: pointer;
+}
+
+.gondor {
+    fill: #A95011;
+}
+
+.gondor:hover {
+    fill: #7F321A;
+    cursor: pointer;
+}
+
+.mordor {
+    fill: #6A702E;
+}
+
+.mordor:hover {
+    fill: #545314;
+    cursor: pointer;
+}
+
+.haradwaith {
+    fill: #CFAA13;
+}
+
+.haradwaith:hover {
+    fill: #BD7914;
+    cursor: pointer;
+}

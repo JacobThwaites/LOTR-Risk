@@ -7,6 +7,7 @@ import Bridges from "./Bridges";
 const Map = () => {
   return (
     <svg
+      id='map'
       width="1360"
       height="2e3"
       version="1.1"
