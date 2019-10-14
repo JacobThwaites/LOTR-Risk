@@ -1,6 +1,6 @@
 import React from "react";
 
-const Mountains = () => {
+function Mountains() {
   return (
     <>
       <a className="mountains" id="eriador-mountains">
