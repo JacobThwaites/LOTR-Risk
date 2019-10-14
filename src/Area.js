@@ -1,11 +1,15 @@
 import React from "react";
-import './Area.css'; 
+import "./Area.css";
 
-const Area = props => {
+function Area(props) {
   return (
-    <a className={props.className} id={props.id} alt="mithlond">
-      <path d={props.path} />
-    </a>
+    <path
+      className={props.className}
+      id={props.id}
+      d={props.path}
+      onClick={props.onClick}
+    
+    />
   );
 };
 
