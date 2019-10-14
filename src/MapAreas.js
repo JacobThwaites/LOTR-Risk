@@ -15,7 +15,7 @@ function MapAreas() {
   return (
     <>
       {areas}
-     </>
+    </>
   )
 };
 
