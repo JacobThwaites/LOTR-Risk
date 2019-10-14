@@ -4,7 +4,7 @@ import MapAreas from "./MapAreas";
 import Mountains from "./Mountains";
 import Bridges from "./Bridges";
 
-const Map = () => {
+function Map() {
   return (
     <svg
       id='map'
