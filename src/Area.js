@@ -1,5 +1,5 @@
 import React from "react";
-import "./Area.css";
+import "./Area.scss";
 
 function Area(props) {
   return (
@@ -8,7 +8,6 @@ function Area(props) {
       id={props.id}
       d={props.path}
       onClick={props.onClick}
-    
     />
   );
 };
