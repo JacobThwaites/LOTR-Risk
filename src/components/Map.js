@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import "./middleEarth.scss";
 import MapAreas from "./MapAreas";
 import Mountains from "./Mountains";
 import Bridges from "./Bridges";

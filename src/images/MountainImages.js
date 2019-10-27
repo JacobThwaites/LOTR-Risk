@@ -15,7 +15,7 @@ function MountainImages() {
         <image
           width="1024"
           height="576"
-          href={require("./images/eriador_mountains.png")}
+          href={require("../images/eriador_mountains.png")}
           alt="some mountains"
         />
       </pattern>
@@ -32,7 +32,7 @@ function MountainImages() {
         <image
           width="1024"
           height="576"
-          href={require("./images/eriador_mountains_2.png")}
+          href={require("../images/eriador_mountains_2.png")}
           alt="some mountains"
         />
       </pattern>
@@ -48,7 +48,7 @@ function MountainImages() {
         <image
           width="1024"
           height="576"
-          href={require("./images/rhun-mountains.png")}
+          href={require("../images/rhun-mountains.png")}
           alt="some mountains"
         />
       </pattern>
@@ -65,7 +65,7 @@ function MountainImages() {
         <image
           width="1024"
           height="576"
-          href={require("./images/mountains.png")}
+          href={require("../images/mountains.png")}
           alt="some mountains"
         />
       </pattern>
@@ -82,7 +82,7 @@ function MountainImages() {
         <image
           width="1024"
           height="576"
-          href={require("./images/gondor-mountains.png")}
+          href={require("../images/gondor-mountains.png")}
           alt="some mountains"
         />
       </pattern>

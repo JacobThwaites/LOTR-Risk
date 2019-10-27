@@ -1,5 +1,5 @@
 import React from "react";
-import MountainImages from './MountainImages';
+import MountainImages from '../images/MountainImages';
 
 function Mountains() {
   return (
