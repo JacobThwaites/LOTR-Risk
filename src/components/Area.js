@@ -1,14 +1,14 @@
 import React from "react";
-import "./Area.css";
+import "../sass/main.scss";
+
 
 function Area(props) {
   return (
     <path
-      className={props.className}
+      className={'area ' + props.className}
       id={props.id}
       d={props.path}
       onClick={props.onClick}
-    
     />
   );
 };
