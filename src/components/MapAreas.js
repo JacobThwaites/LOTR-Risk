@@ -9,7 +9,7 @@ function MapAreas(props) {
         className={a.region}
         id={a.areaName}
         path={a.path}
-        onClick={props.onClick}
+        onClick={() => props.onClick(a.areaName)}
       />
     )
   });

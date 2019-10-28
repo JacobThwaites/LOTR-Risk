@@ -7,13 +7,20 @@ class Map extends Component {
   constructor({props}) {
     super(props);
     this.state = {
-      areaSelected: null,
+      attackingArea: null,
+      defendingArea: null,
     }
     this.onAreaSelect = this.onAreaSelect.bind(this);
   }
 
-  onAreaSelect() {
-    console.log('area clicked');
+  onAreaSelect(area) {
+    if (this.state.attackingArea === area) {
+      this.setState({ attackingArea: null, defendingArea: null });
+    } else if (this.state.attackingArea !== null) {
+      this.setState({ defendingArea: area });
+    } else {
+      this.setState({ attackingArea: area });
+    }
   }
 
   render() {
