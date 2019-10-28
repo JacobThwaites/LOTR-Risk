@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import MapAreas from "./MapAreas";
-import Mountains from "./Mountains";
-import Bridges from "./Bridges";
+import Mountains from "./svgPaths/Mountains";
+import Bridges from "./svgPaths/Bridges";
 
 class Map extends Component {
   constructor({props}) {

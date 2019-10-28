@@ -16,7 +16,7 @@ function Bridges() {
           <image
             width="1024"
             height="576"
-            href={require("../images/testbridge.png")}
+            href={require("../../images/testbridge.png")}
             alt="a bridge"
           />
         </pattern>
@@ -32,7 +32,7 @@ function Bridges() {
           <image
             width="1024"
             height="576"
-            href={require("../images/diagonal-bridge-2.png")}
+            href={require("../../images/diagonal-bridge-2.png")}
             alt="a bridge"
           />
         </pattern>
@@ -48,7 +48,7 @@ function Bridges() {
           <image
             width="1024"
             height="576"
-            href={require("../images/horizontal-bridge.png")}
+            href={require("../../images/horizontal-bridge.png")}
             alt="a bridge"
           />
         </pattern>
@@ -64,7 +64,7 @@ function Bridges() {
           <image
             width="1024"
             height="576"
-            href={require("../images/horizontal-bridge-2.png")}
+            href={require("../../images/horizontal-bridge-2.png")}
             alt="a bridge"
           />
         </pattern>
@@ -80,7 +80,7 @@ function Bridges() {
           <image
             width="1024"
             height="576"
-            href={require("../images/vertical-bridge.png")}
+            href={require("../../images/vertical-bridge.png")}
             alt="a bridge"
           />
         </pattern>

@@ -1,6 +1,6 @@
 import React from "react";
 import Area from "./Area";
-import areaPaths from './AreaPaths';
+import areaPaths from './svgPaths/AreaPaths';
 
 function MapAreas(props) {
   const areas = areaPaths.map(function(a) {

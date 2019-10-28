@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render an SVG path 1`] = `
+<path
+  className="area test"
+  d="test"
+  id={1}
+  onClick={[Function]}
+/>
+`;
