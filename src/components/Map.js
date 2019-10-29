@@ -37,6 +37,7 @@ class Map extends Component {
           <MapAreas 
             onAreaSelect={this.onAreaSelect}
             onClick={this.onAreaSelect}
+            attackingArea={this.state.attackingArea}
           />
           <Mountains />
           <Bridges />
