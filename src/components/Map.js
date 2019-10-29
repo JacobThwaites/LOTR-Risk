@@ -16,6 +16,8 @@ class Map extends Component {
   onAreaSelect(area) {
     if (this.state.attackingArea === area) {
       this.setState({ attackingArea: null, defendingArea: null });
+    } else if (this.state.defendingArea === area) {
+      this.setState({ defendingArea: null });
     } else if (this.state.attackingArea !== null) {
       this.setState({ defendingArea: area });
     } else {
@@ -38,6 +40,7 @@ class Map extends Component {
             onAreaSelect={this.onAreaSelect}
             onClick={this.onAreaSelect}
             attackingArea={this.state.attackingArea}
+            defendingArea={this.state.defendingArea}
           />
           <Mountains />
           <Bridges />
