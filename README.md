@@ -10,6 +10,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 Things to do
 
+implement existing typescript logic into react app
 Create leaderboard component -
     playerListItem component
 Create chat component
