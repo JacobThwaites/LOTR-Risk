@@ -65,4 +65,12 @@
             fill: darken($color-haradwaith-yellow, 15%);
         }
     }
+
+    &.attacker {
+        fill: red;
+    }
+
+    &.defender {
+        fill: blue;
+    }
 }
