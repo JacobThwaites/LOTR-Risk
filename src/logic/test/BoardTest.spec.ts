@@ -1,4 +1,5 @@
 import { Area } from '../Models/Area';
+import { AreaName} from '../Enums/AreaNames';
 import { Region } from '../Models/Region';
 import { Board } from '../Models/Board';
 import { assert } from 'chai';
@@ -12,9 +13,9 @@ describe('Board', () => {
     let regions: Array<Region>;
     let board: Board;
     beforeEach(function () {
-        const adjacentAreas = [area, area2];
-        area = new Area('Hobbiton', false, true, adjacentAreas);
-        area2 = new Area('Mines of Moria', true, false, adjacentAreas);
+        const adjacentAreas = [AreaName.TheShire, AreaName.Moria];
+        area = new Area(AreaName.TheShire, false, true, adjacentAreas);
+        area2 = new Area(AreaName.Moria, true, false, adjacentAreas);
         const areas = [area, area2];
         region = new Region('Test Area', areas, 5);
         regions = [region];

@@ -10,7 +10,11 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 Things to do
 
+
 implement existing typescript logic into react app
+find npm command to run all tests at once
+add enums for adjacent areas to get clickable areas on map
+
 Create leaderboard component -
     playerListItem component
 Create chat component
