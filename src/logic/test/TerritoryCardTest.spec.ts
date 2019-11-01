@@ -1,4 +1,5 @@
 import { Area } from '../Models/Area';
+import { AreaName } from '../Enums/AreaNames';
 import { TerritoryCard } from '../Models/TerritoryCard';
 import { Symbol } from '../Enums/Symbols';
 import { assert } from 'chai';
@@ -8,8 +9,8 @@ describe('TerritoryCard', () => {
     let territoryCard: TerritoryCard;
     let area: Area;
     beforeEach(function () {
-        const adjacentAreas = [area];
-        area = new Area('Hobbiton', false, true, adjacentAreas);
+        const adjacentAreas = [AreaName.TheShire];
+        area = new Area(AreaName.TheShire, false, true, adjacentAreas);
         territoryCard = new TerritoryCard(area, Symbol.darkRider);
     })
 
