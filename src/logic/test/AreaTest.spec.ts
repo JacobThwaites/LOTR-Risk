@@ -1,18 +1,13 @@
 import { Area } from '../Models/Area';
 import { AreaName} from '../Enums/AreaNames';
+import { theShireAdjacencies, theWoldAdjacencies} from '../Enums/AreaAdjacencies';
 import { assert } from 'chai';
 import 'mocha';
 
 describe('Area', () => {
     let area: Area;
-    let area2: Area;
-    let adjacentAreas1: Array<AreaName>;
-    let adjacentAreas2: Array<AreaName>;
     beforeEach(function () {
-        adjacentAreas1 = [AreaName.TheWold];
-        adjacentAreas2 = [AreaName.TheShire];
-        area = new Area(AreaName.TheShire, false, true, adjacentAreas1);
-        area2 = new Area(AreaName.TheWold, false, false, adjacentAreas2);
+        area = new Area(AreaName.TheShire, false, true, theShireAdjacencies);
     })
 
     it('should have a name', () => {
@@ -71,7 +66,7 @@ describe('Area', () => {
     });
 
     it('should return true if an area name is adjacent', () => {
-        const result = area.checkAreaIsAdjacent(AreaName.TheWold);
+        const result = area.checkAreaIsAdjacent(AreaName.TowerHills);
         assert.equal(result, true);
     });
 
