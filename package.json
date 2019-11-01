@@ -3,16 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/chai": "^4.2.4",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
     "node-sass": "^4.13.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-scripts": "3.1.1",
-    "react-test-renderer": "^16.11.0"
+    "react-test-renderer": "^16.11.0",
+    "ts-node-dev": "^1.0.0-pre.42",
+    "typescript": "^3.6.2",
+    "jest": "^24.9.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "testts": "mocha -r ts-node/register src/logic/test/*.spec.ts",
     "compile:sass": "node-sass sass/main.scss css/style.css -w",
     "eject": "react-scripts eject"
   },
@@ -34,7 +42,9 @@
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "index.js",
   "devDependencies": {
-    "jest": "24.9.0"
+    "jest": "^24.9.0",
+    "ts-mocha": "^6.0.0",
+    "ts-node": "^8.4.1"
   },
   "author": "",
   "license": "ISC"
