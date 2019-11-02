@@ -27,12 +27,15 @@ class Map extends Component {
   }
 
   getClickableAreas() {
-    if (!this.state.attackingArea) {
+    const { attackingArea } = this.state;
+    
+    if (!attackingArea) {
       return [];
     }
-    const clickableAreas = [];
-    // if no attacking area, return all areas
-    // if attacking area, return attacking area and adjacent areas 
+    
+    const clickableAreas = attackingArea.area.adjacentAreas;
+    clickableAreas.push(attackingArea.areaName);
+
     return clickableAreas;
   }
 

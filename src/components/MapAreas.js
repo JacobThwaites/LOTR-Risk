@@ -4,13 +4,12 @@ import areaPaths from './svgPaths/AreaPaths';
 
 function MapAreas(props) {
   const areas = areaPaths.map(function(a) {
-    console.log(a);
     return (
       <MapArea 
-        className={a.areaName === props.attackingArea ? 'attacker' : a.areaName === props.defendingArea ? 'defender' : a.region}
+        className={a === props.attackingArea ? 'attacker' : a === props.defendingArea ? 'defender' : a.region}
         id={a.areaName}
         path={a.path}
-        onClick={() => props.onClick(a.areaName)}
+        onClick={() => props.onClick(a)}
       />
     )
   });

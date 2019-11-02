@@ -1,13 +1,13 @@
 import { Area } from '../Models/Area';
 import { AreaName} from '../Enums/AreaNames';
-import { theShireAdjacencies, theWoldAdjacencies} from '../Enums/AreaAdjacencies';
+import { TheShire } from '../Enums/AreaAdjacencies';
 import { assert } from 'chai';
 import 'mocha';
 
 describe('Area', () => {
     let area: Area;
     beforeEach(function () {
-        area = new Area(AreaName.TheShire, false, true, theShireAdjacencies);
+        area = new Area(AreaName.TheShire, false, true, TheShire);
     })
 
     it('should have a name', () => {
