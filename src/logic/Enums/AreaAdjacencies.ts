@@ -3,7 +3,7 @@ import { AreaName } from './AreaNames';
 export const Forlindon = [AreaName.Mithlond];
 export const Mithlond = [AreaName.Forlindon, AreaName.LuneValley, AreaName.Harlindon, AreaName.TowerHills];
 export const Harlindon = [AreaName.Mithlond];
-export const LuneValley = [AreaName.Mithlond, AreaName.EvendimHills, AreaName.TowerHills];
+export const LuneValley = [AreaName.Mithlond, AreaName.EvendimHills, AreaName.TowerHills, AreaName.Borderlands];
 export const EvendimHills = [AreaName.LuneValley, AreaName.TowerHills, AreaName.Borderlands, AreaName.NorthDowns];
 export const TowerHills = [AreaName.Mithlond, AreaName.LuneValley, AreaName.EvendimHills, AreaName.TheShire];
 export const TheShire = [AreaName.TowerHills, AreaName.Buckland];
