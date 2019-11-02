@@ -14,6 +14,7 @@ class Map extends Component {
   }
 
   onAreaSelect(area) {
+    console.log(area);
     if (this.state.attackingArea === area) {
       this.setState({ attackingArea: null, defendingArea: null });
     } else if (this.state.defendingArea === area) {
@@ -23,6 +24,16 @@ class Map extends Component {
     } else {
       this.setState({ attackingArea: area });
     }
+  }
+
+  getClickableAreas() {
+    if (!this.state.attackingArea) {
+      return [];
+    }
+    const clickableAreas = [];
+    // if no attacking area, return all areas
+    // if attacking area, return attacking area and adjacent areas 
+    return clickableAreas;
   }
 
   render() {
