@@ -10,9 +10,11 @@ function MapAreas(props) {
         id={a.areaName}
         path={a.path}
         onClick={() => props.onClick(a)}
+        clickable={props.clickableAreas.includes(a.areaName) || props.clickableAreas.length === 0}
       />
     )
   });
+  
   return (
     <>
       {areas}

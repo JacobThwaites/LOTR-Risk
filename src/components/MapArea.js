@@ -7,7 +7,7 @@ function MapArea(props) {
       className={'area ' + props.className}
       id={props.id}
       d={props.path}
-      onClick={props.onClick}
+      onClick={props.clickable ? props.onClick : ''}
       adjacentAreas={props.adjacentAreas}
       areaLogic={props.areaLogic}
     />
