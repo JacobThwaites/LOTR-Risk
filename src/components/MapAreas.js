@@ -1,18 +1,20 @@
 import React from "react";
-import Area from "./Area";
+import MapArea from "./MapArea";
 import areaPaths from './svgPaths/AreaPaths';
 
 function MapAreas(props) {
   const areas = areaPaths.map(function(a) {
     return (
-      <Area 
-        className={a.areaName === props.attackingArea ? 'attacker' : a.areaName === props.defendingArea ? 'defender' : a.region}
+      <MapArea 
+        className={a === props.attackingArea ? 'attacker' : a === props.defendingArea ? 'defender' : a.region}
         id={a.areaName}
         path={a.path}
-        onClick={() => props.onClick(a.areaName)}
+        onClick={() => props.onClick(a)}
+        clickable={props.clickableAreas.includes(a.areaName) || props.clickableAreas.length === 0}
       />
     )
   });
+  
   return (
     <>
       {areas}

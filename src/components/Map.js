@@ -9,20 +9,29 @@ class Map extends Component {
     this.state = {
       attackingArea: null,
       defendingArea: null,
+      clickableAreas: [],
     }
     this.onAreaSelect = this.onAreaSelect.bind(this);
   }
 
   onAreaSelect(area) {
     if (this.state.attackingArea === area) {
-      this.setState({ attackingArea: null, defendingArea: null });
+      this.setState({ attackingArea: null, defendingArea: null, clickableAreas: [] });
     } else if (this.state.defendingArea === area) {
       this.setState({ defendingArea: null });
     } else if (this.state.attackingArea !== null) {
       this.setState({ defendingArea: area });
     } else {
       this.setState({ attackingArea: area });
+      this.getClickableAreas(area);
     }
+  }
+
+  getClickableAreas(area) {
+    const clickableAreas = [...area.area.adjacentAreas];
+    clickableAreas.push(area.areaName)
+
+    this.setState({ clickableAreas });
   }
 
   render() {
@@ -41,6 +50,7 @@ class Map extends Component {
             onClick={this.onAreaSelect}
             attackingArea={this.state.attackingArea}
             defendingArea={this.state.defendingArea}
+            clickableAreas={this.state.clickableAreas}
           />
           <Mountains />
           <Bridges />

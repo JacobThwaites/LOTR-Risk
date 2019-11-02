@@ -1,5 +1,5 @@
 import React from 'react';
-import Area from './Area';
+import MapArea from './MapArea';
 import renderer from 'react-test-renderer';
 
 test('should render an SVG path', () => {
@@ -10,8 +10,10 @@ test('should render an SVG path', () => {
       onClick: () => {},
   }  
   const component = renderer.create(
-    <Area {...props}/>
+    <MapArea {...props}/>
   );
   let tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });
+
+it('should change colour when clicked', );
