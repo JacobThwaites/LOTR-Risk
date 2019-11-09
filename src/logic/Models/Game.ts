@@ -2,7 +2,6 @@ import { Player } from './Player';
 import { TheRing } from './TheRing';
 import { Board } from './Board';
 import { Region } from './Region';
-import { Area } from './Area';
 
 export class Game {
     private players: Array<Player>;
