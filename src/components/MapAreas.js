@@ -1,9 +1,9 @@
 import React from "react";
 import MapArea from "./MapArea";
-import areaPaths from './svgPaths/AreaPaths';
+import areaDetails from './svgPaths/AreaDetails';
 
 function MapAreas(props) {
-  const areas = areaPaths.map(function(a) {
+  const areas = areaDetails.map(function(a) {
     return (
       <MapArea 
         className={a === props.attackingArea ? 'attacker' : a === props.defendingArea ? 'defender' : a.region}

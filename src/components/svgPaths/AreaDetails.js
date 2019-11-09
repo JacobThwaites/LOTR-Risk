@@ -2,7 +2,7 @@ import { AreaName } from '../../logic/Enums/AreaNames';
 import { Area } from '../../logic/Models/Area';
 import * as Adjacencies from '../../logic/Enums/AreaAdjacencies';
 
-const areaPaths = [
+const areaDetails = [
     {
         region: 'eriador',
         areaName: AreaName.Forlindon,
@@ -389,4 +389,4 @@ const areaPaths = [
     }
 ]
 
-export default areaPaths;
+export default areaDetails;
