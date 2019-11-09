@@ -14,6 +14,10 @@ class Map extends Component {
     this.onAreaSelect = this.onAreaSelect.bind(this);
   }
 
+  componentDidMount() {
+    this.getAreaCentre();
+  }
+
   onAreaSelect(area) {
     if (this.state.attackingArea === area) {
       this.setState({ attackingArea: null, defendingArea: null, clickableAreas: [] });
@@ -32,6 +36,20 @@ class Map extends Component {
     clickableAreas.push(area.areaName)
 
     this.setState({ clickableAreas });
+  }
+
+  getAreaCentre() {
+    const test = document.getElementById('Forlindon').getBBox();
+    console.log(test);
+    const centre = this.calculateCentre(test);
+    console.log(centre);
+  }
+
+  calculateCentre(element) {
+    const centreX = element.x + element.width / 2;
+    const centreY = element.y + element.height / 2;
+    const centreCoordinates = `${centreX}, ${centreY}`;
+    return centreCoordinates;
   }
 
   render() {
