@@ -64,14 +64,4 @@ describe('Area', () => {
         const result = area.getUnits();
         assert.equal(result, 1);
     });
-
-    it('should return true if an area name is adjacent', () => {
-        const result = area.checkAreaIsAdjacent(AreaName.TowerHills);
-        assert.equal(result, true);
-    });
-
-    it('should return false if an area name is not adjacent', () => {
-        const result = area.checkAreaIsAdjacent(AreaName.MountDoom);
-        assert.equal(result, false);
-    });
 });

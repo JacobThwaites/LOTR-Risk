@@ -64,8 +64,4 @@ export class Area {
     getAdjacentAreas(): Array<AreaName> {
         return this.adjacentAreas;
     }
-
-    checkAreaIsAdjacent(areaName: AreaName): boolean {
-        return this.adjacentAreas.includes(areaName);
-    }
 }

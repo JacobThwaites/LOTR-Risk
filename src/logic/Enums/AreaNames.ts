@@ -6,7 +6,7 @@ export enum AreaName {
     TowerHills = 'Tower Hills',
     TheShire = 'The Shire',
     Harlindon = 'Harlindon',
-    Forodwaith = 'Forodwait',
+    Forodwaith = 'Forodwaith',
     Angmar = 'Angmar',
     EasternAngmar = 'Eastern Angmar',
     Borderlands = 'Borderlands',

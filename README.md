@@ -11,6 +11,8 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 Things to do
 
 decide how to implement adjacent sea areas
+correct svg path for mithlond
+add svg paths for islands
 
 Create leaderboard component -
     playerListItem component
