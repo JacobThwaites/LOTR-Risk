@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import MapAreas from "./MapAreas";
 import Mountains from "./svgPaths/Mountains";
 import Bridges from "./svgPaths/Bridges";
+import Circles from './svgPaths/Circles';
 import CircleGenerator from '../utils/CircleGenerator';
 
 class Map extends Component {
@@ -90,10 +91,12 @@ class Map extends Component {
             attackingArea={this.state.attackingArea}
             defendingArea={this.state.defendingArea}
             clickableAreas={this.state.clickableAreas}
-            circles={this.state.circles}
           />
           <Mountains />
           <Bridges />
+          <Circles 
+            circles={this.state.circles}
+          />
         </g>
       </svg>
     );

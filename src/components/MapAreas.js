@@ -15,12 +15,7 @@ function MapAreas(props) {
     )
   });
   
-  return (
-    <>
-      {areas}
-      {props.circles}
-    </>
-  )
+  return areas;
 };
 
 export default MapAreas;
