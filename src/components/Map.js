@@ -16,8 +16,7 @@ class Map extends Component {
   }
 
   componentDidMount() {
-    this.getAreaCentre();
-    // this.drawCircle();
+    this.addCirclesToMap();
   }
 
   onAreaSelect(area) {
@@ -44,10 +43,10 @@ class Map extends Component {
     this.setState({ clickableAreas });
   }
 
-  getAreaCentre() {
-    const fangorn = document.getElementById("Fangorn").getBBox();
-    const centre = this.calculateCentre(fangorn);
-    const circle = this.drawCircle(centre);
+  addCirclesToMap() {
+    const domElement = document.getElementById("Fangorn").getBBox();
+    const coordinates = this.calculateCentre(domElement)
+    const circle = this.drawCircle(coordinates);
     this.setState({ circle });
   }
 
@@ -65,7 +64,7 @@ class Map extends Component {
         cy={coordinates.y}
         r="40"
         stroke="black"
-        stroke-width="3"
+        strokeWidth="3"
         fill="red"
       />
     );
