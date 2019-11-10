@@ -1,5 +1,5 @@
 import React from 'react';
-import Map from './components/Map.js';
+import Map from './components/Map';
 import './sass/main.scss';
 
 function App() {
