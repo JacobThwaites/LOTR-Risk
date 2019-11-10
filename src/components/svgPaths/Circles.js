@@ -1,7 +1,14 @@
-import React from 'react';
+import CircleGenerator from '../../utils/CircleGenerator';
 
 function Circles(props) {
-    return props.circles;
+    let circles = '';
+    
+    if (props.isMapRendered) {
+        const circleGenerator = new CircleGenerator();
+        circles = circleGenerator.generateCircles();
+    }
+
+    return circles;
 }
 
 export default Circles;

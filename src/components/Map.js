@@ -3,7 +3,6 @@ import MapAreas from "./MapAreas";
 import Mountains from "./svgPaths/Mountains";
 import Bridges from "./svgPaths/Bridges";
 import Circles from './svgPaths/Circles';
-import CircleGenerator from '../utils/CircleGenerator';
 
 class Map extends Component {
   constructor({ props }) {
@@ -12,15 +11,13 @@ class Map extends Component {
       attackingArea: null,
       defendingArea: null,
       clickableAreas: [],
-      circles: [],
+      isRendered: false,
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
   }
 
   componentDidMount() {
-    const circleGenerator = new CircleGenerator();
-    const circles = circleGenerator.generateCircles();
-    this.setState({ circles });
+    this.setState({ isRendered: true });
   }
 
   onAreaSelect(area) {
@@ -47,33 +44,6 @@ class Map extends Component {
     this.setState({ clickableAreas });
   }
 
-  addCirclesToMap() {
-    const domElement = document.getElementById("Fangorn").getBBox();
-    const coordinates = this.calculateCentre(domElement)
-    const circle = this.drawCircle(coordinates);
-    this.setState({ circle });
-  }
-
-  calculateCentre(element) {
-    const centreX = element.x + element.width / 2;
-    const centreY = element.y + element.height / 2;
-    const centreCoordinates = { x: centreX, y: centreY };
-    return centreCoordinates;
-  }
-
-  drawCircle(coordinates) {
-    return (
-      <circle
-        cx={coordinates.x}
-        cy={coordinates.y}
-        r="40"
-        stroke="black"
-        strokeWidth="3"
-        fill="red"
-      />
-    );
-  }
-
   render() {
     return (
       <svg
@@ -95,7 +65,7 @@ class Map extends Component {
           <Mountains />
           <Bridges />
           <Circles 
-            circles={this.state.circles}
+            isMapRendered={this.state.isRendered}
           />
         </g>
       </svg>

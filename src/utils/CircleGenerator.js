@@ -15,15 +15,14 @@ class CircleGenerator extends Component {
   }
 
   getAreaIds() {
-      const ids = [];
-      for (const key in AreaName) {
-  
-        if (AreaName.hasOwnProperty(key)) {
-          const element = AreaName[key];
-          ids.push(element);
-        }
-      }
-      return ids;
+    const ids = [];
+
+    for (const key in AreaName) {
+      const id = AreaName[key];
+      ids.push(id);
+    }
+
+    return ids;
   }
 
   addCircleToMap(elementId) {
@@ -48,7 +47,7 @@ class CircleGenerator extends Component {
         r="30"
         stroke="black"
         strokeWidth="3"
-        fill="red"
+        fill="yellow"
       />
     );
   }
