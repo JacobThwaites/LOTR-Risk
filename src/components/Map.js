@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import MapAreas from "./MapAreas";
 import Mountains from "./svgPaths/Mountains";
 import Bridges from "./svgPaths/Bridges";
+import CircleGenerator from '../utils/CircleGenerator';
 
 class Map extends Component {
   constructor({ props }) {
@@ -17,6 +18,8 @@ class Map extends Component {
 
   componentDidMount() {
     this.addCirclesToMap();
+    const circleGenerator = new CircleGenerator();
+    circleGenerator.generateCircles();
   }
 
   onAreaSelect(area) {
