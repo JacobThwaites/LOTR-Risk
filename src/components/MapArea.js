@@ -3,15 +3,17 @@ import "../sass/main.scss";
 
 function MapArea(props) {
   return (
-    <path
-      className={'area ' + props.className}
-      id={props.id}
-      d={props.path}
-      onClick={props.clickable ? props.onClick : ''}
-      adjacentAreas={props.adjacentAreas}
-      areaLogic={props.areaLogic}
-    />
+    <>
+      <path
+        className={"area " + props.className}
+        id={props.id}
+        d={props.path}
+        onClick={props.clickable ? props.onClick : ""}
+        adjacentAreas={props.adjacentAreas}
+        areaLogic={props.areaLogic}
+      />
+    </>
   );
-};
+}
 
 export default MapArea;

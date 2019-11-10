@@ -4,23 +4,29 @@ import Mountains from "./svgPaths/Mountains";
 import Bridges from "./svgPaths/Bridges";
 
 class Map extends Component {
-  constructor({props}) {
+  constructor({ props }) {
     super(props);
     this.state = {
       attackingArea: null,
       defendingArea: null,
       clickableAreas: [],
-    }
+      circle: '',
+    };
     this.onAreaSelect = this.onAreaSelect.bind(this);
   }
 
   componentDidMount() {
     this.getAreaCentre();
+    // this.drawCircle();
   }
 
   onAreaSelect(area) {
     if (this.state.attackingArea === area) {
-      this.setState({ attackingArea: null, defendingArea: null, clickableAreas: [] });
+      this.setState({
+        attackingArea: null,
+        defendingArea: null,
+        clickableAreas: []
+      });
     } else if (this.state.defendingArea === area) {
       this.setState({ defendingArea: null });
     } else if (this.state.attackingArea !== null) {
@@ -33,29 +39,42 @@ class Map extends Component {
 
   getClickableAreas(area) {
     const clickableAreas = [...area.area.adjacentAreas];
-    clickableAreas.push(area.areaName)
+    clickableAreas.push(area.areaName);
 
     this.setState({ clickableAreas });
   }
 
   getAreaCentre() {
-    const test = document.getElementById('Forlindon').getBBox();
-    console.log(test);
-    const centre = this.calculateCentre(test);
-    console.log(centre);
+    const fangorn = document.getElementById("Fangorn").getBBox();
+    const centre = this.calculateCentre(fangorn);
+    const circle = this.drawCircle(centre);
+    this.setState({ circle });
   }
 
   calculateCentre(element) {
     const centreX = element.x + element.width / 2;
     const centreY = element.y + element.height / 2;
-    const centreCoordinates = `${centreX}, ${centreY}`;
+    const centreCoordinates = { x: centreX, y: centreY };
     return centreCoordinates;
+  }
+
+  drawCircle(coordinates) {
+    return (
+      <circle
+        cx={coordinates.x}
+        cy={coordinates.y}
+        r="40"
+        stroke="black"
+        stroke-width="3"
+        fill="red"
+      />
+    );
   }
 
   render() {
     return (
       <svg
-        id='map'
+        id="map"
         width="1360"
         height="2e3"
         version="1.1"
@@ -63,12 +82,13 @@ class Map extends Component {
         xmlns="http://www.w3.org/2000/svg"
       >
         <g stroke="#000" strokeWidth="1px">
-          <MapAreas 
+          <MapAreas
             onAreaSelect={this.onAreaSelect}
             onClick={this.onAreaSelect}
             attackingArea={this.state.attackingArea}
             defendingArea={this.state.defendingArea}
             clickableAreas={this.state.clickableAreas}
+            circles={this.state.circle}
           />
           <Mountains />
           <Bridges />
@@ -76,6 +96,6 @@ class Map extends Component {
       </svg>
     );
   }
-};
+}
 
 export default Map;

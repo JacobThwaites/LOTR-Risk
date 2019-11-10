@@ -18,6 +18,7 @@ function MapAreas(props) {
   return (
     <>
       {areas}
+      {props.circles}
     </>
   )
 };
