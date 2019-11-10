@@ -3,23 +3,20 @@ import { AreaName } from "../logic/Enums/AreaNames";
 
 class CircleGenerator extends Component {
   generateCircles() {
-    console.log(AreaName);
-    // for (const key in AreaName) {
-    //   console.log(key);
-
-    //   if (AreaName.hasOwnProperty(key)) {
-    //     const element = AreaName[key];
-    //     console.log("second: " + element);
-    //   }
-    // }
     const areaIds = this.getAreaIds();
-    console.log(areaIds);
+    const circles = [];
+
+    for (let i = 0; i < areaIds.length; i++) {
+      const circle = this.addCircleToMap(areaIds[i]);
+      circles.push(circle);
+    }
+
+    return circles;
   }
 
   getAreaIds() {
       const ids = [];
       for (const key in AreaName) {
-        // console.log(key);
   
         if (AreaName.hasOwnProperty(key)) {
           const element = AreaName[key];
@@ -48,7 +45,7 @@ class CircleGenerator extends Component {
       <circle
         cx={coordinates.x}
         cy={coordinates.y}
-        r="40"
+        r="30"
         stroke="black"
         strokeWidth="3"
         fill="red"

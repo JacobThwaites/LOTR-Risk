@@ -11,15 +11,15 @@ class Map extends Component {
       attackingArea: null,
       defendingArea: null,
       clickableAreas: [],
-      circle: '',
+      circles: [],
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
   }
 
   componentDidMount() {
-    this.addCirclesToMap();
     const circleGenerator = new CircleGenerator();
-    circleGenerator.generateCircles();
+    const circles = circleGenerator.generateCircles();
+    this.setState({ circles });
   }
 
   onAreaSelect(area) {
@@ -90,7 +90,7 @@ class Map extends Component {
             attackingArea={this.state.attackingArea}
             defendingArea={this.state.defendingArea}
             clickableAreas={this.state.clickableAreas}
-            circles={this.state.circle}
+            circles={this.state.circles}
           />
           <Mountains />
           <Bridges />
