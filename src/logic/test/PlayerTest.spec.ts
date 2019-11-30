@@ -89,15 +89,4 @@ describe('Player', () => {
         const result = player.calculateAreaBonus();
         assert.equal(result, 3);
     });
-    it('should be able to find the index of the higest dice rolled', () => {
-        const diceRolled = [1,5,3];
-        const result = player.findHighestDice(diceRolled);
-        assert.equal(result, 1);
-    });
-    it('should be able to add one to the highest dice rolled when using a leader', () => {
-        const diceRolled = [1, 5, 3];
-        const result = player.calculateDiceWithBonus(diceRolled);
-        assert.deepEqual(result, [1,6,3]);
-    });
-    
 });

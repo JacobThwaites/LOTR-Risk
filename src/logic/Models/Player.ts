@@ -5,8 +5,6 @@ import { Colour } from '../Enums/Colours';
 
 export class Player {
     
-    private name: string;
-    private colour: Colour;
     private isGood: boolean;
     private units: number;
     private reinforcements: number;
@@ -19,8 +17,6 @@ export class Player {
         isGood: boolean, 
         startingUnits: number,
         ) {
-        this.name = name;
-        this.colour = colour;
         this.isGood = isGood;
         this.units = startingUnits;
         this.reinforcements = startingUnits;
@@ -104,39 +100,5 @@ export class Player {
             this.reinforcements -= reinforcements;
             area.addUnits(reinforcements);
         }
-    }
-
-    rollDice(numberOfDice: number): Array<number> {
-        let numbersRolled = [];
-        for (let i = 0; i < numberOfDice; i++) {
-            const number = this.getDiceRoll();
-            numbersRolled.push(number); 
-        }
-        return numbersRolled.sort();
-    }
-
-    getDiceRoll(): number {
-        const numberRolled = Math.floor(Math.random() * 6) + 1; 
-        return numberRolled;
-    }
-
-    calculateDiceWithBonus(numbersRolled: Array<number>): Array<number> {
-        const diceRolls = numbersRolled;
-        const highestDice = this.findHighestDice(numbersRolled);
-        diceRolls[highestDice] += 1;
-        return diceRolls;
-    }
-
-    findHighestDice(numbersRolled: Array<number>): number {
-        let highestNumber = numbersRolled[0];
-        var highestNumberIndex = 0;
-        for (let i = 1; i < numbersRolled.length; i++) {
-            if (numbersRolled[i] > highestNumber) {
-                highestNumber = numbersRolled[i];
-                highestNumberIndex = i;
-            }
-        }
-
-        return highestNumberIndex;
     }
 }

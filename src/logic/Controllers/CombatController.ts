@@ -14,8 +14,8 @@ export class CombatController {
     }
 
     handleCombat(attackingDiceUsed: number, defendingDiceUsed: number) {
-        const attackingDice = this.attacker.rollDice(attackingDiceUsed);
-        const defendingDice = this.defender.rollDice(defendingDiceUsed);
+        const attackingDice = this.rollDice(attackingDiceUsed);
+        const defendingDice = this.rollDice(defendingDiceUsed);
         for (let i = 0; i < defendingDice.length; i++) {
             if (i === 0) {
                 this.firstDiceCombat(attackingDice[0], defendingDice[0]);
@@ -25,12 +25,26 @@ export class CombatController {
         }
     }
 
+    rollDice(numberOfDice: number): Array<number> {
+        let numbersRolled = [];
+        for (let i = 0; i < numberOfDice; i++) {
+            const number = this.getDiceRoll();
+            numbersRolled.push(number); 
+        }
+        return numbersRolled.sort();
+    }
+
+    getDiceRoll(): number {
+        const numberRolled = Math.floor(Math.random() * 6) + 1; 
+        return numberRolled;
+    }
+
     firstDiceCombat(attackingDice: number, defendingDice: number) {
         const defenderBonus = this.getDefenderDiceBonus(this.defendingArea);
         const attackerBonus = this.getAttackerDiceBonus(this.attackingArea);
         const attackerScore = attackingDice + attackerBonus;
         const defenderScore = defendingDice + defenderBonus;
-        this.removeUnitsFromLoser(attackerScore, defenderScore)
+        this.removeUnitsFromLoser(attackerScore, defenderScore);
     }
 
     getDefenderDiceBonus(defendingArea: Area): number {
