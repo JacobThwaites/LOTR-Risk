@@ -1,34 +1,11 @@
 import React, { Component } from "react";
-import { AreaName } from "../logic/Enums/AreaNames";
+import Circle from '../components/svgPaths/Circle';
 
 class CircleGenerator extends Component {
-  generateCircles() {
-    const areaIds = this.getAreaIds();
-    const circles = [];
-
-    for (let i = 0; i < areaIds.length; i++) {
-      const circle = this.addCircleToMap(areaIds[i]);
-      circles.push(circle);
-    }
-
-    return circles;
-  }
-
-  getAreaIds() {
-    const ids = [];
-
-    for (const key in AreaName) {
-      const id = AreaName[key];
-      ids.push(id);
-    }
-
-    return ids;
-  }
-
   addCircleToMap(elementId) {
     const domElement = document.getElementById(elementId).getBBox();
     const coordinates = this.calculateCentre(domElement);
-    const circle = this.drawCircle(coordinates);
+    const circle = this.drawCircle(coordinates, 'yellow');
     return circle;
   }
 
@@ -39,15 +16,11 @@ class CircleGenerator extends Component {
     return centreCoordinates;
   }
 
-  drawCircle(coordinates) {
+  drawCircle(coordinates, color) {
     return (
-      <circle
-        cx={coordinates.x}
-        cy={coordinates.y}
-        r="30"
-        stroke="black"
-        strokeWidth="3"
-        fill="yellow"
+      <Circle 
+        coordinates={coordinates}
+        color={color}
       />
     );
   }

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import MapAreas from "./MapAreas";
 import Mountains from "./svgPaths/Mountains";
 import Bridges from "./svgPaths/Bridges";
-import Circles from './svgPaths/Circles';
 
 class Map extends Component {
   constructor({ props }) {
@@ -38,8 +37,8 @@ class Map extends Component {
   }
 
   getClickableAreas(area) {
-    const clickableAreas = [...area.area.adjacentAreas];
-    clickableAreas.push(area.areaName);
+    const clickableAreas =  area.area.getAdjacentAreas();
+    clickableAreas.push(area.area.getName());
 
     this.setState({ clickableAreas });
   }
@@ -55,17 +54,14 @@ class Map extends Component {
         xmlns="http://www.w3.org/2000/svg"
       >
         <g stroke="#000" strokeWidth="1px">
+          <Mountains />
+          <Bridges />
           <MapAreas
-            onAreaSelect={this.onAreaSelect}
             onClick={this.onAreaSelect}
             attackingArea={this.state.attackingArea}
             defendingArea={this.state.defendingArea}
             clickableAreas={this.state.clickableAreas}
-          />
-          <Mountains />
-          <Bridges />
-          <Circles 
-            isMapRendered={this.state.isRendered}
+            isRendered={this.state.isRendered}
           />
         </g>
       </svg>

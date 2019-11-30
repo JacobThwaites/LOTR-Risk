@@ -7,10 +7,12 @@ function MapAreas(props) {
     return (
       <MapArea 
         className={a === props.attackingArea ? 'attacker' : a === props.defendingArea ? 'defender' : a.region}
-        id={a.areaName}
+        id={a.area.getName()}
         path={a.path}
         onClick={() => props.onClick(a)}
-        clickable={props.clickableAreas.includes(a.areaName) || props.clickableAreas.length === 0}
+        clickable={props.clickableAreas.includes(a.area.getName()) || props.clickableAreas.length === 0}
+        areaLogic={a.area}
+        isRendered={props.isRendered}
       />
     )
   });
