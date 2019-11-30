@@ -3,7 +3,6 @@ import { AreaName } from './AreaNames';
 import * as  Adjacencies from './AreaAdjacencies';
 
 // TODO:
-// pass these to AreaDetails.js instead of generating in react
 // add to AreaAssigner to assign areas to all players
 
 export const Areas = {

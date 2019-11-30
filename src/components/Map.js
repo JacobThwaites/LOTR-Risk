@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import MapAreas from "./MapAreas";
 import Mountains from "./svgPaths/Mountains";
 import Bridges from "./svgPaths/Bridges";
+import { Player } from "../logic/Models/Player";
+import { Colour } from "../logic/Enums/Colours";
+import { AreaAssigner } from "../logic/Controllers/AreaAssigner";
 
 class Map extends Component {
   constructor({ props }) {
@@ -17,6 +20,18 @@ class Map extends Component {
 
   componentDidMount() {
     this.setState({ isRendered: true });
+    this.testAreaAssigner();
+  }
+
+  testAreaAssigner() {
+    const player1 = new Player('player 1', Colour.Green, true, 30);
+    const player2 = new Player('player 2', Colour.Green, true, 30);
+
+    const players = [player1, player2];
+
+    const areaAssigner = new AreaAssigner(players);
+    areaAssigner.assignAreas();
+
   }
 
   onAreaSelect(area) {
