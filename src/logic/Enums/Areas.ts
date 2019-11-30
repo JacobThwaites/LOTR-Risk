@@ -42,7 +42,7 @@ export const Areas = {
     WestRohan: new Area(AreaName.WestRohan, true, false, Adjacencies.WestRohan),
     GapOfRohan: new Area(AreaName.GapOfRohan, false, true, Adjacencies.GapOfRohan),
     Moria: new Area(AreaName.Moria, true, false, Adjacencies.Moria),
-    GladdenField: new Area(AreaName.GladdenFields, false, false, Adjacencies.GladdenFields),
+    GladdenFields: new Area(AreaName.GladdenFields, false, false, Adjacencies.GladdenFields),
     Lorien: new Area(AreaName.Lorien, false, true, Adjacencies.Lorien),
     TheWold: new Area(AreaName.TheWold, false, true, Adjacencies.TheWold),
     EmynMuil: new Area(AreaName.EmynMuil, false, false, Adjacencies.EmynMuil),
