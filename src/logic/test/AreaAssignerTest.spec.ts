@@ -17,12 +17,20 @@ describe("AreaAssigner", () => {
   });
 
   it('should be able to assign an area to a player', () => {
-      const before = player1.getAreas().length;
-      assert.equal(before, 0)
+      const beforeCount = player1.getAreas().length;
+      assert.equal(beforeCount, 0)
 
       assigner.assignAreas();
 
-      const after = player1.getAreas().length;
-      assert.isAbove(after, 0);
+      const afterCount = player1.getAreas().length;
+      assert.isAbove(afterCount, beforeCount);
   });
+
+  it('should assign areas between players equally', () => {
+    assigner.assignAreas();
+    const player1TotalAreas = player1.getAreas().length;
+    const player2TotalAreas = player2.getAreas().length;
+
+    assert.equal(player1TotalAreas, player2TotalAreas);
+});
 });

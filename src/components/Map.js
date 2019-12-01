@@ -70,7 +70,6 @@ class Map extends Component {
       >
         <g stroke="#000" strokeWidth="1px">
           <Mountains />
-          <Bridges />
           <MapAreas
             onClick={this.onAreaSelect}
             attackingArea={this.state.attackingArea}
@@ -78,6 +77,7 @@ class Map extends Component {
             clickableAreas={this.state.clickableAreas}
             isRendered={this.state.isRendered}
           />
+          <Bridges />
         </g>
       </svg>
     );
