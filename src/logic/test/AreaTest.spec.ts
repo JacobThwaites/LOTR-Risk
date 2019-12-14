@@ -25,17 +25,6 @@ describe('Area', () => {
         assert.equal(result, true);
     });
 
-    it('should not start occupied', () => {
-        const result = area.getIsOccupied();
-        assert.equal(result, false);
-    });
-
-    it('should be able to become occupied', () => {
-        area.becomeOccupied();
-        const result = area.getIsOccupied();
-        assert.equal(result, true);
-    });
-
     it('should not start with a leader', () => {
         const result = area.getHasLeader();
         assert.equal(result, false);
