@@ -1,11 +1,11 @@
 import { AreaName } from '../Enums/AreaNames';
-
+import { Player } from '../Models/Player';
 
 export class Area {
     private name: AreaName;
     private isStronghold: boolean;
     private isSiteOfPower: boolean;
-    private isOccupied: boolean;
+    private player: Player | null;
     private hasLeader: boolean;
     private units: number;
     private adjacentAreas: Array<AreaName>
@@ -13,11 +13,12 @@ export class Area {
         this.name = name;
         this.isStronghold = isStronghold;
         this.isSiteOfPower = isSiteOfPower;
-        this.isOccupied = false;
+        this.player = null;
         this.hasLeader = false;
         this.units = 0;
         this.adjacentAreas = adjacentAreas;
     }
+
     getName(): string {
         return this.name;
     }
@@ -25,16 +26,17 @@ export class Area {
     getIsStronghold(): boolean {
         return this.isStronghold;
     }
+    
     getIsSiteOfPower(): boolean {
         return this.isSiteOfPower;
     }
 
-    getIsOccupied(): boolean {
-        return this.isOccupied;
+    getPlayer(): Player | null {
+        return this.player;
     }
 
-    becomeOccupied() {
-        this.isOccupied = true;
+    setPlayer(player: Player) {
+        this.player = player;
     }
 
     getHasLeader(): boolean {

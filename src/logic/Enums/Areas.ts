@@ -2,9 +2,6 @@ import { Area } from '../Models/Area';
 import { AreaName } from './AreaNames';
 import * as  Adjacencies from './AreaAdjacencies';
 
-// TODO:
-// add to AreaAssigner to assign areas to all players
-
 export const Areas = {
     Forlindon: new Area(AreaName.Forlindon, false, false, Adjacencies.Forlindon),
     Mithlond: new Area(AreaName.Mithlond, false, true, Adjacencies.Mithlond),
