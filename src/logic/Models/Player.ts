@@ -4,7 +4,6 @@ import { Region } from './Region';
 import { Colour } from '../Enums/Colours';
 
 export class Player {
-    
     private isGood: boolean;
     private units: number;
     private reinforcements: number;
