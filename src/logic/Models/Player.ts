@@ -10,6 +10,7 @@ export class Player {
     private adventureCards: Array<AdventureCard>;
     private areas: Array<Area>;
     private regions: Array<Region>;
+    private colour: Colour;
     constructor(
         name: string, 
         colour: Colour, 
@@ -22,6 +23,7 @@ export class Player {
         this.adventureCards = [];
         this.areas = [];
         this.regions = [];
+        this.colour = colour;
     }
     
     getUnits(): number {

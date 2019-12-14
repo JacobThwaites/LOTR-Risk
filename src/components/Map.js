@@ -5,6 +5,7 @@ import Bridges from "./svgPaths/Bridges";
 import { Player } from "../logic/Models/Player";
 import { Colour } from "../logic/Enums/Colours";
 import { AreaAssigner } from "../logic/Controllers/AreaAssigner";
+import { GameController } from "../logic/Controllers/GameController";
 
 class Map extends Component {
   constructor({ props }) {
@@ -14,24 +15,31 @@ class Map extends Component {
       defendingArea: null,
       clickableAreas: [],
       isRendered: false,
+      game: null,
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
   }
 
   componentDidMount() {
     this.setState({ isRendered: true });
-    this.testAreaAssigner();
+    this.testGameController();
   }
 
   testAreaAssigner() {
     const player1 = new Player('player 1', Colour.Green, true, 30);
-    const player2 = new Player('player 2', Colour.Green, true, 30);
+    const player2 = new Player('player 2', Colour.Yellow, false, 30);
 
     const players = [player1, player2];
 
     const areaAssigner = new AreaAssigner(players);
-    areaAssigner.assignAreas();
+    return areaAssigner;
+  }
 
+  testGameController() {
+    const areaAssigner = this.testAreaAssigner();
+    const controller = new GameController(areaAssigner.getPlayers(), 30);
+
+    controller.generateGame();
   }
 
   onAreaSelect(area) {
