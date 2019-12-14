@@ -22,24 +22,23 @@ class Map extends Component {
 
   componentDidMount() {
     this.setState({ isRendered: true });
-    this.testGameController();
+    this.setupGame();
   }
 
-  testAreaAssigner() {
-    const player1 = new Player('player 1', Colour.Green, true, 30);
-    const player2 = new Player('player 2', Colour.Yellow, false, 30);
-
-    const players = [player1, player2];
-
-    const areaAssigner = new AreaAssigner(players);
-    return areaAssigner;
-  }
-
-  testGameController() {
-    const areaAssigner = this.testAreaAssigner();
+  setupGame() {
+    const areaAssigner = this.setupAreaAssigner();
     const controller = new GameController(areaAssigner.getPlayers(), 30);
 
     controller.generateGame();
+  }
+
+  setupAreaAssigner() {
+    const player1 = new Player('player 1', Colour.Green, true, 30);
+    const player2 = new Player('player 2', Colour.Yellow, false, 30);
+    const players = [player1, player2];
+    const areaAssigner = new AreaAssigner(players);
+    
+    return areaAssigner;
   }
 
   onAreaSelect(area) {
