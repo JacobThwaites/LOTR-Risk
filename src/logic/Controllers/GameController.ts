@@ -1,5 +1,4 @@
 import { Player } from '../Models/Player';
-import { Areas } from '../Enums/Areas';
 import { Regions } from '../Enums/Regions';
 import { Game } from '../Models/Game'; 
 import { TheRing } from '../Models/TheRing';

@@ -1,4 +1,3 @@
-import { Areas } from './Areas';
 import { Region } from '../Models/Region';
 import { Area } from '../Models/Area';
 import { AreaName } from './AreaNames';
