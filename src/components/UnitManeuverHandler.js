@@ -11,6 +11,7 @@ function UnitManeuverHandler(props) {
         min="1"
         max={props.max}
         onChange={props.onInputFieldChange}
+        value={props.unitsToMove}
       />
       <button onClick={props.onMoveUnits} >move units</button>
     </form>

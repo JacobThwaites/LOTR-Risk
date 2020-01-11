@@ -188,6 +188,7 @@ class Map extends Component {
         {this.state.displayUnitManeuverButton &&
           <UnitManeuverHandler
             max={this.state.areaToMoveUnits.getUnits() - 1}
+            unitsToMove={this.state.unitsToMove}
             onInputFieldChange={this.onInputFieldChange}
             onMoveUnits={this.onMoveUnits}
           />
