@@ -3,7 +3,7 @@ import CircleGenerator from '../utils/CircleGenerator';
 import "../sass/main.scss";
 
 function MapArea(props) {
-  const circleGenerator = new CircleGenerator();
+  const circleGenerator = new CircleGenerator();  
   return (
     <>
       <path

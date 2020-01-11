@@ -51,11 +51,21 @@ class Map extends Component {
     } else if (this.state.defendingArea === area) {
       this.setState({ defendingArea: null });
     } else if (this.state.attackingArea !== null) {
-      this.setState({ defendingArea: area });
+      if (!this.defendingAreaIsClickable(area)) {
+        this.setState({ defendingArea: area });
+      }
     } else {
       this.setState({ attackingArea: area });
       this.getClickableAreas(area);
     }
+  }
+
+  defendingAreaIsClickable(defendingArea) {
+    const { attackingArea } = this.state;
+    const attackingPlayer = attackingArea.area.player;
+    const defendingPlayer = defendingArea.area.player;
+
+    return attackingPlayer === defendingPlayer;
   }
 
   getClickableAreas(area) {
