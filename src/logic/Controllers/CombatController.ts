@@ -12,6 +12,10 @@ export class CombatController {
     handleCombat(attackingDiceUsed: number, defendingDiceUsed: number) {
         const attackingDice = this.rollDice(attackingDiceUsed);
         const defendingDice = this.rollDice(defendingDiceUsed);
+
+        if (this.isCombatInvalid(attackingDiceUsed, defendingDiceUsed)) {
+            return;
+        }
         
         for (let i = 0; i < defendingDice.length; i++) {
             if (i === 0) {
@@ -20,6 +24,16 @@ export class CombatController {
                 this.removeUnitsFromLoser(attackingDice[1], defendingDice[1]);
             }
         }
+    }
+
+    isCombatInvalid(attackingDice: number, defendingDice: number): boolean {
+        return ( 
+            defendingDice > attackingDice || 
+            attackingDice > this.attackingArea.getUnits() || 
+            defendingDice > this.defendingArea.getUnits() || 
+            attackingDice > 3 ||
+            defendingDice > 2
+        )
     }
 
     rollDice(numberOfDice: number): Array<number> {
