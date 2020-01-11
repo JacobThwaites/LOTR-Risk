@@ -17,7 +17,6 @@ class Map extends Component {
       defendingArea: null,
       attackingDice: 0,
       defendingDice: 0,
-      clickableAreas: [],
       isRendered: false,
       game: null,
       currentPlayer: null,
@@ -55,8 +54,7 @@ class Map extends Component {
     if (this.state.attackingArea === area) {
       this.setState({
         attackingArea: null,
-        defendingArea: null,
-        clickableAreas: []
+        defendingArea: null
       });
     } else if (this.state.defendingArea === area) {
       this.setState({ defendingArea: null });
@@ -64,7 +62,6 @@ class Map extends Component {
       this.setState({ defendingArea: area });
     } else {
       this.setState({ attackingArea: area });
-      this.getClickableAreas(area);
     }
   }
 
@@ -95,13 +92,6 @@ class Map extends Component {
     const defendingPlayer = area.player;
 
     return currentPlayer !== defendingPlayer || attackingArea.area === area;
-  }
-
-  getClickableAreas(area) {
-    const clickableAreas = area.area.getAdjacentAreas();
-    clickableAreas.push(area.area.getName());
-
-    this.setState({ clickableAreas });
   }
 
   onInputFieldChange = (event) => {
@@ -150,7 +140,6 @@ class Map extends Component {
               onClick={this.onAreaSelect}
               attackingArea={this.state.attackingArea}
               defendingArea={this.state.defendingArea}
-              clickableAreas={this.state.clickableAreas}
               isRendered={this.state.isRendered}
               isAreaClickable={this.isAreaClickable}
             />
