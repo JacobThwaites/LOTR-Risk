@@ -23,6 +23,7 @@ class Map extends Component {
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
     this.onCombatButtonClick = this.onCombatButtonClick.bind(this);
+    this.onEndTurnClick = this.onEndTurnClick.bind(this);
   }
 
   componentDidMount() {
@@ -34,7 +35,8 @@ class Map extends Component {
     const areaAssigner = this.setupAreaAssigner();
     const controller = new GameController(areaAssigner.getPlayers(), 30);
 
-    controller.generateGame();
+    const game = controller.generateGame();
+    this.setState({ game });
   }
 
   setupAreaAssigner() {
@@ -100,7 +102,14 @@ class Map extends Component {
     this.setState({ attackingArea: null, defendingArea: null, attackingDice: 0, defendingDice: 0 });
   }
 
+  onEndTurnClick() {
+    const { game } = this.state;
+
+    game.changeCurrentPlayer();
+  }
+
   render() {
+    console.log(this.state);
     return (
       <>
         <svg
@@ -131,6 +140,7 @@ class Map extends Component {
             onInputFieldChange={this.onInputFieldChange}
           />
         )}
+        <button class="endTurnButton" onClick={this.onEndTurnClick} >End Turn</button>
       </>
     );
   }
