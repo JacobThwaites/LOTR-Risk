@@ -120,13 +120,8 @@ class Map extends Component {
     game.changeCurrentPlayer();
     const newCurrentPlayer = game.getCurrentPlayer();
 
-    this.setState({ 
-      currentPlayer: newCurrentPlayer, 
-      attackingArea: null, 
-      defendingArea: null,
-      attackingDice: 0,
-      defendingDice: 0
-    });
+    this.setState({ currentPlayer: newCurrentPlayer });
+    this.resetCombatState();
   }
 
   render() {
