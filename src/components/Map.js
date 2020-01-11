@@ -15,7 +15,7 @@ class Map extends Component {
       defendingArea: null,
       clickableAreas: [],
       isRendered: false,
-      game: null,
+      game: null
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
   }
@@ -33,11 +33,11 @@ class Map extends Component {
   }
 
   setupAreaAssigner() {
-    const player1 = new Player('player 1', Colour.Green, true, 30);
-    const player2 = new Player('player 2', Colour.Yellow, false, 30);
+    const player1 = new Player("player 1", Colour.Green, true, 30);
+    const player2 = new Player("player 2", Colour.Yellow, false, 30);
     const players = [player1, player2];
     const areaAssigner = new AreaAssigner(players);
-    
+
     return areaAssigner;
   }
 
@@ -69,7 +69,7 @@ class Map extends Component {
   }
 
   getClickableAreas(area) {
-    const clickableAreas =  area.area.getAdjacentAreas();
+    const clickableAreas = area.area.getAdjacentAreas();
     clickableAreas.push(area.area.getName());
 
     this.setState({ clickableAreas });
@@ -77,26 +77,33 @@ class Map extends Component {
 
   render() {
     return (
-      <svg
-        id="map"
-        width="1360"
-        height="2e3"
-        version="1.1"
-        viewBox="0 0 1360 2000"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g stroke="#000" strokeWidth="1px">
-          <Mountains />
-          <MapAreas
-            onClick={this.onAreaSelect}
-            attackingArea={this.state.attackingArea}
-            defendingArea={this.state.defendingArea}
-            clickableAreas={this.state.clickableAreas}
-            isRendered={this.state.isRendered}
-          />
-          <Bridges />
-        </g>
-      </svg>
+      <>
+        <svg
+          id="map"
+          width="1360"
+          height="2e3"
+          version="1.1"
+          viewBox="0 0 1360 2000"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g stroke="#000" strokeWidth="1px">
+            <Mountains />
+            <MapAreas
+              onClick={this.onAreaSelect}
+              attackingArea={this.state.attackingArea}
+              defendingArea={this.state.defendingArea}
+              clickableAreas={this.state.clickableAreas}
+              isRendered={this.state.isRendered}
+            />
+            <Bridges />
+          </g>
+        </svg>
+        <button 
+          class='combatTest'
+          type='button'
+          onClick={() => {console.log('adfasdfasdf')}}
+        />
+      </>
     );
   }
 }
