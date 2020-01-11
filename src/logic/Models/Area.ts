@@ -19,7 +19,7 @@ export class Area {
         this.adjacentAreas = adjacentAreas;
     }
 
-    getName(): string {
+    getName(): AreaName {
         return this.name;
     }
 
