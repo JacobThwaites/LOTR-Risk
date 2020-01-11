@@ -10,7 +10,7 @@ function MapAreas(props) {
         id={a.area.getName()}
         path={a.path}
         onClick={() => props.onClick(a)}
-        clickable={props.clickableAreas.includes(a.area.getName()) || props.clickableAreas.length === 0}
+        clickable={props.isAreaClickable(a.area)}
         areaLogic={a.area}
         isRendered={props.isRendered}
       />

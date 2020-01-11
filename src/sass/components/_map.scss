@@ -1,8 +1,21 @@
-.combatTest {
+button {
     height: 200px;
     width: 200px;
-    background-color: orangered;
+    font-size: 30px;
     float: right;
+    
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.endTurnButton {
+    background-color: crimson;
+    top: 100px;
+}
+
+.combatTest {
+    background-color: orangered;
 }
 
 .diceInput {

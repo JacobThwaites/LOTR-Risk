@@ -7,7 +7,9 @@ function CombatButton(props) {
       class="combatTest"
       type="button"
       onClick={props.onCombatButtonClick}
-    />
+    >
+    Handle Combat
+    </button>
   );
 }
 
