@@ -10,8 +10,13 @@
     width: 300px;
     float: right;
 
+    .label {
+        font-size: 20px;
+    }
+
     input {
         height: 40px;
         width: 120px;
+        font-size: 20px;
     }
 }

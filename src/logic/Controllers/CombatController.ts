@@ -1,4 +1,3 @@
-import { Player } from '../Models/Player';
 import { Area } from '../Models/Area';
 
 export class CombatController {

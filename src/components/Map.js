@@ -6,8 +6,8 @@ import { Player } from "../logic/Models/Player";
 import { Colour } from "../logic/Enums/Colours";
 import { AreaAssigner } from "../logic/Controllers/AreaAssigner";
 import { GameController } from "../logic/Controllers/GameController";
-import CombatButton from "./CombatButton";
 import { CombatController } from "../logic/Controllers/CombatController";
+import CombatHandler from "./CombatHandler";
 
 class Map extends Component {
   constructor({ props }) {
@@ -121,16 +121,12 @@ class Map extends Component {
           </g>
         </svg>
         {this.state.attackingArea && this.state.defendingArea && (
-          <>
-            <CombatButton onCombatButtonClick={this.onCombatButtonClick} />
-            <form class="diceInput">
-              <label for="attackingDice">Attacking Dice</label>
-              <input name="attackingDice" type="number" step="1" value={this.state.attackingDice} onChange={this.onInputFieldChange} />
-              <label for="defendingDice" >Defending Dice</label>
-              <input name="defendingDice" type="text" value={this.state.defendingDice} onChange={this.onInputFieldChange} />
-            </form>
-
-          </>
+          <CombatHandler 
+            attackingDice={this.state.attackingDice}
+            defendingDice={this.state.defendingDice}
+            onCombatButtonClick={this.onCombatButtonClick}
+            onInputFieldChange={this.onInputFieldChange}
+          />
         )}
       </>
     );
