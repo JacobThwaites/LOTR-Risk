@@ -2,5 +2,16 @@
     height: 200px;
     width: 200px;
     background-color: orangered;
-    
+    float: right;
+}
+
+.diceInput {
+    height: 300px;
+    width: 300px;
+    float: right;
+
+    input {
+        height: 40px;
+        width: 120px;
+    }
 }

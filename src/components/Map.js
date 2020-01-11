@@ -15,6 +15,8 @@ class Map extends Component {
     this.state = {
       attackingArea: null,
       defendingArea: null,
+      attackingDice: 0,
+      defendingDice: 0,
       clickableAreas: [],
       isRendered: false,
       game: null
@@ -78,6 +80,11 @@ class Map extends Component {
     this.setState({ clickableAreas });
   }
 
+  onInputFieldChange = (event) => {
+    const { target: { name, value } } = event
+    this.setState({ [name]: value })
+  }
+
   onCombatButtonClick() {
     const { attackingArea, defendingArea } = this.state;
 
@@ -118,9 +125,9 @@ class Map extends Component {
             <CombatButton onCombatButtonClick={this.onCombatButtonClick} />
             <form class="diceInput">
               <label for="attackingDice">Attacking Dice</label>
-              <input name="attackingDice" type="text" />
-              <label for="defendingDice">Defending Dice</label>
-              <input name="defendingDice" type="text" />
+              <input name="attackingDice" type="number" step="1" value={this.state.attackingDice} onChange={this.onInputFieldChange} />
+              <label for="defendingDice" >Defending Dice</label>
+              <input name="defendingDice" type="text" value={this.state.defendingDice} onChange={this.onInputFieldChange} />
             </form>
 
           </>
