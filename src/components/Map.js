@@ -8,6 +8,8 @@ import { AreaAssigner } from "../logic/Controllers/AreaAssigner";
 import { GameController } from "../logic/Controllers/GameController";
 import { CombatController } from "../logic/Controllers/CombatController";
 import CombatHandler from "./CombatHandler";
+import UnitManeuverHandler from "./UnitManeuverHandler";
+import { UnitManeuverController } from "../logic/Controllers/UnitManeuverController";
 
 class Map extends Component {
   constructor({ props }) {
@@ -20,11 +22,17 @@ class Map extends Component {
       isRendered: false,
       game: null,
       currentPlayer: null,
+      displayUnitManeuverButton: false,
+      areaToMoveUnits: null,
+      areaToReceiveUnits: null,
+      unitsToMove: 1,
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
     this.isAreaClickable = this.isAreaClickable.bind(this);
     this.onCombatButtonClick = this.onCombatButtonClick.bind(this);
     this.onEndTurnClick = this.onEndTurnClick.bind(this);
+    this.onInputFieldChange = this.onInputFieldChange.bind(this);
+    this.onMoveUnits = this.onMoveUnits.bind(this);
   }
 
   componentDidMount() {
@@ -94,12 +102,12 @@ class Map extends Component {
     return currentPlayer !== defendingPlayer || attackingArea.area === area;
   }
 
-  onInputFieldChange = (event) => {
+  onInputFieldChange(event) {
     const { target: { name, value } } = event
     this.setState({ [name]: value })
   }
 
-  onCombatButtonClick() {
+  async onCombatButtonClick() {
     const { attackingArea, defendingArea, attackingDice, defendingDice } = this.state;
 
     const combatController = new CombatController(
@@ -107,7 +115,16 @@ class Map extends Component {
       defendingArea.area
     );
     combatController.handleCombat(attackingDice, defendingDice);
+    if (defendingArea.area.getUnits() < 1) {
+      await this.setState({ 
+        displayUnitManeuverButton: true, 
+        areaToMoveUnits: attackingArea.area, 
+        areaToReceiveUnits: defendingArea.area 
+      });
+    }
+
     this.resetCombatState();
+
   }
   
   resetCombatState() {
@@ -122,6 +139,19 @@ class Map extends Component {
 
     this.setState({ currentPlayer: newCurrentPlayer });
     this.resetCombatState();
+  }
+
+  onMoveUnits() {
+    const { areaToMoveUnits, areaToReceiveUnits, unitsToMove } = this.state;
+
+    const unitManeuverController = new UnitManeuverController(areaToMoveUnits, areaToReceiveUnits);
+
+    unitManeuverController.handleManeuver(unitsToMove);
+    this.setState({ 
+      displayUnitManeuverButton: false,
+      areaToMoveUnits: null,
+      areaToReceiveUnits: null,
+     });
   }
 
   render() {
@@ -155,6 +185,14 @@ class Map extends Component {
             onInputFieldChange={this.onInputFieldChange}
           />
         )}
+        {this.state.displayUnitManeuverButton &&
+          <UnitManeuverHandler
+            max={this.state.areaToMoveUnits.getUnits() - 1}
+            onInputFieldChange={this.onInputFieldChange}
+            onMoveUnits={this.onMoveUnits}
+          />
+        }
+
         <button class="endTurnButton" onClick={this.onEndTurnClick} >End Turn</button>
       </>
     );

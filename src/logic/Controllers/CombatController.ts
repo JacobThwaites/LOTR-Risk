@@ -45,7 +45,8 @@ export class CombatController {
     firstDiceCombat(attackingDice: number, defendingDice: number) {
         const defenderBonus = this.getDefenderDiceBonus(this.defendingArea);
         const attackerBonus = this.getAttackerDiceBonus(this.attackingArea);
-        const attackerScore = attackingDice + attackerBonus;
+        // TODO: remove + 5 
+        const attackerScore = attackingDice + attackerBonus + 6;
         const defenderScore = defendingDice + defenderBonus;
         this.removeUnitsFromLoser(attackerScore, defenderScore);
         this.checkDefendingUnitsRemaining();
@@ -99,6 +100,7 @@ export class CombatController {
         }
 
         if (this.defendingArea.getUnits() < 1) {
+            attacker.addArea(this.defendingArea);
             this.defendingArea.setPlayer(attacker);
         }
     }
