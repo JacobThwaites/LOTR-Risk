@@ -7,6 +7,7 @@ import { Colour } from "../logic/Enums/Colours";
 import { AreaAssigner } from "../logic/Controllers/AreaAssigner";
 import { GameController } from "../logic/Controllers/GameController";
 import CombatButton from "./CombatButton";
+import { CombatController } from "../logic/Controllers/CombatController";
 
 class Map extends Component {
   constructor({ props }) {
@@ -19,6 +20,7 @@ class Map extends Component {
       game: null
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
+    this.onCombatButtonClick = this.onCombatButtonClick.bind(this);
   }
 
   componentDidMount() {
@@ -76,6 +78,15 @@ class Map extends Component {
     this.setState({ clickableAreas });
   }
 
+  onCombatButtonClick() {
+    const { attackingArea, defendingArea } = this.state;
+
+    const combatController = new CombatController(attackingArea.area, defendingArea.area);
+    combatController.handleCombat(1, 1);
+
+    this.setState({ attackingArea: null, defendingArea: null });
+  }
+
   render() {
     return (
       <>
@@ -99,14 +110,11 @@ class Map extends Component {
             <Bridges />
           </g>
         </svg>
-        {
-          this.state.attackingArea && this.state.defendingArea &&
-          <CombatButton 
-            attackingArea={this.state.attackingArea}
-            defendingArea={this.state.defendingArea}
+        {this.state.attackingArea && this.state.defendingArea && (
+          <CombatButton
+            onCombatButtonClick={this.onCombatButtonClick}
           />
-
-        }
+        )}
       </>
     );
   }
