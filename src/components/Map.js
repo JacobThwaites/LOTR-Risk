@@ -19,9 +19,11 @@ class Map extends Component {
       defendingDice: 0,
       clickableAreas: [],
       isRendered: false,
-      game: null
+      game: null,
+      currentPlayer: null,
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
+    this.isAreaClickable = this.isAreaClickable.bind(this);
     this.onCombatButtonClick = this.onCombatButtonClick.bind(this);
     this.onEndTurnClick = this.onEndTurnClick.bind(this);
   }
@@ -36,7 +38,8 @@ class Map extends Component {
     const controller = new GameController(areaAssigner.getPlayers(), 30);
 
     const game = controller.generateGame();
-    this.setState({ game });
+    const currentPlayer = game.getCurrentPlayer();
+    this.setState({ game, currentPlayer });
   }
 
   setupAreaAssigner() {
@@ -58,21 +61,40 @@ class Map extends Component {
     } else if (this.state.defendingArea === area) {
       this.setState({ defendingArea: null });
     } else if (this.state.attackingArea !== null) {
-      if (!this.defendingAreaIsClickable(area)) {
-        this.setState({ defendingArea: area });
-      }
+      this.setState({ defendingArea: area });
     } else {
       this.setState({ attackingArea: area });
       this.getClickableAreas(area);
     }
   }
 
-  defendingAreaIsClickable(defendingArea) {
-    const { attackingArea } = this.state;
-    const attackingPlayer = attackingArea.area.player;
-    const defendingPlayer = defendingArea.area.player;
+  isAreaClickable(area) {
+    if (this.state.attackingArea === null) {
+      return this.isAttackingAreaClickable(area);
+    } else {
+      return this.isDefendingAreaClickable(area);
+    }
+  }
+  
+  isAttackingAreaClickable(attackingArea) {
+    const { isRendered, currentPlayer } = this.state;
 
-    return attackingPlayer === defendingPlayer;
+    if (!isRendered) {
+      return false;
+    }
+
+    return currentPlayer.getAreas().includes(attackingArea) && currentPlayer === attackingArea.getPlayer();
+  }
+
+  isDefendingAreaClickable(area) {
+    const { isRendered, currentPlayer, attackingArea } = this.state;
+    if (!isRendered) {
+      return false;
+    }
+
+    const defendingPlayer = area.player;
+
+    return currentPlayer !== defendingPlayer || attackingArea.area === area;
   }
 
   getClickableAreas(area) {
@@ -106,10 +128,12 @@ class Map extends Component {
     const { game } = this.state;
 
     game.changeCurrentPlayer();
+    const newCurrentPlayer = game.getCurrentPlayer();
+
+    this.setState({ currentPlayer: newCurrentPlayer });
   }
 
   render() {
-    console.log(this.state);
     return (
       <>
         <svg
@@ -128,6 +152,7 @@ class Map extends Component {
               defendingArea={this.state.defendingArea}
               clickableAreas={this.state.clickableAreas}
               isRendered={this.state.isRendered}
+              isAreaClickable={this.isAreaClickable}
             />
             <Bridges />
           </g>
