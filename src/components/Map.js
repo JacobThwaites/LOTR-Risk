@@ -81,7 +81,10 @@ class Map extends Component {
   onCombatButtonClick() {
     const { attackingArea, defendingArea } = this.state;
 
-    const combatController = new CombatController(attackingArea.area, defendingArea.area);
+    const combatController = new CombatController(
+      attackingArea.area,
+      defendingArea.area
+    );
     combatController.handleCombat(1, 1);
 
     this.setState({ attackingArea: null, defendingArea: null });
@@ -111,9 +114,16 @@ class Map extends Component {
           </g>
         </svg>
         {this.state.attackingArea && this.state.defendingArea && (
-          <CombatButton
-            onCombatButtonClick={this.onCombatButtonClick}
-          />
+          <>
+            <CombatButton onCombatButtonClick={this.onCombatButtonClick} />
+            <form class="diceInput">
+              <label for="attackingDice">Attacking Dice</label>
+              <input name="attackingDice" type="text" />
+              <label for="defendingDice">Defending Dice</label>
+              <input name="defendingDice" type="text" />
+            </form>
+
+          </>
         )}
       </>
     );
