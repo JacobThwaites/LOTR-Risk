@@ -6,6 +6,7 @@ import { Player } from "../logic/Models/Player";
 import { Colour } from "../logic/Enums/Colours";
 import { AreaAssigner } from "../logic/Controllers/AreaAssigner";
 import { GameController } from "../logic/Controllers/GameController";
+import CombatButton from "./CombatButton";
 
 class Map extends Component {
   constructor({ props }) {
@@ -98,11 +99,7 @@ class Map extends Component {
             <Bridges />
           </g>
         </svg>
-        <button 
-          class='combatTest'
-          type='button'
-          onClick={() => {console.log('adfasdfasdf')}}
-        />
+        <CombatButton />
       </>
     );
   }
