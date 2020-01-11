@@ -1,14 +1,10 @@
-import { Player } from '../Models/Player';
 import { Area } from '../Models/Area';
 
 export class CombatController {
-    private attacker: Player;
-    private defender: Player;
+
     private attackingArea: Area;
     private defendingArea: Area;
-    constructor(attacker: Player, defender: Player, attackingArea: Area, defendingArea: Area) {
-        this.attacker = attacker;
-        this.defender = defender;
+    constructor(attackingArea: Area, defendingArea: Area) {
         this.attackingArea = attackingArea;
         this.defendingArea = defendingArea;
     }
@@ -16,6 +12,7 @@ export class CombatController {
     handleCombat(attackingDiceUsed: number, defendingDiceUsed: number) {
         const attackingDice = this.rollDice(attackingDiceUsed);
         const defendingDice = this.rollDice(defendingDiceUsed);
+        
         for (let i = 0; i < defendingDice.length; i++) {
             if (i === 0) {
                 this.firstDiceCombat(attackingDice[0], defendingDice[0]);
@@ -68,11 +65,17 @@ export class CombatController {
 
     removeUnitsFromLoser(attackingRoll: number, defendingRoll: number) {
         if (defendingRoll >= attackingRoll) {
-            this.attacker.removeUnits(1);
-            this.attackingArea.removeUnits(1);
+            const attackingPlayer = this.attackingArea.getPlayer();
+            if (attackingPlayer !== null) {
+                attackingPlayer.removeUnits(1);
+                this.attackingArea.removeUnits(1);
+            }
         } else {
-            this.defender.removeUnits(1);
-            this.defendingArea.removeUnits(1);
+            const defendingPlayer = this.defendingArea.getPlayer();
+            if (defendingPlayer !== null) {
+                defendingPlayer.removeUnits(1);
+                this.defendingArea.removeUnits(1);
+            }
         }
     }
 }
