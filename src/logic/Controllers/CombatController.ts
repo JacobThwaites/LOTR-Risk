@@ -1,7 +1,8 @@
 import { Area } from '../Models/Area';
+import { Player } from '../Models/Player';
+import isCombatInvalid from '../../utils/CombatValidation';
 
 export class CombatController {
-
     private attackingArea: Area;
     private defendingArea: Area;
     constructor(attackingArea: Area, defendingArea: Area) {
@@ -9,9 +10,13 @@ export class CombatController {
         this.defendingArea = defendingArea;
     }
 
-    handleCombat(attackingDiceUsed: number, defendingDiceUsed: number) {
+    handleCombat(attackingDiceUsed: number, defendingDiceUsed: number, attacker: Player) {
         const attackingDice = this.rollDice(attackingDiceUsed);
         const defendingDice = this.rollDice(defendingDiceUsed);
+        
+        if (isCombatInvalid(attackingDiceUsed, defendingDiceUsed, this.attackingArea, this.defendingArea)) {
+            return;
+        }
         
         for (let i = 0; i < defendingDice.length; i++) {
             if (i === 0) {
@@ -28,7 +33,8 @@ export class CombatController {
             const number = this.getDiceRoll();
             numbersRolled.push(number); 
         }
-        return numbersRolled.sort();
+        
+        return numbersRolled.sort().reverse();
     }
 
     getDiceRoll(): number {
@@ -39,9 +45,11 @@ export class CombatController {
     firstDiceCombat(attackingDice: number, defendingDice: number) {
         const defenderBonus = this.getDefenderDiceBonus(this.defendingArea);
         const attackerBonus = this.getAttackerDiceBonus(this.attackingArea);
-        const attackerScore = attackingDice + attackerBonus;
+        // TODO: remove + 5 
+        const attackerScore = attackingDice + attackerBonus + 6;
         const defenderScore = defendingDice + defenderBonus;
         this.removeUnitsFromLoser(attackerScore, defenderScore);
+        this.checkDefendingUnitsRemaining();
     }
 
     getDefenderDiceBonus(defendingArea: Area): number {
@@ -63,7 +71,7 @@ export class CombatController {
         return bonus;
     }
 
-    removeUnitsFromLoser(attackingRoll: number, defendingRoll: number) {
+    removeUnitsFromLoser(attackingRoll: number, defendingRoll: number) {  
         if (defendingRoll >= attackingRoll) {
             const attackingPlayer = this.attackingArea.getPlayer();
             if (attackingPlayer !== null) {
@@ -76,6 +84,24 @@ export class CombatController {
                 defendingPlayer.removeUnits(1);
                 this.defendingArea.removeUnits(1);
             }
+        }
+    }
+
+    secondDiceCombat(attackingDice: number, defendingDice: number) {
+        this.removeUnitsFromLoser(attackingDice, defendingDice);
+        this.checkDefendingUnitsRemaining();
+    }
+
+    checkDefendingUnitsRemaining() {
+        const attacker = this.attackingArea.getPlayer();
+
+        if (!attacker) {
+            return;
+        }
+
+        if (this.defendingArea.getUnits() < 1) {
+            attacker.addArea(this.defendingArea);
+            this.defendingArea.setPlayer(attacker);
         }
     }
 }

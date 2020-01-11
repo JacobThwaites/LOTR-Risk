@@ -11,13 +11,16 @@ function CombatHandler(props) {
           name="attackingDice"
           type="number"
           step="1"
+          max="3"
           value={props.attackingDice}
           onChange={props.onInputFieldChange}
         />
         <label for="defendingDice">Defending Dice</label>
         <input
           name="defendingDice"
-          type="text"
+          type="number"
+          step="1"
+          max="2"
           value={props.defendingDice}
           onChange={props.onInputFieldChange}
         />
