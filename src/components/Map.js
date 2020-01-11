@@ -86,15 +86,18 @@ class Map extends Component {
   }
 
   onCombatButtonClick() {
-    const { attackingArea, defendingArea } = this.state;
+    const { attackingArea, defendingArea, attackingDice, defendingDice } = this.state;
 
     const combatController = new CombatController(
       attackingArea.area,
       defendingArea.area
     );
-    combatController.handleCombat(1, 1);
-
-    this.setState({ attackingArea: null, defendingArea: null });
+    combatController.handleCombat(attackingDice, defendingDice);
+    this.resetCombatState();
+  }
+  
+  resetCombatState() {
+    this.setState({ attackingArea: null, defendingArea: null, attackingDice: 0, defendingDice: 0 });
   }
 
   render() {
