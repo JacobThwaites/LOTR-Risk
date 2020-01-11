@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import Circle from '../components/svgPaths/Circle';
 
 class CircleGenerator extends Component {
-  addCircleToMap(elementId, colour) {
+  addCircleToMap(elementId, area) {
     const domElement = document.getElementById(elementId).getBBox();
     const coordinates = this.calculateCentre(domElement);
-    const circle = this.drawCircle(coordinates, colour);
+    const circle = this.drawCircle(coordinates, area);
     return circle;
   }
 
@@ -16,11 +16,12 @@ class CircleGenerator extends Component {
     return centreCoordinates;
   }
 
-  drawCircle(coordinates, color) {
+  drawCircle(coordinates, area) {
     return (
       <Circle 
         coordinates={coordinates}
-        color={color}
+        color={area.player.colour}
+        areaUnits={area.units}
       />
     );
   }

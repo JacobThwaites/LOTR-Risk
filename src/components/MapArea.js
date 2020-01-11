@@ -15,7 +15,7 @@ function MapArea(props) {
         areaLogic={props.areaLogic}
       />
       {props.isRendered &&
-        circleGenerator.addCircleToMap(props.id, props.areaLogic.player.colour)
+        circleGenerator.addCircleToMap(props.id, props.areaLogic)
       }
     </>
   );

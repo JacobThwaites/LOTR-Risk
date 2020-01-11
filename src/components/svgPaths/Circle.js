@@ -20,7 +20,7 @@ function Circle(props) {
         stroke-width="2px"
         dy=".3em"
       >
-        10
+        {props.areaUnits}
       </text>
     </>
   );
