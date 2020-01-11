@@ -99,7 +99,14 @@ class Map extends Component {
             <Bridges />
           </g>
         </svg>
-        <CombatButton />
+        {
+          this.state.attackingArea && this.state.defendingArea &&
+          <CombatButton 
+            attackingArea={this.state.attackingArea}
+            defendingArea={this.state.defendingArea}
+          />
+
+        }
       </>
     );
   }
