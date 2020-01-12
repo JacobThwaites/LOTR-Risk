@@ -75,11 +75,11 @@ class GameDisplay extends Component {
     const reinforcementController = new ReinforcementController(currentPlayer);
 
     reinforcementController.addReinforcements(area);
-    this.setState((prevState, props) => ({
+    this.setState(prevState => ({
       reinforcementsAvailable: prevState.reinforcementsAvailable - 1
     }));
 
-    if (reinforcementsAvailable < 1) {
+    if (reinforcementsAvailable <= 1) {
       this.setState({ shouldDisplayReinforcementsModal: false });
     }
   }
@@ -112,6 +112,7 @@ class GameDisplay extends Component {
       defendingArea.area
     );
     combatController.handleCombat(attackingDice, defendingDice);
+    
     if (defendingArea.area.getUnits() < 1) {
       this.setState({
         shouldDisplayUnitManeuverButton: true,
@@ -145,7 +146,6 @@ class GameDisplay extends Component {
     game.changeCurrentPlayer();
     const newCurrentPlayer = game.getCurrentPlayer();
     const reinforcementsAvailable = this.getTotalReinforcementsAvailable();
-
     this.setState({
       currentPlayer: newCurrentPlayer,
       shouldDisplayReinforcementsModal: true,
@@ -166,7 +166,8 @@ class GameDisplay extends Component {
     this.setState({
       shouldDisplayUnitManeuverButton: false,
       areaToMoveUnits: null,
-      areaToReceiveUnits: null
+      areaToReceiveUnits: null,
+      unitsToMove: 0
     });
   }
 
