@@ -1,4 +1,5 @@
 import { Player } from '../Models/Player';
+import { Area } from '../Models/Area';
 
 export class ReinforcementController {
     private player: Player;
@@ -12,5 +13,10 @@ export class ReinforcementController {
         totalReinforments += this.player.calculateRegionBonus();
 
         return totalReinforments;
+    }
+
+    addReinforcements(area: Area) {
+        this.player.addUnits(1);
+        area.addUnits(1);
     }
 }

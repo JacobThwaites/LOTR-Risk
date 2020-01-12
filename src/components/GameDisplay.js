@@ -26,9 +26,11 @@ class GameDisplay extends Component {
       shouldDisplayReinforcementsModal: false,
       areaToMoveUnits: null,
       areaToReceiveUnits: null,
-      unitsToMove: 0
+      unitsToMove: 0,
+      reinforcementsAvailable: 0
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
+    this.addReinforcements = this.addReinforcements.bind(this);
     this.onInputFieldChange = this.onInputFieldChange.bind(this);
     this.onEndTurnClick = this.onEndTurnClick.bind(this);
     this.onMoveUnits = this.onMoveUnits.bind(this);
@@ -59,6 +61,30 @@ class GameDisplay extends Component {
   }
 
   onAreaSelect(area) {
+    const { shouldDisplayReinforcementsModal } = this.state;
+
+    if (shouldDisplayReinforcementsModal) {
+      this.addReinforcements(area.area);
+    } else {
+      this.setAreaForCombat(area);
+    }
+  }
+
+  addReinforcements(area) {
+    const { currentPlayer, reinforcementsAvailable } = this.state;
+    const reinforcementController = new ReinforcementController(currentPlayer);
+
+    reinforcementController.addReinforcements(area);
+    this.setState((prevState, props) => ({
+      reinforcementsAvailable: prevState.reinforcementsAvailable - 1
+    }));
+
+    if (reinforcementsAvailable < 1) {
+      this.setState({ shouldDisplayReinforcementsModal: false });
+    }
+  }
+
+  setAreaForCombat(area) {
     if (this.state.attackingArea === area) {
       this.setState({
         attackingArea: null,
@@ -73,7 +99,7 @@ class GameDisplay extends Component {
     }
   }
 
-  async onCombatButtonClick() {
+  onCombatButtonClick() {
     const {
       attackingArea,
       defendingArea,
@@ -87,7 +113,7 @@ class GameDisplay extends Component {
     );
     combatController.handleCombat(attackingDice, defendingDice);
     if (defendingArea.area.getUnits() < 1) {
-      await this.setState({
+      this.setState({
         shouldDisplayUnitManeuverButton: true,
         areaToMoveUnits: attackingArea.area,
         areaToReceiveUnits: defendingArea.area
@@ -118,8 +144,13 @@ class GameDisplay extends Component {
 
     game.changeCurrentPlayer();
     const newCurrentPlayer = game.getCurrentPlayer();
+    const reinforcementsAvailable = this.getTotalReinforcementsAvailable();
 
-    this.setState({ currentPlayer: newCurrentPlayer, shouldDisplayReinforcementsModal: true });
+    this.setState({
+      currentPlayer: newCurrentPlayer,
+      shouldDisplayReinforcementsModal: true,
+      reinforcementsAvailable
+    });
     this.resetCombatState();
   }
 
@@ -173,8 +204,8 @@ class GameDisplay extends Component {
           />
         )}
         {this.state.shouldDisplayReinforcementsModal && (
-          <ReinforcementsModal 
-            reinforcementsAvailable={this.getTotalReinforcementsAvailable()}
+          <ReinforcementsModal
+            reinforcementsAvailable={this.state.reinforcementsAvailable}
           />
         )}
         <EndTurnButton onEndTurnClick={this.onEndTurnClick} />
