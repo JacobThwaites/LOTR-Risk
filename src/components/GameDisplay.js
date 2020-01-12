@@ -17,7 +17,6 @@ class GameDisplay extends Component {
     super(props);
     this.state = {
       game: null,
-      currentPlayer: null,
       attackingArea: null,
       defendingArea: null,
       attackingDice: 0,
@@ -47,8 +46,7 @@ class GameDisplay extends Component {
     const controller = new GameController(areaAssigner.getPlayers(), 30);
 
     const game = controller.generateGame();
-    const currentPlayer = game.getCurrentPlayer();
-    this.setState({ game, currentPlayer });
+    this.setState({ game });
   }
 
   setupAreaAssigner() {
@@ -71,7 +69,8 @@ class GameDisplay extends Component {
   }
 
   addReinforcements(area) {
-    const { currentPlayer, reinforcementsAvailable } = this.state;
+    const { game, reinforcementsAvailable } = this.state;
+    const currentPlayer = game.getCurrentPlayer();
     const reinforcementController = new ReinforcementController(currentPlayer);
 
     reinforcementController.addReinforcements(area);
@@ -99,7 +98,7 @@ class GameDisplay extends Component {
     }
   }
 
-  onCombatButtonClick() {
+  async onCombatButtonClick() {
     const {
       attackingArea,
       defendingArea,
@@ -114,7 +113,7 @@ class GameDisplay extends Component {
     combatController.handleCombat(attackingDice, defendingDice);
     
     if (defendingArea.area.getUnits() < 1) {
-      this.setState({
+      await this.setState({
         shouldDisplayUnitManeuverButton: true,
         areaToMoveUnits: attackingArea.area,
         areaToReceiveUnits: defendingArea.area
@@ -144,10 +143,8 @@ class GameDisplay extends Component {
     const { game } = this.state;
 
     game.changeCurrentPlayer();
-    const newCurrentPlayer = game.getCurrentPlayer();
     const reinforcementsAvailable = this.getTotalReinforcementsAvailable();
     this.setState({
-      currentPlayer: newCurrentPlayer,
       shouldDisplayReinforcementsModal: true,
       reinforcementsAvailable
     });
@@ -156,7 +153,6 @@ class GameDisplay extends Component {
 
   onMoveUnits() {
     const { areaToMoveUnits, areaToReceiveUnits, unitsToMove } = this.state;
-
     const unitManeuverController = new UnitManeuverController(
       areaToMoveUnits,
       areaToReceiveUnits
@@ -172,20 +168,23 @@ class GameDisplay extends Component {
   }
 
   getTotalReinforcementsAvailable() {
-    const { currentPlayer } = this.state;
+    const { game } = this.state;
+    const currentPlayer = game.getCurrentPlayer();
     const reinforcementController = new ReinforcementController(currentPlayer);
 
     return reinforcementController.getTotalReinforcementsAvailable();
   }
 
   render() {
+    const currentPlayer = this.state.game ? this.state.game.getCurrentPlayer() : null;
+
     return (
       <>
         <Map
           attackingArea={this.state.attackingArea}
           defendingArea={this.state.defendingArea}
           attackingDice={this.state.attackingDice}
-          currentPlayer={this.state.currentPlayer}
+          currentPlayer={currentPlayer}
           onAreaSelect={this.onAreaSelect}
         />
         {this.state.attackingArea && this.state.defendingArea && (
