@@ -8,6 +8,7 @@ import CombatHandler from "./CombatHandler";
 import UnitManeuverHandler from "./UnitManeuverHandler";
 import { UnitManeuverController } from "../logic/Controllers/UnitManeuverController";
 import Map from "./Map";
+import EndTurnButton from "./EndTurnButton";
 
 class GameDisplay extends Component {
   constructor({ props }) {
@@ -22,7 +23,7 @@ class GameDisplay extends Component {
       displayUnitManeuverButton: false,
       areaToMoveUnits: null,
       areaToReceiveUnits: null,
-      unitsToMove: 0,
+      unitsToMove: 0
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
     this.onInputFieldChange = this.onInputFieldChange.bind(this);
@@ -69,35 +70,6 @@ class GameDisplay extends Component {
     }
   }
 
-
-  onInputFieldChange(event) {
-    const { target: { name, value } } = event
-    this.setState({ [name]: value })
-  }
-
-  onEndTurnClick() {
-    const { game } = this.state;
-
-    game.changeCurrentPlayer();
-    const newCurrentPlayer = game.getCurrentPlayer();
-
-    this.setState({ currentPlayer: newCurrentPlayer });
-    this.resetCombatState();
-  }
-  
-  onMoveUnits() {
-    const { areaToMoveUnits, areaToReceiveUnits, unitsToMove } = this.state;
-
-    const unitManeuverController = new UnitManeuverController(areaToMoveUnits, areaToReceiveUnits);
-
-    unitManeuverController.handleManeuver(unitsToMove);
-    this.setState({ 
-      displayUnitManeuverButton: false,
-      areaToMoveUnits: null,
-      areaToReceiveUnits: null,
-     });
-  }
-
   async onCombatButtonClick() {
     const {
       attackingArea,
@@ -123,18 +95,56 @@ class GameDisplay extends Component {
   }
 
   resetCombatState() {
-    this.setState({ attackingArea: null, defendingArea: null, attackingDice: 0, defendingDice: 0 });
+    this.setState({
+      attackingArea: null,
+      defendingArea: null,
+      attackingDice: 0,
+      defendingDice: 0
+    });
+  }
+
+  onInputFieldChange(event) {
+    const {
+      target: { name, value }
+    } = event;
+    this.setState({ [name]: value });
+  }
+
+  onEndTurnClick() {
+    const { game } = this.state;
+
+    game.changeCurrentPlayer();
+    const newCurrentPlayer = game.getCurrentPlayer();
+
+    this.setState({ currentPlayer: newCurrentPlayer });
+    this.resetCombatState();
+  }
+
+  onMoveUnits() {
+    const { areaToMoveUnits, areaToReceiveUnits, unitsToMove } = this.state;
+
+    const unitManeuverController = new UnitManeuverController(
+      areaToMoveUnits,
+      areaToReceiveUnits
+    );
+
+    unitManeuverController.handleManeuver(unitsToMove);
+    this.setState({
+      displayUnitManeuverButton: false,
+      areaToMoveUnits: null,
+      areaToReceiveUnits: null
+    });
   }
 
   render() {
     return (
       <>
-        <Map 
-            attackingArea={this.state.attackingArea}
-            defendingArea={this.state.defendingArea}
-            attackingDice={this.state.attackingDice}
-            currentPlayer={this.state.currentPlayer}
-            onAreaSelect={this.onAreaSelect}
+        <Map
+          attackingArea={this.state.attackingArea}
+          defendingArea={this.state.defendingArea}
+          attackingDice={this.state.attackingDice}
+          currentPlayer={this.state.currentPlayer}
+          onAreaSelect={this.onAreaSelect}
         />
         {this.state.attackingArea && this.state.defendingArea && (
           <CombatHandler
@@ -152,10 +162,7 @@ class GameDisplay extends Component {
             onMoveUnits={this.onMoveUnits}
           />
         )}
-
-        <button class="endTurnButton" onClick={this.onEndTurnClick}>
-          End Turn
-        </button>
+        <EndTurnButton onEndTurnClick={this.onEndTurnClick} />
       </>
     );
   }
