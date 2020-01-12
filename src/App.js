@@ -1,11 +1,11 @@
 import React from 'react';
-import Map from './components/Map.js';
+import GameDisplay from './components/GameDisplay';
 import './sass/main.scss';
 
 function App() {
   return (
     <div className="App">
-        <Map />
+        <GameDisplay />
     </div>
   );
 }
