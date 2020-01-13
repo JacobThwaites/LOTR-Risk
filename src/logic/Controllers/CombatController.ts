@@ -25,6 +25,8 @@ export class CombatController {
                 this.removeUnitsFromLoser(attackingDice[1], defendingDice[1]);
             }
         }
+
+        this.checkDefendingUnitsRemaining();
     }
 
     rollDice(numberOfDice: number): Array<number> {
@@ -49,7 +51,6 @@ export class CombatController {
         const attackerScore = attackingDice + attackerBonus + 6;
         const defenderScore = defendingDice + defenderBonus;
         this.removeUnitsFromLoser(attackerScore, defenderScore);
-        this.checkDefendingUnitsRemaining();
     }
 
     getDefenderDiceBonus(defendingArea: Area): number {
@@ -89,7 +90,6 @@ export class CombatController {
 
     secondDiceCombat(attackingDice: number, defendingDice: number) {
         this.removeUnitsFromLoser(attackingDice, defendingDice);
-        this.checkDefendingUnitsRemaining();
     }
 
     checkDefendingUnitsRemaining() {
