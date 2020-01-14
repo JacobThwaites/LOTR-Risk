@@ -2,8 +2,6 @@ import { Area } from '../Models/Area';
 import { AreaName } from '../Enums/AreaNames';
 import { Player } from '../Models/Player';
 import { Region } from '../Models/Region';
-import { Board } from '../Models/Board';
-import { TheRing } from '../Models/TheRing';
 import { assert } from 'chai';
 import 'mocha';
 import { Colour } from '../Enums/Colours';
@@ -13,12 +11,10 @@ describe('Game', () => {
     let player1: Player;
     let player2: Player;
     let playersList: Array<Player>;
-    let board: Board;
     let area1: Area;
     let area2: Area;
     let region1: Region;
     let region2: Region;
-    let theRing: TheRing;
     let game: Game;
     beforeEach(function () {
         player1 = new Player('Biff', Colour.Green, true, 30);
@@ -31,9 +27,7 @@ describe('Game', () => {
         region1 = new Region('Gondor', [area2], 5);
         region2 = new Region('Arnor', [area1], 7);
         const regionsList = [region1, region2];
-        board = new Board(regionsList);
-        theRing = new TheRing(4);
-        game = new Game(playersList, theRing, board, regionsList);
+        game = new Game(playersList, regionsList);
     })
 
     it('have players', () => {

@@ -1,18 +1,12 @@
 import { Player } from './Player';
-import { TheRing } from './TheRing';
-import { Board } from './Board';
 import { Region } from './Region';
 
 export class Game {
     private players: Array<Player>;
-    private theRing: TheRing;
-    private board: Board;
     private regions: Array<Region>;
     private currentPlayersTurn: number;
-    constructor(players: Array<Player>, theRing: TheRing, board: Board, regions: Array<Region>) {
+    constructor(players: Array<Player>, regions: Array<Region>) {
         this.players = players;
-        this.theRing = theRing;
-        this.board = board;
         this.regions = regions;
         this.currentPlayersTurn = 0; 
     }
