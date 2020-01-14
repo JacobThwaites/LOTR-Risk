@@ -38,6 +38,10 @@ export class Player {
         return this.areas;
     }
 
+    getTotalAreas(): number {
+        return this.areas.length;
+    }
+
     getAdventureCard(index: number) {
         return this.adventureCards[index];
     }
@@ -100,6 +104,12 @@ export class Player {
         if (this.reinforcements >= reinforcements) {
             this.reinforcements -= reinforcements;
             area.addUnits(reinforcements);
+        }
+    }
+
+    addStartingUnits() {
+        for (let i = 0; i < this.areas.length; i++) {
+            this.addReinforcements(1, this.areas[i]);
         }
     }
 }

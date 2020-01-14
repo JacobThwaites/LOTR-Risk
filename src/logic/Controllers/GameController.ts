@@ -19,6 +19,7 @@ export class GameController {
         const game = new Game(this.players, ring, board, Regions);
         const areaAssigner = new AreaAssigner(this.players);
         areaAssigner.assignAreas();
+        game.assignStartingUnits();
         
         return game;
     }

@@ -37,4 +37,23 @@ export class Game {
     getRegions(): Array<Region> {
         return this.regions;
     }
+
+    assignStartingUnits() {
+        const unitsAvailable = this.getStartingUnitsAvailable();
+
+        for (let i = 0; i < this.players.length; i++) {
+            this.players[i].addStartingUnits();
+            this.players[i].addUnits(unitsAvailable - this.players[i].getTotalAreas());
+        }
+    }
+
+    getStartingUnitsAvailable(): number {
+        if (this.players.length === 2) {
+            return 60;
+        } else if (this.players.length === 3) {
+            return 52;
+        } else {
+            return 45;
+        }
+    }
 }
