@@ -66,4 +66,8 @@ export class Area {
     getAdjacentAreas(): Array<AreaName> {
         return this.adjacentAreas;
     }
+
+    belongsToPlayer(player: Player): boolean {
+        return this.player === player;
+    }
 }

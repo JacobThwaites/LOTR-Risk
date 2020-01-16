@@ -78,6 +78,18 @@ export class Player {
         this.regions.splice(index, 1);
     }
 
+    getReinforcements(): number {
+        return this.reinforcements;
+    }
+
+    calculateTotalReinforcements(): number {
+        let totalReinforments = 0;
+        totalReinforments += this.calculateAreaBonus();
+        totalReinforments += this.calculateRegionBonus();
+
+        return totalReinforments;
+    }
+
     calculateAreaBonus(): number {
         let bonusUnits = this.areas.length / 3;
         if (bonusUnits < 3) {
@@ -100,16 +112,21 @@ export class Player {
         }
     }
 
-    addReinforcements(reinforcements: number, area: Area) {
+    addReinforcements(reinforcements: number) {
+        this.reinforcements += reinforcements;
+    }
+
+    addReinforcementsToArea(reinforcements: number, area: Area) {
         if (this.reinforcements >= reinforcements) {
             this.reinforcements -= reinforcements;
+            this.units += reinforcements;
             area.addUnits(reinforcements);
         }
     }
 
     addStartingUnits() {
         for (let i = 0; i < this.areas.length; i++) {
-            this.addReinforcements(1, this.areas[i]);
+            this.addReinforcementsToArea(1, this.areas[i]);
         }
     }
 }

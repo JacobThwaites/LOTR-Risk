@@ -6,19 +6,18 @@ import { AreaAssigner } from '../Controllers/AreaAssigner';
 export class GameController {
     private players: Player[];
     private maxTurns: number;
+    private game: Game;
     constructor(players: Player[], maxTurns: number) {
         this.players = players;
         this.maxTurns = maxTurns;
+        this.game = new Game(players, Regions);
     }
 
-    generateGame() {
-        const game = new Game(this.players, Regions);
+    generateGame(): Game {
         const areaAssigner = new AreaAssigner(this.players);
         areaAssigner.assignAreas();
-        game.assignStartingUnits();
+        this.game.assignStartingUnits();
         
-        return game;
+        return this.game;
     }
-
-    
 }

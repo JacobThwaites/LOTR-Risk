@@ -37,7 +37,7 @@ export class Game {
 
         for (let i = 0; i < this.players.length; i++) {
             this.players[i].addStartingUnits();
-            this.players[i].addUnits(unitsAvailable - this.players[i].getTotalAreas());
+            this.players[i].addReinforcements(unitsAvailable - this.players[i].getTotalAreas());
         }
     }
 

@@ -33,7 +33,7 @@ class Map extends Component {
       return false;
     }
 
-    return currentPlayer.getAreas().includes(attackingArea) && currentPlayer === attackingArea.getPlayer();
+    return attackingArea.belongsToPlayer(currentPlayer);
   }
 
   isDefendingAreaClickable(area) {

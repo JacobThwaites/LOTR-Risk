@@ -12,12 +12,12 @@ function Circle(props) {
         fill={props.color}
       />
       <text
-        class="areaUnits"
+        className="areaUnits"
         x={props.coordinates.x}
         y={props.coordinates.y}
-        text-anchor="middle"
+        textAnchor="middle"
         stroke="#eee"
-        stroke-width="2px"
+        strokeWidth="2px"
         dy=".3em"
       >
         {props.areaUnits}
