@@ -124,7 +124,6 @@ export class Player {
     addReinforcementsToArea(reinforcements: number, area: Area) {
         if (this.reinforcements >= reinforcements) {
             this.reinforcements -= reinforcements;
-            this.units += reinforcements;
             area.addUnits(reinforcements);
         }
     }

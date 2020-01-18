@@ -12,7 +12,7 @@ describe('Area', () => {
 
     it('should have a name', () => {
         const result = area.getName();
-        assert.equal(result, 'The Shire');
+        assert.equal(result, AreaName.TheShire);
     });
 
     it('should specify stronghold', () => {
