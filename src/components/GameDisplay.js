@@ -22,10 +22,11 @@ class GameDisplay extends Component {
       defendingDice: 0,
       shouldDisplayUnitManeuverButton: false,
       shouldDisplayReinforcementsModal: false,
+      shouldHandleStartingReinforcements: true,
       areaToMoveUnits: null,
       areaToReceiveUnits: null,
       unitsToMove: 0,
-      reinforcementsAvailable: 0
+      reinforcementsAvailable: 0,
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
     this.addReinforcements = this.addReinforcements.bind(this);
@@ -56,9 +57,11 @@ class GameDisplay extends Component {
   }
 
   onAreaSelect(area) {
-    const { shouldDisplayReinforcementsModal } = this.state;
+    const { shouldDisplayReinforcementsModal, shouldHandleStartingReinforcements } = this.state;
 
-    if (shouldDisplayReinforcementsModal) {
+    if (shouldHandleStartingReinforcements) {
+      this.handleStartingReinforcements(area.area);
+    } else if (shouldDisplayReinforcementsModal) {
       this.addReinforcements(area.area);
     } else {
       this.setAreaForCombat(area);
@@ -66,15 +69,15 @@ class GameDisplay extends Component {
   }
 
   addReinforcements(area) {
-    const { game } = this.state;
+    const { game, shouldHandleStartingReinforcements } = this.state;
     const currentPlayer = game.getCurrentPlayer();
     const reinforcementController = new ReinforcementController(currentPlayer);
-    
+
     reinforcementController.addReinforcements(area);
     const reinforcementsAvailable = currentPlayer.getReinforcements();
-
     this.setState({ game });
-    if (reinforcementsAvailable <= 1) {
+
+    if (reinforcementsAvailable <= 1 && !shouldHandleStartingReinforcements) {
       this.setState({ shouldDisplayReinforcementsModal: false });
     }
   }
@@ -107,7 +110,7 @@ class GameDisplay extends Component {
       defendingArea.area
     );
     combatController.handleCombat(attackingDice, defendingDice);
-    
+
     if (defendingArea.area.getUnits() < 1) {
       await this.setState({
         shouldDisplayUnitManeuverButton: true,
@@ -137,8 +140,8 @@ class GameDisplay extends Component {
 
   onEndTurnClick() {
     const { game } = this.state;
-
-    game.changeCurrentPlayer();
+    
+    game.handleNewTurn(); 
     this.setState({ shouldDisplayReinforcementsModal: true });
     this.resetCombatState();
   }
@@ -163,9 +166,26 @@ class GameDisplay extends Component {
     });
   }
 
-  render() {
+  handleStartingReinforcements(area) {
     const { game } = this.state;
-    const currentPlayer = this.state.game ? this.state.game.getCurrentPlayer() : null;
+
+    if (game.playersHaveReinforcements()) {
+      if (game.getCurrentPlayer().getReinforcements() < 1) {
+        game.changeCurrentPlayer();
+        this.setState({ game });
+      }
+
+      this.addReinforcements(area);
+      return;
+    }
+
+    this.setState({ shouldDisplayReinforcementsModal: false, shouldHandleStartingReinforcements: false });
+  }
+
+  render() {
+    const currentPlayer = this.state.game
+      ? this.state.game.getCurrentPlayer()
+      : null;
 
     return (
       <>
@@ -194,8 +214,7 @@ class GameDisplay extends Component {
         )}
         {this.state.shouldDisplayReinforcementsModal && (
           <ReinforcementsModal
-          // TODO: fix issue and get reinforcements from player class or controller
-            reinforcementsAvailable={game.getCurrentPlayer().getReinforcements()}
+            reinforcementsAvailable={currentPlayer.getReinforcements()}
           />
         )}
         <EndTurnButton onEndTurnClick={this.onEndTurnClick} />

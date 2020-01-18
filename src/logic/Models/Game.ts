@@ -20,6 +20,12 @@ export class Game {
         return this.players[indexOfPlayer];
     }
 
+    handleNewTurn() {
+        this.changeCurrentPlayer();
+        const newCurrentPlayer = this.getCurrentPlayer();
+        newCurrentPlayer.addReinforcementsForNewTurn();
+    }
+
     changeCurrentPlayer() {
         this.currentPlayersTurn += 1;
         const lastPlayer = this.players.length - 1;
@@ -42,12 +48,24 @@ export class Game {
     }
 
     getStartingUnitsAvailable(): number {
-        if (this.players.length === 2) {
-            return 60;
-        } else if (this.players.length === 3) {
-            return 52;
-        } else {
-            return 45;
+        // TODO: remove after testing
+        return 37;
+        // if (this.players.length === 2) {
+        //     return 60;
+        // } else if (this.players.length === 3) {
+        //     return 52;
+        // } else {
+        //     return 45;
+        // }
+    }
+
+    playersHaveReinforcements(): boolean {
+        for (let i = 0; i < this.players.length; i++) {
+            if (this.players[i].getReinforcements() > 0) {
+                return true;
+            }
         }
+
+        return false;
     }
 }
