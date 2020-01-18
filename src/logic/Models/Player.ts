@@ -82,14 +82,6 @@ export class Player {
         return this.reinforcements;
     }
 
-    calculateTotalReinforcements(): number {
-        let totalReinforments = 0;
-        totalReinforments += this.calculateAreaBonus();
-        totalReinforments += this.calculateRegionBonus();
-
-        return totalReinforments;
-    }
-
     calculateAreaBonus(): number {
         let bonusUnits = this.areas.length / 3;
         if (bonusUnits < 3) {
@@ -110,6 +102,19 @@ export class Player {
         if (!area.getHasLeader()) {
             area.changeHasLeader();
         }
+    }
+
+    addReinforcementsForNewTurn() {
+        const totalReinforcements = this.calculateTotalReinforcements();
+        this.addReinforcements(totalReinforcements);
+    }
+
+    calculateTotalReinforcements(): number {
+        let totalReinforments = 0;
+        totalReinforments += this.calculateAreaBonus();
+        totalReinforments += this.calculateRegionBonus();
+
+        return totalReinforments;
     }
 
     addReinforcements(reinforcements: number) {

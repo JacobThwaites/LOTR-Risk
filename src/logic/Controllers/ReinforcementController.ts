@@ -7,10 +7,6 @@ export class ReinforcementController {
         this.player = player;
     }
 
-    getTotalReinforcementsAvailable() {
-        return this.player.calculateTotalReinforcements();
-    }
-
     addReinforcements(area: Area) {
         this.player.addReinforcementsToArea(1, area);
     }
