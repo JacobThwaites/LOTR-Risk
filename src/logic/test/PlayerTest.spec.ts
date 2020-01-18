@@ -55,20 +55,14 @@ describe('Player', () => {
         assert.equal(result, 0);
     });
 
-    it('should be able to add reinforments to an area', () => {
-        player.addReinforcements(5, area);
-        const result = area.getUnits();
-        assert.equal(result, 5);
-    });
-
-    it('should be able to add reinforments to an area', () => {
-        player.addReinforcements(5, area);
+    it('should be able to add reinforcements to an area', () => {
+        player.addReinforcementsToArea(5, area);
         const result = area.getUnits();
         assert.equal(result, 5);
     });
 
     it('should not be able to add more reinforcements than it has left', () => {
-        player.addReinforcements(200, area);
+        player.addReinforcementsToArea(200, area);
         const result = area.getUnits();
         assert.equal(result, 0);
     });
