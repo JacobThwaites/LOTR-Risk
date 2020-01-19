@@ -14,12 +14,11 @@ export class Player {
     constructor(
         name: string, 
         colour: Colour, 
-        isGood: boolean, 
-        startingUnits: number,
+        isGood: boolean
         ) {
         this.isGood = isGood;
-        this.units = startingUnits;
-        this.reinforcements = startingUnits;
+        this.units = 0;
+        this.reinforcements = 0;
         this.adventureCards = [];
         this.areas = [];
         this.regions = [];
@@ -82,6 +81,19 @@ export class Player {
         return this.reinforcements;
     }
 
+    addReinforcementsForNewTurn() {
+        const totalReinforcements = this.calculateTotalReinforcements();
+        this.addReinforcements(totalReinforcements);
+    }
+
+    calculateTotalReinforcements(): number {
+        let totalReinforments = 0;
+        totalReinforments += this.calculateAreaBonus();
+        totalReinforments += this.calculateRegionBonus();
+
+        return totalReinforments;
+    }
+
     calculateAreaBonus(): number {
         let bonusUnits = this.areas.length / 3;
         if (bonusUnits < 3) {
@@ -104,19 +116,6 @@ export class Player {
         }
     }
 
-    addReinforcementsForNewTurn() {
-        const totalReinforcements = this.calculateTotalReinforcements();
-        this.addReinforcements(totalReinforcements);
-    }
-
-    calculateTotalReinforcements(): number {
-        let totalReinforments = 0;
-        totalReinforments += this.calculateAreaBonus();
-        totalReinforments += this.calculateRegionBonus();
-
-        return totalReinforments;
-    }
-
     addReinforcements(reinforcements: number) {
         this.reinforcements += reinforcements;
     }
@@ -129,7 +128,7 @@ export class Player {
     }
 
     addStartingUnits() {
-        for (let i = 0; i < this.areas.length; i++) {
+        for (let i = 0; i < this.areas.length; i++) {   
             this.addReinforcementsToArea(1, this.areas[i]);
         }
     }

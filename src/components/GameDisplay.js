@@ -48,8 +48,8 @@ class GameDisplay extends Component {
   }
 
   createGameController() {
-    const player1 = new Player("player 1", Colour.Green, true, 30);
-    const player2 = new Player("player 2", Colour.Yellow, false, 30);
+    const player1 = new Player("player 1", Colour.Green, true);
+    const player2 = new Player("player 2", Colour.Yellow, false);
     const players = [player1, player2];
     const gameController = new GameController(players, 30);
 
@@ -66,6 +66,22 @@ class GameDisplay extends Component {
     } else {
       this.setAreaForCombat(area);
     }
+  }
+
+  handleStartingReinforcements(area) {
+    const { game } = this.state;
+
+    if (game.playersHaveReinforcements()) {
+      if (game.getCurrentPlayer().getReinforcements() < 1) {
+        game.changeCurrentPlayer();
+        this.setState({ game });
+      }
+
+      this.addReinforcements(area);
+      return;
+    }
+
+    this.setState({ shouldDisplayReinforcementsModal: false, shouldHandleStartingReinforcements: false });
   }
 
   addReinforcements(area) {
@@ -164,22 +180,6 @@ class GameDisplay extends Component {
       areaToReceiveUnits: null,
       unitsToMove: 0
     });
-  }
-
-  handleStartingReinforcements(area) {
-    const { game } = this.state;
-
-    if (game.playersHaveReinforcements()) {
-      if (game.getCurrentPlayer().getReinforcements() < 1) {
-        game.changeCurrentPlayer();
-        this.setState({ game });
-      }
-
-      this.addReinforcements(area);
-      return;
-    }
-
-    this.setState({ shouldDisplayReinforcementsModal: false, shouldHandleStartingReinforcements: false });
   }
 
   render() {

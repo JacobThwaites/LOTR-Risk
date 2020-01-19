@@ -42,8 +42,8 @@ export class Game {
         const unitsAvailable = this.getStartingUnitsAvailable();
 
         for (let i = 0; i < this.players.length; i++) {
+            this.players[i].addReinforcements(unitsAvailable);
             this.players[i].addStartingUnits();
-            this.players[i].addReinforcements(unitsAvailable - this.players[i].getTotalAreas());
         }
     }
 
