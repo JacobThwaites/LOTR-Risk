@@ -73,4 +73,12 @@ describe('Game', () => {
 
         assert.strictEqual(allAreasHaveUnits, true);
     });
+
+    it('should be able to check if players have reinforcements remaining', () => {
+        const startWithReinforcements = game.playersHaveReinforcements();
+        assert.strictEqual(startWithReinforcements, false);
+        player2.addReinforcements(1);
+        const endWithReinforcements = game.playersHaveReinforcements();
+        assert.strictEqual(endWithReinforcements, true);
+    });
 });

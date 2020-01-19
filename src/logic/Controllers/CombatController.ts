@@ -47,9 +47,9 @@ export class CombatController {
     firstDiceCombat(attackingDice: number, defendingDice: number) {
         const defenderBonus = this.getDefenderDiceBonus(this.defendingArea);
         const attackerBonus = this.getAttackerDiceBonus(this.attackingArea);
-        // TODO: remove + 5 
+        // TODO: remove + 6
         const attackerScore = attackingDice + attackerBonus + 6;
-        const defenderScore = defendingDice + defenderBonus;
+        const defenderScore = defendingDice + defenderBonus - 6;
         this.removeUnitsFromLoser(attackerScore, defenderScore);
     }
 
