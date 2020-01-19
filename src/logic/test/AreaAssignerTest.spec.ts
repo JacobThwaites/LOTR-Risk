@@ -9,8 +9,8 @@ describe("AreaAssigner", () => {
   let player1: Player;
   let player2: Player;
   beforeEach(function() {
-    player1 = new Player("player 1", Colour.Green, true, 30);
-    player2 = new Player("player 2", Colour.Green, true, 30);
+    player1 = new Player("player 1", Colour.Green, true);
+    player2 = new Player("player 2", Colour.Green, true);
 
     const players = [player1, player2];
     assigner = new AreaAssigner(players);

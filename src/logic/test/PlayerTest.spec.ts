@@ -14,7 +14,9 @@ describe('Player', () => {
         const areas = [AreaName.TowerHills];
         area = new Area(AreaName.TheShire, false, true, areas);
         card1 = new AdventureCard('Do something');
-        player = new Player('Jake', Colour.Green, true, 10);
+        player = new Player('Jake', Colour.Green, true);
+        player.addUnits(10);
+        player.addReinforcements(5);
     })
 
     it('should be able to take a card', () => {
@@ -79,6 +81,7 @@ describe('Player', () => {
         const result = area.getHasLeader();
         assert.equal(result, true);
     });
+
     it('should be able to calculate the bonus from areas owned', () => {
         const result = player.calculateAreaBonus();
         assert.equal(result, 3);

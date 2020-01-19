@@ -15,8 +15,10 @@ describe('Combat', () => {
         const areas = [AreaName.TowerHills];
         attackingArea = new Area(AreaName.EvendimHills, false, true, areas);
         defendingArea = new Area(AreaName.TowerHills, true, false, areas);
-        attacker = new Player('Good Person', Colour.Green, true, 10);
-        defender = new Player('Evil Person', Colour.Red, false, 10);
+        attacker = new Player('Good Person', Colour.Green, true);
+        defender = new Player('Evil Person', Colour.Red, false);
+        attacker.addUnits(10);
+        defender.addUnits(10);
         attackingArea.setPlayer(attacker);
         defendingArea.setPlayer(defender);
         combatController = new CombatController(attackingArea, defendingArea);
