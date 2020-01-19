@@ -70,17 +70,20 @@ class GameDisplay extends Component {
 
   handleStartingReinforcements(area) {
     const { game } = this.state;
+    const currentPlayer = game.getCurrentPlayer();
 
     if (game.playersHaveReinforcements()) {
-      if (game.getCurrentPlayer().getReinforcements() < 1) {
+      if (currentPlayer.getReinforcements() < 1) {
         game.changeCurrentPlayer();
         this.setState({ game });
+        return;
       }
 
       this.addReinforcements(area);
       return;
     }
 
+    game.changeCurrentPlayer();
     this.setState({ shouldDisplayReinforcementsModal: false, shouldHandleStartingReinforcements: false });
   }
 
@@ -93,7 +96,7 @@ class GameDisplay extends Component {
     const reinforcementsAvailable = currentPlayer.getReinforcements();
     this.setState({ game });
 
-    if (reinforcementsAvailable <= 1 && !shouldHandleStartingReinforcements) {
+    if (reinforcementsAvailable < 1 && !shouldHandleStartingReinforcements) {
       this.setState({ shouldDisplayReinforcementsModal: false });
     }
   }
