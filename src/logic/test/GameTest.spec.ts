@@ -92,4 +92,15 @@ describe('Game', () => {
         const maxTurnsReached = game.checkMaxTurnsReached();
         assert.strictEqual(maxTurnsReached, true);
     });
+
+    it('should increment the current turn when all players have finished their turn', () => {
+        const firstPlayerTurn = game.checkMaxTurnsReached();
+        assert.strictEqual(firstPlayerTurn, false);
+        game.changeCurrentPlayer();
+        const secondPlayerTurn = game.checkMaxTurnsReached();
+        assert.strictEqual(secondPlayerTurn, false);
+        game.changeCurrentPlayer();
+        const thirdPlayerTurn = game.checkMaxTurnsReached();
+        assert.strictEqual(thirdPlayerTurn, true);
+    });    
 });

@@ -35,6 +35,7 @@ export class Game {
         const lastPlayer = this.players.length - 1;
         if (this.currentPlayersTurn > lastPlayer) {
             this.currentPlayersTurn = 0;
+            this.incrementCurrentTurn();
         }
     }
 

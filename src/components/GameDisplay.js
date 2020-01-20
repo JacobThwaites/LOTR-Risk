@@ -27,6 +27,7 @@ class GameDisplay extends Component {
       areaToReceiveUnits: null,
       unitsToMove: 0,
       reinforcementsAvailable: 0,
+      gameOver: false,
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
     this.addReinforcements = this.addReinforcements.bind(this);
@@ -51,7 +52,7 @@ class GameDisplay extends Component {
     const player1 = new Player("player 1", Colour.Green, true);
     const player2 = new Player("player 2", Colour.Yellow, false);
     const players = [player1, player2];
-    const gameController = new GameController(players, 30);
+    const gameController = new GameController(players, 2);
 
     return gameController;
   }
@@ -163,6 +164,17 @@ class GameDisplay extends Component {
     game.handleNewTurn(); 
     this.setState({ shouldDisplayReinforcementsModal: true });
     this.resetCombatState();
+    this.checkIfGameOver();
+  }
+
+  checkIfGameOver() {
+    const { game } = this.state;
+    
+    const maxTurnsReached = game.checkMaxTurnsReached();
+    
+    if (maxTurnsReached) {
+      this.setState({ gameOver: true });
+    }
   }
 
   onMoveUnits() {
