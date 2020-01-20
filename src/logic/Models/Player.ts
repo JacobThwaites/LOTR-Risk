@@ -29,10 +29,6 @@ export class Player {
         return this.units;
     }
 
-    getAdventureCards(): Array<AdventureCard> {
-        return this.adventureCards;
-    }
-
     getAreas(): Array<Area> {
         return this.areas;
     }

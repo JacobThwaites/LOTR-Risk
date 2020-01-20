@@ -10,6 +10,8 @@ import UnitManeuverHandler from "./UnitManeuverHandler";
 import Map from "./Map";
 import EndTurnButton from "./EndTurnButton";
 import ReinforcementsModal from "./ReinforcementsModal";
+import GameOverModal from "./GameOverModal";
+import TurnsRemaining from "./TurnsRemaining";
 
 class GameDisplay extends Component {
   constructor({ props }) {
@@ -27,6 +29,7 @@ class GameDisplay extends Component {
       areaToReceiveUnits: null,
       unitsToMove: 0,
       reinforcementsAvailable: 0,
+      gameOver: false,
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
     this.addReinforcements = this.addReinforcements.bind(this);
@@ -163,6 +166,17 @@ class GameDisplay extends Component {
     game.handleNewTurn(); 
     this.setState({ shouldDisplayReinforcementsModal: true });
     this.resetCombatState();
+    this.checkIfGameOver();
+  }
+
+  checkIfGameOver() {
+    const { game } = this.state;
+    
+    const maxTurnsReached = game.checkMaxTurnsReached();
+    
+    if (maxTurnsReached) {
+      this.setState({ gameOver: true });
+    }
   }
 
   onMoveUnits() {
@@ -188,6 +202,16 @@ class GameDisplay extends Component {
     });
   }
 
+  getTurnsRemaining() {
+    const { game } = this.state;
+
+    if (game === null) {
+      return '';
+    }
+
+    return game.getTurnsRemaining();
+  }
+
   render() {
     const currentPlayer = this.state.game
       ? this.state.game.getCurrentPlayer()
@@ -201,6 +225,9 @@ class GameDisplay extends Component {
           attackingDice={this.state.attackingDice}
           currentPlayer={currentPlayer}
           onAreaSelect={this.onAreaSelect}
+        />
+        <TurnsRemaining 
+          turns={this.getTurnsRemaining()}
         />
         {this.state.attackingArea && this.state.defendingArea && (
           <CombatHandler
@@ -224,6 +251,9 @@ class GameDisplay extends Component {
           />
         )}
         <EndTurnButton onEndTurnClick={this.onEndTurnClick} />
+        {this.state.gameOver && (
+          <GameOverModal />
+        )}
       </>
     );
   }

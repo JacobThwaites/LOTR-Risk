@@ -4,11 +4,15 @@ import { Region } from './Region';
 export class Game {
     private players: Array<Player>;
     private regions: Array<Region>;
+    private maxTurns: number;
+    private currentTurn: number;
     private currentPlayersTurn: number;
-    constructor(players: Array<Player>, regions: Array<Region>) {
+    constructor(players: Array<Player>, regions: Array<Region>, maxTurns: number) {
         this.players = players;
         this.regions = regions;
-        this.currentPlayersTurn = 0; 
+        this.maxTurns = maxTurns;
+        this.currentTurn = 0;
+        this.currentPlayersTurn = 0;
     }
 
     getPlayers(): Array<Player> {
@@ -18,6 +22,10 @@ export class Game {
     getCurrentPlayer(): Player {
         const indexOfPlayer = this.currentPlayersTurn;
         return this.players[indexOfPlayer];
+    }
+
+    getTurnsRemaining(): number {
+        return this.maxTurns - this.currentTurn;
     }
 
     handleNewTurn() {
@@ -31,6 +39,7 @@ export class Game {
         const lastPlayer = this.players.length - 1;
         if (this.currentPlayersTurn > lastPlayer) {
             this.currentPlayersTurn = 0;
+            this.incrementCurrentTurn();
         }
     }
 
@@ -67,5 +76,13 @@ export class Game {
         }
 
         return false;
+    }
+
+    incrementCurrentTurn() {
+        this.currentTurn++;
+    }
+
+    checkMaxTurnsReached(): boolean {
+        return this.maxTurns <= this.currentTurn;
     }
 }

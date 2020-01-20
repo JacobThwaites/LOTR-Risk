@@ -33,7 +33,7 @@ describe('Game', () => {
         region1 = new Region('Gondor', [area2], 5);
         region2 = new Region('Arnor', [area1], 7);
         const regionsList = [region1, region2];
-        game = new Game(playersList, regionsList);
+        game = new Game(playersList, regionsList, 1);
         gameController = new GameController(playersList, 10);
     })
 
@@ -81,4 +81,31 @@ describe('Game', () => {
         const endWithReinforcements = game.playersHaveReinforcements();
         assert.strictEqual(endWithReinforcements, true);
     });
+
+    it('should be able to check how many turns are remaining', () => {
+        const turnsRemaining = game.getTurnsRemaining();
+        assert.strictEqual(turnsRemaining, 1);
+    });
+
+    it('should be able to check if max turns have been reached and return false when not reached', () => {
+        const maxTurnsReached = game.checkMaxTurnsReached();
+        assert.strictEqual(maxTurnsReached, false);
+    });
+
+    it('should be able to check if max turns have been reached and return false when reached', () => {
+        game.incrementCurrentTurn();
+        const maxTurnsReached = game.checkMaxTurnsReached();
+        assert.strictEqual(maxTurnsReached, true);
+    });
+
+    it('should increment the current turn when all players have finished their turn', () => {
+        const firstPlayerTurn = game.checkMaxTurnsReached();
+        assert.strictEqual(firstPlayerTurn, false);
+        game.changeCurrentPlayer();
+        const secondPlayerTurn = game.checkMaxTurnsReached();
+        assert.strictEqual(secondPlayerTurn, false);
+        game.changeCurrentPlayer();
+        const thirdPlayerTurn = game.checkMaxTurnsReached();
+        assert.strictEqual(thirdPlayerTurn, true);
+    });    
 });

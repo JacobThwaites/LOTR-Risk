@@ -32,13 +32,6 @@ describe('Player', () => {
         assert.equal(result, card1);
     });
 
-    it('should be able to remove a card', () => {
-        player.takeAdventureCard(card1);
-        player.removeAdventureCard(0);
-        const result = player.getAdventureCards().length;
-        assert.equal(result, 0);
-    });
-
     it('should be able to add an area', () => {
         player.addArea(area1);
         const result = player.getAreas().length;
