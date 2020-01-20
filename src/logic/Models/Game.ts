@@ -24,6 +24,10 @@ export class Game {
         return this.players[indexOfPlayer];
     }
 
+    getTurnsRemaining(): number {
+        return this.maxTurns - this.currentTurn;
+    }
+
     handleNewTurn() {
         this.changeCurrentPlayer();
         const newCurrentPlayer = this.getCurrentPlayer();

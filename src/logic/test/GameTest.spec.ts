@@ -82,6 +82,11 @@ describe('Game', () => {
         assert.strictEqual(endWithReinforcements, true);
     });
 
+    it('should be able to check how many turns are remaining', () => {
+        const turnsRemaining = game.getTurnsRemaining();
+        assert.strictEqual(turnsRemaining, 1);
+    });
+
     it('should be able to check if max turns have been reached and return false when not reached', () => {
         const maxTurnsReached = game.checkMaxTurnsReached();
         assert.strictEqual(maxTurnsReached, false);
