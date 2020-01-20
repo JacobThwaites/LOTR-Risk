@@ -8,9 +8,10 @@ export class GameController {
     private maxTurns: number;
     private game: Game;
     constructor(players: Player[], maxTurns: number) {
+        // TODO: check if players and maxTurns are used for GameController
         this.players = players;
         this.maxTurns = maxTurns;
-        this.game = new Game(players, Regions);
+        this.game = new Game(players, Regions, maxTurns);
     }
 
     generateGame(): Game {

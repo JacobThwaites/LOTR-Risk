@@ -33,7 +33,7 @@ describe('Game', () => {
         region1 = new Region('Gondor', [area2], 5);
         region2 = new Region('Arnor', [area1], 7);
         const regionsList = [region1, region2];
-        game = new Game(playersList, regionsList);
+        game = new Game(playersList, regionsList, 1);
         gameController = new GameController(playersList, 10);
     })
 
@@ -80,5 +80,16 @@ describe('Game', () => {
         player2.addReinforcements(1);
         const endWithReinforcements = game.playersHaveReinforcements();
         assert.strictEqual(endWithReinforcements, true);
+    });
+
+    it('should be able to check if max turns have been reached and return false when not reached', () => {
+        const maxTurnsReached = game.checkMaxTurnsReached();
+        assert.strictEqual(maxTurnsReached, false);
+    });
+
+    it('should be able to check if max turns have been reached and return false when reached', () => {
+        game.incrementCurrentTurn();
+        const maxTurnsReached = game.checkMaxTurnsReached();
+        assert.strictEqual(maxTurnsReached, true);
     });
 });
