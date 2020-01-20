@@ -172,8 +172,11 @@ class GameDisplay extends Component {
       areaToReceiveUnits
     );
 
-    unitManeuverController.handleManeuver(unitsToMove);
-    this.resetManeuverState();
+    const areUnitsMoved = unitManeuverController.handleManeuver(unitsToMove);
+    
+    if (areUnitsMoved) {
+      this.resetManeuverState();
+    }
   }
 
   resetManeuverState() {
