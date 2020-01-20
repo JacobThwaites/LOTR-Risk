@@ -54,7 +54,7 @@ class GameDisplay extends Component {
     const player1 = new Player("player 1", Colour.Green, true);
     const player2 = new Player("player 2", Colour.Yellow, false);
     const players = [player1, player2];
-    const gameController = new GameController(players, 2);
+    const gameController = new GameController(players, 30);
 
     return gameController;
   }
