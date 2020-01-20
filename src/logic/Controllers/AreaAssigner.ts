@@ -1,6 +1,6 @@
 import { Player } from "../Models/Player";
-import { Area } from "../Models/Area";
 import { Areas } from "../Enums/Areas";
+import shuffle from '../Services/Shuffle';
 
 export class AreaAssigner {
   private players: Array<Player>;
@@ -10,7 +10,7 @@ export class AreaAssigner {
 
   assignAreas() {
     const areas = Object.values(Areas);
-    const shuffledAreas = this.shuffle(areas);
+    const shuffledAreas = shuffle(areas);
 
     let playerIndex = 0;
 
@@ -23,25 +23,6 @@ export class AreaAssigner {
         playerIndex = 0;
       }
     }
-  }
-
-  shuffle(areas: Array<Area>) {
-    let currentIndex = areas.length, temporaryValue, randomIndex;
-  
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-  
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-  
-      // And swap it with the current element.
-      temporaryValue = areas[currentIndex];
-      areas[currentIndex] = areas[randomIndex];
-      areas[randomIndex] = temporaryValue;
-    }
-  
-    return areas;
   }
 
   getPlayers() {
