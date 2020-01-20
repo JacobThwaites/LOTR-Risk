@@ -7,16 +7,7 @@ export class ReinforcementController {
         this.player = player;
     }
 
-    getTotalReinforcementsAvailable() {
-        let totalReinforments = 0;
-        totalReinforments += this.player.calculateAreaBonus();
-        totalReinforments += this.player.calculateRegionBonus();
-
-        return totalReinforments;
-    }
-
     addReinforcements(area: Area) {
-        this.player.addUnits(1);
-        area.addUnits(1);
+        this.player.addReinforcementsToArea(1, area);
     }
 }

@@ -1,18 +1,12 @@
 import { Player } from './Player';
-import { TheRing } from './TheRing';
-import { Board } from './Board';
 import { Region } from './Region';
 
 export class Game {
     private players: Array<Player>;
-    private theRing: TheRing;
-    private board: Board;
     private regions: Array<Region>;
     private currentPlayersTurn: number;
-    constructor(players: Array<Player>, theRing: TheRing, board: Board, regions: Array<Region>) {
+    constructor(players: Array<Player>, regions: Array<Region>) {
         this.players = players;
-        this.theRing = theRing;
-        this.board = board;
         this.regions = regions;
         this.currentPlayersTurn = 0; 
     }
@@ -26,6 +20,12 @@ export class Game {
         return this.players[indexOfPlayer];
     }
 
+    handleNewTurn() {
+        this.changeCurrentPlayer();
+        const newCurrentPlayer = this.getCurrentPlayer();
+        newCurrentPlayer.addReinforcementsForNewTurn();
+    }
+
     changeCurrentPlayer() {
         this.currentPlayersTurn += 1;
         const lastPlayer = this.players.length - 1;
@@ -36,5 +36,36 @@ export class Game {
 
     getRegions(): Array<Region> {
         return this.regions;
+    }
+
+    assignStartingUnits() {
+        const unitsAvailable = this.getStartingUnitsAvailable();
+
+        for (let i = 0; i < this.players.length; i++) {
+            this.players[i].addReinforcements(unitsAvailable);
+            this.players[i].addStartingUnits();
+        }
+    }
+
+    getStartingUnitsAvailable(): number {
+        // TODO: remove after testing
+        return 37;
+        // if (this.players.length === 2) {
+        //     return 60;
+        // } else if (this.players.length === 3) {
+        //     return 52;
+        // } else {
+        //     return 45;
+        // }
+    }
+
+    playersHaveReinforcements(): boolean {
+        for (let i = 0; i < this.players.length; i++) {
+            if (this.players[i].getReinforcements() > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

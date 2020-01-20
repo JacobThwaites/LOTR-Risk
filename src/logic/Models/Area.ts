@@ -15,8 +15,7 @@ export class Area {
         this.isSiteOfPower = isSiteOfPower;
         this.player = null;
         this.hasLeader = false;
-        // TODO: set starting units as 0 when starting component is created to assign units manually
-        this.units = 4;
+        this.units = 0;
         this.adjacentAreas = adjacentAreas;
     }
 
@@ -66,5 +65,9 @@ export class Area {
 
     getAdjacentAreas(): Array<AreaName> {
         return this.adjacentAreas;
+    }
+
+    belongsToPlayer(player: Player): boolean {
+        return this.player === player;
     }
 }

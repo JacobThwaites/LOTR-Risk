@@ -25,7 +25,7 @@ class Map extends Component {
     }
   }
   
-  isAttackingAreaClickable(attackingArea) {
+  isAttackingAreaClickable(area) {
     const { isRendered } = this.state;
     const { currentPlayer } = this.props;
 
@@ -33,7 +33,7 @@ class Map extends Component {
       return false;
     }
 
-    return currentPlayer.getAreas().includes(attackingArea) && currentPlayer === attackingArea.getPlayer();
+    return area.belongsToPlayer(currentPlayer);
   }
 
   isDefendingAreaClickable(area) {

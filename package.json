@@ -5,26 +5,33 @@
   "dependencies": {
     "@types/chai": "^4.2.4",
     "@types/mocha": "^5.2.7",
+    "@types/react": "^16.9.11",
     "chai": "^4.2.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
     "mocha": "^6.2.2",
     "node-sass": "^4.13.0",
+    "polylabel": "^1.0.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-scripts": "3.1.2",
     "react-test-renderer": "^16.11.0",
     "ts-node-dev": "^1.0.0-pre.42",
-    "typescript": "^3.6.2",
-    "@types/react": "^16.9.11"
+    "typescript": "^3.6.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "testts": "mocha -r ts-node/register src/logic/test/*.spec.ts",
-    "compile:sass": "node-sass sass/main.scss css/style.css -w",
-    "eject": "react-scripts eject"
+    "compile:sass": "node-sass src/sass/main.scss src/css/style.css -w",
+    "eject": "react-scripts eject",
+    "watch:sass": "node-sass sass/main.scss css/style.css -w",
+    "devserver": "live-server --browser=firefox",
+    "start-sass": "npm-run-all --parallel devserver watch:sass",
+    "prefix:css": "postcss --use autoprefixer -b 'last 10 versions' css/style.comp.css -o css/style.prefix.css",
+    "compress:css": "node-sass css/style.prefix.css css/style.css --output-style compressed",
+    "build:css": "npm-run-all compile:sass prefix:css compress:css"
   },
   "eslintConfig": {
     "extends": "react-app"

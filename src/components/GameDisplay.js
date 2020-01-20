@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Player } from "../logic/Models/Player";
 import { Colour } from "../logic/Enums/Colours";
-import { AreaAssigner } from "../logic/Controllers/AreaAssigner";
 import { GameController } from "../logic/Controllers/GameController";
 import { CombatController } from "../logic/Controllers/CombatController";
 import { ReinforcementController } from "../logic/Controllers/ReinforcementController";
@@ -23,10 +22,11 @@ class GameDisplay extends Component {
       defendingDice: 0,
       shouldDisplayUnitManeuverButton: false,
       shouldDisplayReinforcementsModal: false,
+      shouldHandleStartingReinforcements: true,
       areaToMoveUnits: null,
       areaToReceiveUnits: null,
       unitsToMove: 0,
-      reinforcementsAvailable: 0
+      reinforcementsAvailable: 0,
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
     this.addReinforcements = this.addReinforcements.bind(this);
@@ -42,43 +42,61 @@ class GameDisplay extends Component {
   }
 
   setupGame() {
-    const areaAssigner = this.setupAreaAssigner();
-    const controller = new GameController(areaAssigner.getPlayers(), 30);
-
+    const controller = this.createGameController();
     const game = controller.generateGame();
-    this.setState({ game });
+    this.setState({ game, shouldDisplayReinforcementsModal: true });
   }
 
-  setupAreaAssigner() {
-    const player1 = new Player("player 1", Colour.Green, true, 30);
-    const player2 = new Player("player 2", Colour.Yellow, false, 30);
+  createGameController() {
+    const player1 = new Player("player 1", Colour.Green, true);
+    const player2 = new Player("player 2", Colour.Yellow, false);
     const players = [player1, player2];
-    const areaAssigner = new AreaAssigner(players);
+    const gameController = new GameController(players, 30);
 
-    return areaAssigner;
+    return gameController;
   }
 
   onAreaSelect(area) {
-    const { shouldDisplayReinforcementsModal } = this.state;
+    const { shouldDisplayReinforcementsModal, shouldHandleStartingReinforcements } = this.state;
 
-    if (shouldDisplayReinforcementsModal) {
+    if (shouldHandleStartingReinforcements) {
+      this.handleStartingReinforcements(area.area);
+    } else if (shouldDisplayReinforcementsModal) {
       this.addReinforcements(area.area);
     } else {
       this.setAreaForCombat(area);
     }
   }
 
+  handleStartingReinforcements(area) {
+    const { game } = this.state;
+    const currentPlayer = game.getCurrentPlayer();
+
+    if (game.playersHaveReinforcements()) {
+      if (currentPlayer.getReinforcements() < 1) {
+        game.changeCurrentPlayer();
+        this.setState({ game });
+        return;
+      }
+
+      this.addReinforcements(area);
+      return;
+    }
+
+    game.changeCurrentPlayer();
+    this.setState({ shouldDisplayReinforcementsModal: false, shouldHandleStartingReinforcements: false });
+  }
+
   addReinforcements(area) {
-    const { game, reinforcementsAvailable } = this.state;
+    const { game, shouldHandleStartingReinforcements } = this.state;
     const currentPlayer = game.getCurrentPlayer();
     const reinforcementController = new ReinforcementController(currentPlayer);
 
     reinforcementController.addReinforcements(area);
-    this.setState(prevState => ({
-      reinforcementsAvailable: prevState.reinforcementsAvailable - 1
-    }));
+    const reinforcementsAvailable = currentPlayer.getReinforcements();
+    this.setState({ game });
 
-    if (reinforcementsAvailable <= 1) {
+    if (reinforcementsAvailable < 1 && !shouldHandleStartingReinforcements) {
       this.setState({ shouldDisplayReinforcementsModal: false });
     }
   }
@@ -111,7 +129,7 @@ class GameDisplay extends Component {
       defendingArea.area
     );
     combatController.handleCombat(attackingDice, defendingDice);
-    
+
     if (defendingArea.area.getUnits() < 1) {
       await this.setState({
         shouldDisplayUnitManeuverButton: true,
@@ -141,13 +159,9 @@ class GameDisplay extends Component {
 
   onEndTurnClick() {
     const { game } = this.state;
-
-    game.changeCurrentPlayer();
-    const reinforcementsAvailable = this.getTotalReinforcementsAvailable();
-    this.setState({
-      shouldDisplayReinforcementsModal: true,
-      reinforcementsAvailable
-    });
+    
+    game.handleNewTurn(); 
+    this.setState({ shouldDisplayReinforcementsModal: true });
     this.resetCombatState();
   }
 
@@ -159,6 +173,10 @@ class GameDisplay extends Component {
     );
 
     unitManeuverController.handleManeuver(unitsToMove);
+    this.resetManeuverState();
+  }
+
+  resetManeuverState() {
     this.setState({
       shouldDisplayUnitManeuverButton: false,
       areaToMoveUnits: null,
@@ -167,16 +185,10 @@ class GameDisplay extends Component {
     });
   }
 
-  getTotalReinforcementsAvailable() {
-    const { game } = this.state;
-    const currentPlayer = game.getCurrentPlayer();
-    const reinforcementController = new ReinforcementController(currentPlayer);
-
-    return reinforcementController.getTotalReinforcementsAvailable();
-  }
-
   render() {
-    const currentPlayer = this.state.game ? this.state.game.getCurrentPlayer() : null;
+    const currentPlayer = this.state.game
+      ? this.state.game.getCurrentPlayer()
+      : null;
 
     return (
       <>
@@ -205,7 +217,7 @@ class GameDisplay extends Component {
         )}
         {this.state.shouldDisplayReinforcementsModal && (
           <ReinforcementsModal
-            reinforcementsAvailable={this.state.reinforcementsAvailable}
+            reinforcementsAvailable={currentPlayer.getReinforcements()}
           />
         )}
         <EndTurnButton onEndTurnClick={this.onEndTurnClick} />
