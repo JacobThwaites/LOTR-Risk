@@ -11,14 +11,18 @@ const gondorAreas = [Areas.DruwaithIaur, Areas.Andrast, Areas.Anfalas, Areas.Val
 const mordorAreas = [Areas.UdunVale, Areas.MountDoom, Areas.BaradDur, Areas.MinasMorgul, Areas.Gorgoroth, Areas.Nurn];
 const haradwaithAreas = [Areas.Harondor, Areas.Umbar, Areas.DeepHarad, Areas.Harad, Areas.NearHarad, Areas.Khand];
 
-export const Regions = [
-    new Region('eriador', eriadorAreas, 3),
-    new Region('arnor', arnorAreas, 7),
-    new Region('rhun', rhunAreas, 2),
-    new Region('mirkwood', mirkwoodAreas, 4),
-    new Region('rohan', rohanAreas, 4),
-    new Region('rhovanion', rhovanionAreas, 4),
-    new Region('gondor', gondorAreas, 7),
-    new Region('mordor', mordorAreas, 2),
-    new Region('haradwaith', haradwaithAreas, 2),
-]
+interface ListOfRegions { 
+    [key: string]: Region
+}
+
+export const Regions: ListOfRegions = {
+    Eriador: new Region('eriador', eriadorAreas, 3),
+    Arnor: new Region('arnor', arnorAreas, 7),
+    Rhun: new Region('rhun', rhunAreas, 2),
+    Mirkwood: new Region('mirkwood', mirkwoodAreas, 4),
+    Rohan: new Region('rohan', rohanAreas, 4),
+    Rohvanion: new Region('rhovanion', rhovanionAreas, 4),
+    Gondor: new Region('gondor', gondorAreas, 7),
+    Mordor: new Region('mordor', mordorAreas, 2),
+    Harawaith: new Region('haradwaith', haradwaithAreas, 2),
+}

@@ -4,7 +4,7 @@ export default function isCombatInvalid(attackingDice: number, defendingDice: nu
     return ( 
         defendingDice > attackingDice || 
         attackingDice > attackingArea.getUnits() || 
-        defendingDice > defendingArea.getUnits() || 
+        defendingDice <= defendingArea.getUnits() || 
         attackingDice > 3 ||
         defendingDice > 2
     )

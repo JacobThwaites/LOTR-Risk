@@ -1,15 +1,12 @@
 import { Player } from './Player';
-import { Region } from './Region';
 
 export class Game {
     private players: Array<Player>;
-    private regions: Array<Region>;
     private maxTurns: number;
     private currentTurn: number;
     private currentPlayersTurn: number;
-    constructor(players: Array<Player>, regions: Array<Region>, maxTurns: number) {
+    constructor(players: Array<Player>, maxTurns: number) {
         this.players = players;
-        this.regions = regions;
         this.maxTurns = maxTurns;
         this.currentTurn = 0;
         this.currentPlayersTurn = 0;
@@ -41,10 +38,6 @@ export class Game {
             this.currentPlayersTurn = 0;
             this.incrementCurrentTurn();
         }
-    }
-
-    getRegions(): Array<Region> {
-        return this.regions;
     }
 
     assignStartingUnits() {
