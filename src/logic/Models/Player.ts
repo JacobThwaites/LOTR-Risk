@@ -2,6 +2,7 @@ import { AdventureCard } from './AdventureCard';
 import { Area } from './Area';
 import { Region } from './Region';
 import { Colour } from '../Enums/Colours';
+import { getRegionForArea } from '../../utils/getRegionForArea';
 
 export class Player {
     private isGood: boolean;
@@ -59,6 +60,12 @@ export class Player {
 
     addArea(area: Area) {
         this.areas.push(area);
+
+        const regionForArea = getRegionForArea(area);
+
+        if (this.ownsRegion(regionForArea)) {
+            this.addRegion(regionForArea);
+        }
     }
 
     removeArea(index: number) {
@@ -100,6 +107,7 @@ export class Player {
 
     calculateRegionBonus(): number {
         let bonusUnits = 0;
+        
         for (let i = 0; i < this.regions.length; i++) {
             bonusUnits += this.regions[i].getBonusUnits();
         }
@@ -127,5 +135,21 @@ export class Player {
         for (let i = 0; i < this.areas.length; i++) {   
             this.addReinforcementsToArea(1, this.areas[i]);
         }
+    }
+
+    ownsArea(area: Area): boolean {
+        return this.areas.includes(area);
+    }
+
+    ownsRegion(region: Region): boolean {
+        const regionAreas = region.getAreas();
+    
+        for (let i = 0; i < regionAreas.length; i++) {
+            if (!this.areas.includes(regionAreas[i])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

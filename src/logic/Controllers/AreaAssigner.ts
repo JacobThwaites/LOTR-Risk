@@ -1,6 +1,6 @@
 import { Player } from "../Models/Player";
 import { Areas } from "../Enums/Areas";
-import shuffle from '../Services/Shuffle';
+import shuffle from '../../utils/Shuffle';
 
 export class AreaAssigner {
   private players: Array<Player>;

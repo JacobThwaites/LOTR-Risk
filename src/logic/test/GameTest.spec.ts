@@ -1,7 +1,6 @@
 import { Area } from '../Models/Area';
 import { AreaName } from '../Enums/AreaNames';
 import { Player } from '../Models/Player';
-import { Region } from '../Models/Region';
 import { assert } from 'chai';
 import 'mocha';
 import { Colour } from '../Enums/Colours';
@@ -15,8 +14,6 @@ describe('Game', () => {
     let area1: Area;
     let area2: Area;
     let areasList: Array<Area>;
-    let region1: Region;
-    let region2: Region;
     let game: Game;
     let gameController: GameController;
     beforeEach(function () {
@@ -30,10 +27,7 @@ describe('Game', () => {
         areasList = [area1, area2];
         player1.addArea(area1);
         player2.addArea(area2);
-        region1 = new Region('Gondor', [area2], 5);
-        region2 = new Region('Arnor', [area1], 7);
-        const regionsList = [region1, region2];
-        game = new Game(playersList, regionsList, 1);
+        game = new Game(playersList, 1);
         gameController = new GameController(playersList, 10);
     })
 
