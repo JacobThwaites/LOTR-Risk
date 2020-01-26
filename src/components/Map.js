@@ -3,6 +3,7 @@ import MapAreas from "./MapAreas";
 import Mountains from "./svgPaths/Mountains";
 import Bridges from "./svgPaths/Bridges";
 import Islands from "./svgPaths/Islands";
+import Strongholds from "./svgPaths/Strongholds";
 
 class Map extends Component {
   constructor({ props }) {
@@ -70,6 +71,7 @@ class Map extends Component {
               isAreaClickable={this.isAreaClickable}
             />
             <Islands />
+            <Strongholds />
             <Bridges />
           </g>
         </svg>
