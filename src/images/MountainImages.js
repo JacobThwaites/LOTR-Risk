@@ -24,39 +24,6 @@ function MountainImages() {
         id="eriador-mountains-2-img"
         x="0"
         y="0"
-        width="1"
-        height="1"
-        viewBox="0 0 1024 576"
-        preserveAspectRatio="xMidYMid slice"
-      >
-        <image
-          width="1024"
-          height="576"
-          href={require("../images/eriador_mountains_2.png")}
-          alt="some mountains"
-        />
-      </pattern>
-      <pattern
-        className="mountains"
-        id="rhun-mountains"
-        x="1024"
-        y="576"
-        width="1"
-        height="1"
-        viewBox="0 0 1024 576"
-      >
-        <image
-          width="1024"
-          height="576"
-          href={require("../images/rhun-mountains.png")}
-          alt="some mountains"
-        />
-      </pattern>
-      <pattern
-        className="mountains"
-        id="mountains"
-        x="1024"
-        y="576"
         width="2"
         height="2"
         viewBox="0 0 1024 576"
@@ -70,12 +37,28 @@ function MountainImages() {
         />
       </pattern>
       <pattern
-        className="mountains"
-        id="qwer"
+        classNaxe="mountains"
+        id="rhun-mountains"
         x="1024"
         y="576"
-        width="4"
-        height="4"
+        width="5"
+        height="5"
+        viewBox="0 0 1024 576"
+      >
+        <image
+          width="1024"
+          height="576"
+          href={require("../images/m.png")}
+          alt="some mountains"
+        />
+      </pattern>
+      <pattern
+        className="mountains"
+        id="mountains"
+        x="1024"
+        y="576"
+        width="3"
+        height="3"
         viewBox="0 0 1024 576"
         preserveAspectRatio="xMidYMid slice"
       >
@@ -88,18 +71,35 @@ function MountainImages() {
       </pattern>
       <pattern
         className="mountains"
+        id="mordor-mountains"
+        x="1024"
+        y="576"
+        width="5"
+        height="5"
+        viewBox="0 0 1024 576"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <image
+          width="1024"
+          height="576"
+          href={require("../images/m.png")}
+          alt="some mountains"
+        />
+      </pattern>
+      <pattern
+        className="mountains"
         id="gondor-mountains"
         x="0"
         y="0"
-        width="1"
-        height="1"
+        width="2"
+        height="2"
         viewBox="0 0 524 276"
         preserveAspectRatio="xMidYMid slice"
       >
         <image
           width="1024"
           height="576"
-          href={require("../images/gondor-mountains.png")}
+          href={require("../images/m.png")}
           alt="some mountains"
         />
       </pattern>
