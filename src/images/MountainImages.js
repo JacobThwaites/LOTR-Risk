@@ -57,8 +57,25 @@ function MountainImages() {
         id="mountains"
         x="1024"
         y="576"
-        width="1"
-        height="1"
+        width="2"
+        height="2"
+        viewBox="0 0 1024 576"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <image
+          width="1024"
+          height="576"
+          href={require("../images/mountains.png")}
+          alt="some mountains"
+        />
+      </pattern>
+      <pattern
+        className="mountains"
+        id="qwer"
+        x="1024"
+        y="576"
+        width="4"
+        height="4"
         viewBox="0 0 1024 576"
         preserveAspectRatio="xMidYMid slice"
       >
