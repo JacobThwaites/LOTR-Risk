@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import MapAreas from "./MapAreas";
 import Mountains from "./svgPaths/Mountains";
 import Bridges from "./svgPaths/Bridges";
+import Islands from "./svgPaths/Islands";
 
 class Map extends Component {
   constructor({ props }) {
@@ -68,6 +69,7 @@ class Map extends Component {
               isRendered={this.state.isRendered}
               isAreaClickable={this.isAreaClickable}
             />
+            <Islands />
             <Bridges />
           </g>
         </svg>
