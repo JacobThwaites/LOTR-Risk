@@ -10,7 +10,7 @@ export class CombatController {
         this.defendingArea = defendingArea;
     }
 
-    handleCombat(attackingDiceUsed: number, defendingDiceUsed: number, attacker: Player) {
+    handleCombat(attackingDiceUsed: number, defendingDiceUsed: number) {
         const attackingDice = this.rollDice(attackingDiceUsed);
         const defendingDice = this.rollDice(defendingDiceUsed);
         

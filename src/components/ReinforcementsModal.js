@@ -3,7 +3,7 @@ import React from "react";
 function ReinforcementsModal(props) {
   return (
     <div className="reinforcements">
-      <label for="reinforcements">Reinforcements Available</label>
+      <label htmlFor="reinforcements">Reinforcements Available</label>
       <input
         name="reinforcements"
         type="number"

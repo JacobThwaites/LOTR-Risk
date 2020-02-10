@@ -12,15 +12,21 @@ class Map extends Component {
       isRendered: false,
     };
     this.isAreaClickable = this.isAreaClickable.bind(this);
+    this.onAreaSelect = this.onAreaSelect.bind(this);
   }
 
   componentDidMount() {
     this.setState({ isRendered: true });
   }
 
+  onAreaSelect(area) {
+    if (this.isAreaClickable(area)) {
+      this.props.onAreaSelect(area);
+    }
+  }
 
   isAreaClickable(area) {
-    if (this.props.attackingArea === null) {
+    if (this.props.attackingArea === null || this.props.attackingArea === area) {
       return this.isAttackingAreaClickable(area);
     } else {
       return this.isDefendingAreaClickable(area);
@@ -64,7 +70,7 @@ class Map extends Component {
           <g stroke="#000" strokeWidth="1px">
             <Mountains />
             <MapAreas
-              onClick={this.props.onAreaSelect}
+              onClick={this.onAreaSelect}
               attackingArea={this.props.attackingArea}
               defendingArea={this.props.defendingArea}
               isRendered={this.state.isRendered}

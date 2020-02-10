@@ -6,10 +6,11 @@ function MapAreas(props) {
   const areas = areaDetails.map(function(a) {
     return (
       <MapArea 
-        className={a === props.attackingArea ? 'attacker' : a === props.defendingArea ? 'defender' : a.region}
+        className={a.area === props.attackingArea ? 'attacker' : a.area === props.defendingArea ? 'defender' : a.region}
         id={a.area.getName()}
+        key={a.area.getName()}
         path={a.path}
-        onClick={() => props.onClick(a)}
+        onClick={() => props.onClick(a.area)}
         clickable={props.isAreaClickable(a.area)}
         areaLogic={a.area}
         isRendered={props.isRendered}

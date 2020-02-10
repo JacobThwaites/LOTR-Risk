@@ -2,8 +2,8 @@ import React from "react";
 
 function UnitManeuverHandler(props) {
   return (
-    <form class="diceInput">
-      <label for="unitsToMove">Unit Maneuvers</label>
+    <form className="diceInput">
+      <label htmlFor="unitsToMove">Unit Maneuvers</label>
       <input
         name="unitsToMove"
         type="number"

@@ -63,9 +63,9 @@ class GameDisplay extends Component {
     const { shouldDisplayReinforcementsModal, shouldHandleStartingReinforcements } = this.state;
 
     if (shouldHandleStartingReinforcements) {
-      this.handleStartingReinforcements(area.area);
+      this.handleStartingReinforcements(area);
     } else if (shouldDisplayReinforcementsModal) {
-      this.addReinforcements(area.area);
+      this.addReinforcements(area);
     } else {
       this.setAreaForCombat(area);
     }
