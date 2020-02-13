@@ -47,7 +47,7 @@ export class Area {
         this.hasLeader = !this.hasLeader;
     }
 
-    hasUnitsReminaing(): boolean {
+    hasUnitsRemaining(): boolean {
         return this.units > 0;
     }
 
