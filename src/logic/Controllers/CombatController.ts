@@ -1,5 +1,4 @@
 import { Area } from '../Models/Area';
-import { Player } from '../Models/Player';
 import isCombatInvalid from '../../utils/CombatValidation';
 
 export class CombatController {
@@ -10,13 +9,13 @@ export class CombatController {
         this.defendingArea = defendingArea;
     }
 
-    handleCombat(attackingDiceUsed: number, defendingDiceUsed: number, attacker: Player) {
-        const attackingDice = this.rollDice(attackingDiceUsed);
-        const defendingDice = this.rollDice(defendingDiceUsed);
-        
+    handleCombat(attackingDiceUsed: number, defendingDiceUsed: number) {
         if (isCombatInvalid(attackingDiceUsed, defendingDiceUsed, this.attackingArea, this.defendingArea)) {
             return;
         }
+        
+        const attackingDice = this.rollDice(attackingDiceUsed);
+        const defendingDice = this.rollDice(defendingDiceUsed);
         
         for (let i = 0; i < defendingDice.length; i++) {
             if (i === 0) {
@@ -25,7 +24,7 @@ export class CombatController {
                 this.removeUnitsFromLoser(attackingDice[1], defendingDice[1]);
             }
         }
-
+        
         this.checkDefendingUnitsRemaining();
     }
 

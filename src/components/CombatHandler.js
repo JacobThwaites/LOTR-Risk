@@ -5,8 +5,8 @@ function CombatHandler(props) {
   return (
     <>
       <CombatButton onCombatButtonClick={props.onCombatButtonClick} />
-      <form class="diceInput">
-        <label for="attackingDice">Attacking Dice</label>
+      <form className="diceInput">
+        <label htmlFor="attackingDice">Attacking Dice</label>
         <input
           name="attackingDice"
           type="number"
@@ -15,7 +15,7 @@ function CombatHandler(props) {
           value={props.attackingDice}
           onChange={props.onInputFieldChange}
         />
-        <label for="defendingDice">Defending Dice</label>
+        <label htmlFor="defendingDice">Defending Dice</label>
         <input
           name="defendingDice"
           type="number"

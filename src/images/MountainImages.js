@@ -4,7 +4,7 @@ function MountainImages() {
   return (
     <defs>
       <pattern
-        classNaxe="mountains"
+        className="mountains"
         id="rhun-mountains"
         x="1024"
         y="576"

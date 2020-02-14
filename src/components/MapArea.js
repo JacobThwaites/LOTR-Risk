@@ -10,10 +10,10 @@ function MapArea(props) {
         className={"area " + props.className}
         id={props.id}
         d={props.path}
-        onClick={props.clickable ? props.onClick : ""}
+        onClick={props.onClick}
         adjacentAreas={props.adjacentAreas}
         areaLogic={props.areaLogic}
-      />
+        />
       {props.isRendered &&
         circleGenerator.addCircleToMap(props.id, props.areaLogic)
       }

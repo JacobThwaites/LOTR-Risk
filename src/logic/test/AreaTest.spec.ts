@@ -37,7 +37,7 @@ describe('Area', () => {
     });
 
     it('should not start with any units', () => {
-        const result = area.hasUnitsReminaing();
+        const result = area.hasUnitsRemaining();
         assert.equal(result, false);
     });
 

@@ -63,9 +63,9 @@ class GameDisplay extends Component {
     const { shouldDisplayReinforcementsModal, shouldHandleStartingReinforcements } = this.state;
 
     if (shouldHandleStartingReinforcements) {
-      this.handleStartingReinforcements(area.area);
+      this.handleStartingReinforcements(area);
     } else if (shouldDisplayReinforcementsModal) {
-      this.addReinforcements(area.area);
+      this.addReinforcements(area);
     } else {
       this.setAreaForCombat(area);
     }
@@ -126,22 +126,26 @@ class GameDisplay extends Component {
       attackingDice,
       defendingDice
     } = this.state;
-
     const combatController = new CombatController(
-      attackingArea.area,
-      defendingArea.area
+      attackingArea,
+      defendingArea
     );
     combatController.handleCombat(attackingDice, defendingDice);
-
-    if (defendingArea.area.getUnits() < 1) {
-      await this.setState({
-        shouldDisplayUnitManeuverButton: true,
-        areaToMoveUnits: attackingArea.area,
-        areaToReceiveUnits: defendingArea.area
-      });
+    
+    if (!defendingArea.hasUnitsRemaining()) {
+      await this.setStateForManeuvers();
     }
 
     this.resetCombatState();
+  }
+  
+  setStateForManeuvers() {
+    const { attackingArea, defendingArea } = this.state;
+    this.setState({
+      shouldDisplayUnitManeuverButton: true,
+      areaToMoveUnits: attackingArea,
+      areaToReceiveUnits: defendingArea
+    });
   }
 
   resetCombatState() {
@@ -171,26 +175,31 @@ class GameDisplay extends Component {
 
   checkIfGameOver() {
     const { game } = this.state;
-    
     const maxTurnsReached = game.checkMaxTurnsReached();
-    
+
     if (maxTurnsReached) {
       this.setState({ gameOver: true });
     }
   }
 
   onMoveUnits() {
-    const { areaToMoveUnits, areaToReceiveUnits, unitsToMove } = this.state;
-    const unitManeuverController = new UnitManeuverController(
-      areaToMoveUnits,
-      areaToReceiveUnits
-    );
-
+    const { unitsToMove } = this.state;
+    const unitManeuverController = this.createUnitManeuverController();
     const areUnitsMoved = unitManeuverController.handleManeuver(unitsToMove);
     
     if (areUnitsMoved) {
       this.resetManeuverState();
     }
+  }
+
+  createUnitManeuverController() {
+    const { areaToMoveUnits, areaToReceiveUnits } = this.state;
+    const unitManeuverController = new UnitManeuverController(
+      areaToMoveUnits,
+      areaToReceiveUnits
+    );
+
+    return unitManeuverController;
   }
 
   resetManeuverState() {
