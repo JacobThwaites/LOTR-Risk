@@ -26,11 +26,15 @@ class Map extends Component {
   }
 
   isAreaClickable(area) {
-    if (this.props.attackingArea === null || this.props.attackingArea === area) {
+    if (this.isAttackingAreaSelected(area)) {
       return this.isAttackingAreaClickable(area);
     } else {
       return this.isDefendingAreaClickable(area);
     }
+  }
+
+  isAttackingAreaSelected(area) {
+    return this.props.attackingArea === null || this.props.attackingArea === area;
   }
   
   isAttackingAreaClickable(area) {
