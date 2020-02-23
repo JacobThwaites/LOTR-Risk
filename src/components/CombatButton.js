@@ -1,14 +1,13 @@
 import React from "react";
+import FormButton from './common/FormButton';
 
 function CombatButton(props) {
   return (
-    <button
-      className="combatTest"
-      type="button"
+    <FormButton 
+      id='combat-button'
+      label='Handle Combat'
       onClick={props.onCombatButtonClick}
-    >
-    Handle Combat
-    </button>
+    />
   );
 }
 

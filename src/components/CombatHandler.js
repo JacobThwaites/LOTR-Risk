@@ -3,8 +3,7 @@ import CombatButton from './CombatButton';
 
 function CombatHandler(props) {
   return (
-    <>
-      <CombatButton onCombatButtonClick={props.onCombatButtonClick} />
+    <div className='combat-handler'>
       <form className="diceInput">
         <label htmlFor="attackingDice">Attacking Dice</label>
         <input
@@ -25,7 +24,8 @@ function CombatHandler(props) {
           onChange={props.onInputFieldChange}
         />
       </form>
-    </>
+      <CombatButton onCombatButtonClick={props.onCombatButtonClick} />
+    </div>
   );
 }
 

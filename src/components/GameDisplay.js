@@ -227,7 +227,7 @@ class GameDisplay extends Component {
       : null;
 
     return (
-      <>
+      <div id='game-display'>
         <Map
           attackingArea={this.state.attackingArea}
           defendingArea={this.state.defendingArea}
@@ -263,7 +263,7 @@ class GameDisplay extends Component {
         {this.state.gameOver && (
           <GameOverModal />
         )}
-      </>
+      </div>
     );
   }
 }

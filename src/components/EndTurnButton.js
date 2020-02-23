@@ -1,10 +1,13 @@
 import React from "react";
+import FormButton from './common/FormButton';
 
 function EndTurnButton(props) {
   return (
-    <button className="endTurnButton" onClick={props.onEndTurnClick}>
-      End Turn
-    </button>
+    <FormButton 
+      id='end-turn-button'
+      label='End Turn'
+      onClick={props.onEndTurnClick}
+    />
   );
 }
 
