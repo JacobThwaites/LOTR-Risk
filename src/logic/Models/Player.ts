@@ -5,6 +5,7 @@ import { Colour } from '../Enums/Colours';
 import { getRegionForArea } from '../../utils/getRegionForArea';
 
 export class Player {
+    private name: String;
     private isGood: boolean;
     private units: number;
     private reinforcements: number;
@@ -17,6 +18,7 @@ export class Player {
         colour: Colour, 
         isGood: boolean
         ) {
+        this.name = name;
         this.isGood = isGood;
         this.units = 0;
         this.reinforcements = 0;
@@ -24,6 +26,10 @@ export class Player {
         this.areas = [];
         this.regions = [];
         this.colour = colour;
+    }
+
+    getName(): String {
+        return this.name;
     }
     
     getUnits(): number {

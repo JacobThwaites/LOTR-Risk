@@ -32,6 +32,11 @@ describe('Player', () => {
         player.addReinforcements(5);
     })
 
+    it('should have a name', () => {
+        const name = player.getName();
+        assert.equal(name, 'Jake');
+    });
+
     it('should be able to take a card', () => {
         player.takeAdventureCard(card1);
         const result = player.getAdventureCard(0);
