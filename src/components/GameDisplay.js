@@ -11,8 +11,7 @@ import Map from "./Map";
 import EndTurnButton from "./EndTurnButton";
 import ReinforcementsModal from "./ReinforcementsModal";
 import GameOverModal from "./GameOverModal";
-import TurnsRemaining from "./TurnsRemaining";
-import CurrentPlayer from './CurrentPlayer';
+import TurnInformation from "./TurnInformation";
 
 class GameDisplay extends Component {
   constructor({ props }) {
@@ -122,15 +121,11 @@ class GameDisplay extends Component {
 
   async onCombatButtonClick() {
     const {
-      attackingArea,
       defendingArea,
       attackingDice,
       defendingDice
     } = this.state;
-    const combatController = new CombatController(
-      attackingArea,
-      defendingArea
-    );
+    const combatController = this.createCombatController();
     combatController.handleCombat(attackingDice, defendingDice);
     
     if (!defendingArea.hasUnitsRemaining()) {
@@ -138,6 +133,19 @@ class GameDisplay extends Component {
     }
 
     this.resetCombatState();
+  }
+
+  createCombatController() {
+    const {
+      attackingArea,
+      defendingArea,
+    } = this.state;
+    const combatController = new CombatController(
+      attackingArea,
+      defendingArea
+    );
+
+    return combatController;
   }
   
   setStateForManeuvers() {
@@ -241,10 +249,8 @@ class GameDisplay extends Component {
           currentPlayer={currentPlayer}
           onAreaSelect={this.onAreaSelect}
         />
-        <TurnsRemaining 
-          turns={this.getTurnsRemaining()}
-        />
-        <CurrentPlayer 
+        <TurnInformation 
+          turnsRemaining={this.getTurnsRemaining()}
           playerName={currentPlayer.getName()}
         />
         {this.state.attackingArea && this.state.defendingArea && (
