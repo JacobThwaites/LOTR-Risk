@@ -5,7 +5,7 @@ import NumberSelector from "./common/NumberSelector";
 function CombatHandler(props) {
   return (
     <div className="combat-handler">
-        <div id="combat-handler__diceInput--attacking">
+        <div className="combat-handler__diceInput--attacking">
           <label htmlFor="attackingDice">Attacking Dice</label>
           <NumberSelector
             name="attackingDice"
@@ -14,7 +14,7 @@ function CombatHandler(props) {
             onChange={props.onNumberSelect}
           />
         </div>
-        <div id="combat-handler__diceInput--defending">
+        <div className="combat-handler__diceInput--defending">
           <label htmlFor="defendingDice">Defending Dice</label>
           <NumberSelector
             name="defendingDice"

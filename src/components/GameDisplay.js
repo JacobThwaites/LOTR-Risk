@@ -33,7 +33,6 @@ class GameDisplay extends Component {
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
     this.addReinforcements = this.addReinforcements.bind(this);
-    this.onInputFieldChange = this.onInputFieldChange.bind(this);
     this.onNumberSelect = this.onNumberSelect.bind(this);
     this.onEndTurnClick = this.onEndTurnClick.bind(this);
     this.onMoveUnits = this.onMoveUnits.bind(this);
@@ -163,13 +162,6 @@ class GameDisplay extends Component {
     this.setState({ [name]: number });
   }
 
-  onInputFieldChange(event) {
-    const {
-      target: { name, value }
-    } = event;
-    this.setState({ [name]: value });
-  }
-
   onEndTurnClick() {
     const { game } = this.state;
     
@@ -256,8 +248,8 @@ class GameDisplay extends Component {
           <UnitManeuverHandler
             max={this.state.areaToMoveUnits.getUnits() - 1}
             unitsToMove={this.state.unitsToMove}
-            onInputFieldChange={this.onInputFieldChange}
             onMoveUnits={this.onMoveUnits}
+            onNumberSelect={this.onNumberSelect}
           />
         )}
         {this.state.shouldDisplayReinforcementsModal && (

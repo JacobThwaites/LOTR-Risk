@@ -1,20 +1,18 @@
 import React from "react";
+import NumberSelector from "./common/NumberSelector";
 
 function UnitManeuverHandler(props) {
   return (
-    <form className="diceInput">
-      <label htmlFor="unitsToMove">Unit Maneuvers</label>
-      <input
-        name="unitsToMove"
-        type="number"
-        step="1"
-        min="1"
+    <div className="unit-maneuver-handler">
+      <label>Unit Maneuvers</label>
+      <NumberSelector 
+        name='unitsToMove'
         max={props.max}
-        onChange={props.onInputFieldChange}
+        onChange={props.onNumberSelect}
         value={props.unitsToMove}
       />
       <button onClick={props.onMoveUnits} >move units</button>
-    </form>
+    </div>
   );
 }
 
