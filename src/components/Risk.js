@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PlayerSelector from './PlayerSelector';
 import GameDisplay from './GameDisplay';
 
 class Risk extends Component {
@@ -8,12 +9,29 @@ class Risk extends Component {
             numberOfPlayers: null,
             shouldDisplayPlayerSelector: true,
         }
+
+        this.onNumberSelect = this.onNumberSelect.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+    }
+
+    onNumberSelect(number, b, a) {
+        const { name } = a;
+        this.setState({ [name]: number });
+      }
+
+    onSubmit() {
+        this.setState({ shouldDisplayPlayerSelector: false });
     }
 
     renderPlayerSelector() {
+        const { numberOfPlayers } = this.state;
         return (
-            <h1>hello world</h1>
-        ) 
+            <PlayerSelector 
+                numberOfPlayers={numberOfPlayers}
+                onChange={this.onNumberSelect}
+                onSubmit={this.onSubmit}
+            />
+        )
     }
 
     render() {
@@ -23,6 +41,7 @@ class Risk extends Component {
         }
 
         return (
+            // TODO: pass in numberOfPlayers
             <GameDisplay />
         )
     }
