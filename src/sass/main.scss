@@ -5,12 +5,15 @@
 @import './components/area';
 @import './components/button';
 @import './components/circle';
+@import './components/combatHandler';
+@import './components/endTurn';
 @import './components/gameDisplay';
 @import './components/island';
 @import './components/map';
 @import './components/numberSelector';
 @import './components/reinforcements';
 @import './components/stronghold';
+@import './components/turnsRemaining';
 
 @import './base/base';
 @import './base/animations';

@@ -3,11 +3,13 @@ import FormButton from './common/FormButton';
 
 function EndTurnButton(props) {
   return (
-    <FormButton 
-      id='end-turn-button'
-      label='End Turn'
-      onClick={props.onEndTurnClick}
-    />
+    <div class='end-turn'>
+      <FormButton 
+        id='end-turn-button'
+        label='End Turn'
+        onClick={props.onEndTurnClick}
+      />
+    </div>
   );
 }
 
