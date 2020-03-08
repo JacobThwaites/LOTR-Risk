@@ -1,16 +1,18 @@
 #end-turn-button {
     background-color: lightblue;
-    color: white;
-    font-size: 3rem;
 }
 
 #combat-button {
     background-color: red;
-    color: white;
-    font-size: 3rem;
+}
+
+#unit-maneuver-button {
+    background-color: green;
 }
 
 .button {
     height: 8rem;
     width: 16rem;
+    color: white;
+    font-size: 3rem;
 }

@@ -13,7 +13,7 @@ function UnitManeuverHandler(props) {
           value={props.unitsToMove}
         />
       </div>
-      <button class="button" onClick={props.onMoveUnits}>
+      <button id='unit-maneuver-button' class='button' onClick={props.onMoveUnits}>
         move units
       </button>
     </div>
