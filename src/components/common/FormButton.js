@@ -5,8 +5,8 @@ function FormButton(props) {
   return (
     <Button
       id={props.id}
-      // color="primary"
       onClick={props.onClick}
+      class='button'
     >
       {props.label}
     </Button>

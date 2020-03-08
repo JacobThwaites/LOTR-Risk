@@ -2,10 +2,18 @@
     background-color: lightblue;
     color: white;
     font-size: 3rem;
+
+    grid-row: 3 / 4;
+    grid-column: 4 / 5;
 }
 
 #combat-button {
     background-color: red;
     color: white;
     font-size: 3rem;
+}
+
+.button {
+    height: 10rem;
+    width: 20rem;
 }
