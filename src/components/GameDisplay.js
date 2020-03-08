@@ -12,6 +12,7 @@ import EndTurnButton from "./EndTurnButton";
 import ReinforcementsModal from "./ReinforcementsModal";
 import GameOverModal from "./GameOverModal";
 import TurnsRemaining from "./TurnsRemaining";
+import CurrentPlayer from './CurrentPlayer';
 
 class GameDisplay extends Component {
   constructor({ props }) {
@@ -51,8 +52,8 @@ class GameDisplay extends Component {
   }
 
   createGameController() {
-    const player1 = new Player("player 1", Colour.Green, true);
-    const player2 = new Player("player 2", Colour.Yellow, false);
+    const player1 = new Player("Green player", Colour.Green, true);
+    const player2 = new Player("Yellow player", Colour.Yellow, false);
     const players = [player1, player2];
     const gameController = new GameController(players, 30);
 
@@ -219,11 +220,18 @@ class GameDisplay extends Component {
     return game.getTurnsRemaining();
   }
 
-  render() {
-    const currentPlayer = this.state.game
-      ? this.state.game.getCurrentPlayer()
-      : null;
+  getCurrentPlayer() {
+    const { game } = this.state;
+    const currentPlayer = game.getCurrentPlayer();
+    return currentPlayer;
+  }
 
+  render() {
+    if (!this.state.game) {
+      return ('');
+    }
+    
+    const currentPlayer = this.getCurrentPlayer();
     return (
       <div id='game-display'>
         <Map
@@ -235,6 +243,9 @@ class GameDisplay extends Component {
         />
         <TurnsRemaining 
           turns={this.getTurnsRemaining()}
+        />
+        <CurrentPlayer 
+          playerName={currentPlayer.getName()}
         />
         {this.state.attackingArea && this.state.defendingArea && (
           <CombatHandler
