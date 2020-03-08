@@ -65,11 +65,12 @@ class Map extends Component {
       <>
         <svg
           id="map"
-          width="1360"
-          height="2e3"
+          height='88vh'
+          width='60vh'
           version="1.1"
           viewBox="0 0 1360 2000"
           xmlns="http://www.w3.org/2000/svg"
+          fill='blue'
         >
           <g stroke="#000" strokeWidth="1px">
             <Mountains />

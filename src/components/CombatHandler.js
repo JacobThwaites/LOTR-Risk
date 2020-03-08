@@ -1,31 +1,30 @@
 import React from "react";
-import CombatButton from './CombatButton';
+import CombatButton from "./CombatButton";
+import UnitInput from "./common/UnitInput";
 
 function CombatHandler(props) {
   return (
-    <>
-      <CombatButton onCombatButtonClick={props.onCombatButtonClick} />
-      <form className="diceInput">
-        <label htmlFor="attackingDice">Attacking Dice</label>
-        <input
+    <div className="combat-handler">
+      <div className="combat-handler__diceInput--attacking">
+        <UnitInput
+          label="Attacking Dice"
           name="attackingDice"
-          type="number"
-          step="1"
           max="3"
           value={props.attackingDice}
-          onChange={props.onInputFieldChange}
+          onChange={props.onNumberSelect}
         />
-        <label htmlFor="defendingDice">Defending Dice</label>
-        <input
+      </div>
+      <div className="combat-handler__diceInput--defending">
+        <UnitInput
+          label="Defending Dice"
           name="defendingDice"
-          type="number"
-          step="1"
           max="2"
           value={props.defendingDice}
-          onChange={props.onInputFieldChange}
+          onChange={props.onNumberSelect}
         />
-      </form>
-    </>
+      </div>
+      <CombatButton onCombatButtonClick={props.onCombatButtonClick} />
+    </div>
   );
 }
 

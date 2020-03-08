@@ -1,0 +1,12 @@
+.combat-handler {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+
+    &__dice-input {
+        height: 10rem;
+        width: 10rem;
+        font-size: 3rem;
+    }
+}

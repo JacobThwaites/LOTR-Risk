@@ -1,20 +1,22 @@
 import React from "react";
+import UnitInput from "./common/UnitInput";
 
 function UnitManeuverHandler(props) {
   return (
-    <form className="diceInput">
-      <label htmlFor="unitsToMove">Unit Maneuvers</label>
-      <input
-        name="unitsToMove"
-        type="number"
-        step="1"
-        min="1"
-        max={props.max}
-        onChange={props.onInputFieldChange}
-        value={props.unitsToMove}
-      />
-      <button onClick={props.onMoveUnits} >move units</button>
-    </form>
+    <div className="unit-maneuver-handler">
+      <div>
+        <UnitInput
+          label="Unit Maneuvers"
+          name="unitsToMove"
+          max={props.max}
+          onChange={props.onNumberSelect}
+          value={props.unitsToMove}
+        />
+      </div>
+      <button id='unit-maneuver-button' class='button' onClick={props.onMoveUnits}>
+        move units
+      </button>
+    </div>
   );
 }
 

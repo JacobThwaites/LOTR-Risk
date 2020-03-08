@@ -20,8 +20,8 @@ class GameDisplay extends Component {
       game: null,
       attackingArea: null,
       defendingArea: null,
-      attackingDice: 0,
-      defendingDice: 0,
+      attackingDice: 1,
+      defendingDice: 1,
       shouldDisplayUnitManeuverButton: false,
       shouldDisplayReinforcementsModal: false,
       shouldHandleStartingReinforcements: true,
@@ -33,7 +33,7 @@ class GameDisplay extends Component {
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
     this.addReinforcements = this.addReinforcements.bind(this);
-    this.onInputFieldChange = this.onInputFieldChange.bind(this);
+    this.onNumberSelect = this.onNumberSelect.bind(this);
     this.onEndTurnClick = this.onEndTurnClick.bind(this);
     this.onMoveUnits = this.onMoveUnits.bind(this);
     this.onCombatButtonClick = this.onCombatButtonClick.bind(this);
@@ -152,16 +152,14 @@ class GameDisplay extends Component {
     this.setState({
       attackingArea: null,
       defendingArea: null,
-      attackingDice: 0,
-      defendingDice: 0
+      attackingDice: 1,
+      defendingDice: 1
     });
   }
 
-  onInputFieldChange(event) {
-    const {
-      target: { name, value }
-    } = event;
-    this.setState({ [name]: value });
+  onNumberSelect(number, b, a) {
+    const { name } = a;
+    this.setState({ [name]: number });
   }
 
   onEndTurnClick() {
@@ -227,7 +225,7 @@ class GameDisplay extends Component {
       : null;
 
     return (
-      <>
+      <div id='game-display'>
         <Map
           attackingArea={this.state.attackingArea}
           defendingArea={this.state.defendingArea}
@@ -243,15 +241,15 @@ class GameDisplay extends Component {
             attackingDice={this.state.attackingDice}
             defendingDice={this.state.defendingDice}
             onCombatButtonClick={this.onCombatButtonClick}
-            onInputFieldChange={this.onInputFieldChange}
+            onNumberSelect={this.onNumberSelect}
           />
         )}
         {this.state.shouldDisplayUnitManeuverButton && (
           <UnitManeuverHandler
             max={this.state.areaToMoveUnits.getUnits() - 1}
             unitsToMove={this.state.unitsToMove}
-            onInputFieldChange={this.onInputFieldChange}
             onMoveUnits={this.onMoveUnits}
+            onNumberSelect={this.onNumberSelect}
           />
         )}
         {this.state.shouldDisplayReinforcementsModal && (
@@ -263,7 +261,7 @@ class GameDisplay extends Component {
         {this.state.gameOver && (
           <GameOverModal />
         )}
-      </>
+      </div>
     );
   }
 }

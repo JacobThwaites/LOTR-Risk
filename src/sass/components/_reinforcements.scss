@@ -1,14 +1,19 @@
 .reinforcements {
     float: right;
-    top: 500px;
+    top: 50rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     label {
-        font-size: 30px;
+        font-size: 2rem;
     }
 
   input {
-    width: 300px;
-    height: 100px;
-    font-size: 30px;
+    height: $input-field-height;
+    width: $input-field-width;
+    font-size: 3rem;
+    font-weight: 200;
+    text-align: center;
   }
 }

@@ -51,7 +51,7 @@ export class Game {
 
     getStartingUnitsAvailable(): number {
         // TODO: remove after testing
-        return 37;
+        return 34;
         // if (this.players.length === 2) {
         //     return 60;
         // } else if (this.players.length === 3) {

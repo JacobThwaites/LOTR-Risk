@@ -1,7 +1,16 @@
+#map {
+    grid-row: 1 / 4;
+    grid-column: 2 / 4;
+    justify-self: center;
+
+    border: 1px solid black;
+    background-size: contain;
+}
+
 button {
-    height: 200px;
-    width: 200px;
-    font-size: 30px;
+    height: 20rem;
+    width: 20rem;
+    font-size: 3rem;
     float: right;
     
     &:hover {
@@ -11,25 +20,21 @@ button {
 
 .endTurnButton {
     background-color: crimson;
-    top: 100px;
-}
-
-.combatTest {
-    background-color: orangered;
+    top: 10rem;
 }
 
 .diceInput {
-    height: 300px;
-    width: 300px;
+    height: 300rem;
+    width: 30rem;
     float: right;
 
     .label {
-        font-size: 20px;
+        font-size: 3rem;
     }
 
     input {
-        height: 40px;
-        width: 120px;
-        font-size: 20px;
+        height: 4rem;
+        width: 12rem;
+        font-size: 2rem;
     }
 }
