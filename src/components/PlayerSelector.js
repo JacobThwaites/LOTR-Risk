@@ -8,6 +8,7 @@ function PlayerSelector(props) {
             <h1>Select number of players:</h1>
             <NumberSelector 
                 max={4}
+                min={2}
                 name='numberOfPlayers'
                 value={props.numberOfPlayers}
                 onChange={props.onChange}
@@ -16,6 +17,7 @@ function PlayerSelector(props) {
                 id='number-of-players-button'
                 label='Submit'
                 onClick={props.onSubmit}
+                disabled={!props.numberOfPlayers}
             />
         </div>
     ); 

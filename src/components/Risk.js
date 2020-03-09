@@ -35,14 +35,15 @@ class Risk extends Component {
     }
 
     render() {
-        const { shouldDisplayPlayerSelector } = this.state;
+        const { shouldDisplayPlayerSelector, numberOfPlayers } = this.state;
         if (shouldDisplayPlayerSelector) {
             return this.renderPlayerSelector();
         }
 
         return (
-            // TODO: pass in numberOfPlayers
-            <GameDisplay />
+            <GameDisplay 
+                numberOfPlayers={numberOfPlayers}
+            />
         )
     }
 }

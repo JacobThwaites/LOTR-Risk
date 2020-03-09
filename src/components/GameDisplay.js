@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { Player } from "../logic/Models/Player";
-import { Colour } from "../logic/Enums/Colours";
 import { GameController } from "../logic/Controllers/GameController";
+import { PlayerController } from "../logic/Controllers/PlayerController";
 import { CombatController } from "../logic/Controllers/CombatController";
 import { ReinforcementController } from "../logic/Controllers/ReinforcementController";
 import { UnitManeuverController } from "../logic/Controllers/UnitManeuverController";
@@ -51,9 +50,9 @@ class GameDisplay extends Component {
   }
 
   createGameController() {
-    const player1 = new Player("Green player", Colour.Green, true);
-    const player2 = new Player("Yellow player", Colour.Yellow, false);
-    const players = [player1, player2];
+    const { numberOfPlayers } = this.props;
+    const playerController = new PlayerController(numberOfPlayers);
+    const players = playerController.generatePlayers();
     const gameController = new GameController(players, 30);
 
     return gameController;

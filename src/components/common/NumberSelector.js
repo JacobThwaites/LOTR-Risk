@@ -7,7 +7,7 @@ function NumberSelector(props) {
       className='number-selector'
       id={props.id}
       name={props.name}
-      min={1} 
+      min={props.min || 1} 
       max={props.max} 
       value={props.value}
       onChange={props.onChange}
