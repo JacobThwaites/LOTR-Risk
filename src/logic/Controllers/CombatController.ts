@@ -1,5 +1,5 @@
 import { Area } from '../Models/Area';
-import isCombatInvalid from '../../utils/CombatValidation';
+import { CombatValidator } from '../Controllers/CombatValidator';
 
 export class CombatController {
     private attackingArea: Area;
@@ -10,10 +10,11 @@ export class CombatController {
     }
 
     handleCombat(attackingDiceUsed: number, defendingDiceUsed: number) {
-        if (isCombatInvalid(attackingDiceUsed, defendingDiceUsed, this.attackingArea, this.defendingArea)) {
+        if (!this.isCombatValid(attackingDiceUsed, defendingDiceUsed)) {
             return;
         }
         
+        // TODO: change these variable names
         const attackingDice = this.rollDice(attackingDiceUsed);
         const defendingDice = this.rollDice(defendingDiceUsed);
         
@@ -27,6 +28,11 @@ export class CombatController {
         
         this.checkDefendingUnitsRemaining();
     }
+
+    isCombatValid(attackingDice: number, defendingDice: number): boolean {
+        const combatValidator = new CombatValidator(this.attackingArea, this.defendingArea);
+        return combatValidator.isCombatValid(attackingDice, defendingDice);
+    } 
 
     rollDice(numberOfDice: number): Array<number> {
         let numbersRolled = [];

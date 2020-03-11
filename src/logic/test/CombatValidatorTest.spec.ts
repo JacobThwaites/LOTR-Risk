@@ -81,6 +81,28 @@ describe('CombatValidator', () => {
         assert.isFalse(isCombatValid);
     });
 
+    it('should return true if defendingDice is less than or equal to attackingDice', () => {
+        let attackingDice = 2;
+        let defendingDice = 1;
+        let isCombatValid = combatValidator.compareDice(attackingDice, defendingDice);
+        assert.isTrue(isCombatValid);
+
+        defendingDice = 2;
+        isCombatValid = combatValidator.compareDice(attackingDice, defendingDice);
+        assert.isTrue(isCombatValid);
+    });
+
+    it('should return false if defendingDice is greater than attackingDice', () => {
+        let attackingDice = 2;
+        let defendingDice = 3;
+        let isCombatValid = combatValidator.compareDice(attackingDice, defendingDice);
+        assert.isFalse(isCombatValid);
+
+        defendingDice = 2;
+        isCombatValid = combatValidator.compareDice(attackingDice, defendingDice);
+        assert.isTrue(isCombatValid);
+    });
+
     it('should return false if dice is less than 1', () => {
         const dice = 0;
         const isAttackingCombatValid = combatValidator.validateAttackingDice(dice);
