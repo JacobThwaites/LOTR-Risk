@@ -1,12 +1,12 @@
 import { Player } from "../Models/Player";
 import { Colour } from "../Enums/Colours";
 
-export class PlayerController {
+export class PlayerGenerator {
   private numberOfPlayers: number;
   private playerNames: string[];
   constructor(numberOfPlayers: number) {
     this.numberOfPlayers = numberOfPlayers;
-    this.playerNames = ["player 1", "player 2", "player 3", "player 4"];
+    this.playerNames = ["Black player", "Green player", "Red player", "Yellow player"];
   }
 
   generatePlayers(): Player[] {

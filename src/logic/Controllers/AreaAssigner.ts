@@ -1,6 +1,7 @@
 import { Player } from "../Models/Player";
+import { Area } from "../Models/Area";
 import { Areas } from "../Enums/Areas";
-import shuffle from '../../utils/Shuffle';
+import shuffle from "../../utils/Shuffle";
 
 export class AreaAssigner {
   private players: Array<Player>;
@@ -15,17 +16,21 @@ export class AreaAssigner {
     let playerIndex = 0;
 
     for (let i = 0; i < shuffledAreas.length; i++) {
-      this.players[playerIndex].addArea(shuffledAreas[i]);
-      shuffledAreas[i].setPlayer(this.players[playerIndex]);
-      ++playerIndex;
-    
-      if (playerIndex >= this.players.length) {
-        playerIndex = 0;
-      }
+      this.addAreaToPlayer(shuffledAreas[i], this.players[playerIndex]);
+      playerIndex = this.incrementPlayerIndex(playerIndex);
     }
   }
 
-  getPlayers() {
-    return this.players;
+  private addAreaToPlayer(area: Area, player: Player): void {
+    player.addArea(area);
+    area.setPlayer(player);
+  }
+
+  private incrementPlayerIndex(index: number): number {
+    ++index;
+    if (index >= this.players.length) {
+      index = 0;
+    }
+    return index;
   }
 }
