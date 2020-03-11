@@ -130,16 +130,16 @@ export class Player {
         this.reinforcements += reinforcements;
     }
 
-    addReinforcementsToArea(reinforcements: number, area: Area) {
-        if (this.reinforcements >= reinforcements) {
-            this.reinforcements -= reinforcements;
-            area.addUnits(reinforcements);
+    addReinforcementsToArea(area: Area) {
+        if (this.reinforcements >= 1) {
+            this.reinforcements -= 1;
+            area.addUnits(1);
         }
     }
 
     addStartingUnits() {
         for (let i = 0; i < this.areas.length; i++) {   
-            this.addReinforcementsToArea(1, this.areas[i]);
+            this.addReinforcementsToArea(this.areas[i]);
         }
     }
 
