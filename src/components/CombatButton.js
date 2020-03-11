@@ -7,6 +7,7 @@ function CombatButton(props) {
       id='combat-button'
       label='Handle Combat'
       onClick={props.onCombatButtonClick}
+      disabled={props.disabled}
     />
   );
 }
