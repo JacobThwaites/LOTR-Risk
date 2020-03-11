@@ -69,15 +69,15 @@ describe('Player', () => {
     });
 
     it('should be able to add reinforcements to an area', () => {
-        player.addReinforcementsToArea(5, area1);
+        player.addReinforcementsToArea(area1);
         
         const result = area1.getUnits();
-        assert.equal(result, 6);
+        assert.equal(result, 1);
         
     });
 
     it('should not be able to add more reinforcements than it has left', () => {
-        player.addReinforcementsToArea(200, area2);;
+        player.addReinforcementsToArea(area2);
         const result = area2.getUnits();
         assert.equal(result, 1);
     });
@@ -120,7 +120,7 @@ describe('Player', () => {
         let areasHaveOneUnit = true;
 
         for (let i = 0; i < areas.length; i++) {
-            if (areas[i].getUnits() !== 2) {
+            if (areas[i].getUnits() !== 1) {
                 areasHaveOneUnit = false;
             }
         }

@@ -1,11 +1,10 @@
 import { Area } from '../Models/Area';
 import { AreaName } from '../Enums/AreaNames';
 import { Player } from '../Models/Player';
-import { assert } from 'chai';
-import 'mocha';
 import { Colour } from '../Enums/Colours';
 import { Game } from '../Models/Game';
-import { GameController } from '../Controllers/GameController';
+import { assert } from 'chai';
+import 'mocha';
 
 describe('Game', () => {
     let player1: Player;
@@ -13,9 +12,7 @@ describe('Game', () => {
     let playersList: Array<Player>;
     let area1: Area;
     let area2: Area;
-    let areasList: Array<Area>;
     let game: Game;
-    let gameController: GameController;
     beforeEach(function () {
         player1 = new Player('Biff', Colour.Green, true);
         player2 = new Player('Chip', Colour.Red, false);
@@ -24,11 +21,9 @@ describe('Game', () => {
         const adjacentAreas2 = [AreaName.DeadMarshes, AreaName.SouthIthilien, AreaName.MinasMorgul, AreaName.MinasTirith];
         area1 = new Area(AreaName.Rhudaur, true, false, adjacentAreas1);
         area2 = new Area(AreaName.Ithilien, false, true, adjacentAreas2);
-        areasList = [area1, area2];
         player1.addArea(area1);
         player2.addArea(area2);
         game = new Game(playersList, 1);
-        gameController = new GameController(playersList, 10);
     })
 
     it('have players', () => {
@@ -52,20 +47,6 @@ describe('Game', () => {
         game.changeCurrentPlayer();
         const result = game.getCurrentPlayer();
         assert.strictEqual(result, player1);
-    });
-
-    it('should be able to assign units to all areas', () => {
-        gameController.generateGame();
-        let allAreasHaveUnits = true;
-
-        for (let i = 0; i < areasList.length; i++) {
-            if (areasList[i].getUnits() < 1) {
-                allAreasHaveUnits = false;
-                break;
-            }
-        }
-
-        assert.strictEqual(allAreasHaveUnits, true);
     });
 
     it('should be able to check if players have reinforcements remaining', () => {

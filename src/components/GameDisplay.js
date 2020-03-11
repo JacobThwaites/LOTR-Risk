@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import { Player } from "../logic/Models/Player";
-import { Colour } from "../logic/Enums/Colours";
-import { GameController } from "../logic/Controllers/GameController";
+import { GameGenerator } from "../logic/Controllers/GameGenerator";
 import { CombatController } from "../logic/Controllers/CombatController";
 import { ReinforcementController } from "../logic/Controllers/ReinforcementController";
 import { UnitManeuverController } from "../logic/Controllers/UnitManeuverController";
@@ -29,7 +27,7 @@ class GameDisplay extends Component {
       areaToReceiveUnits: null,
       unitsToMove: 0,
       reinforcementsAvailable: 0,
-      gameOver: false,
+      isGameOver: false,
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
     this.addReinforcements = this.addReinforcements.bind(this);
@@ -45,18 +43,17 @@ class GameDisplay extends Component {
   }
 
   setupGame() {
-    const controller = this.createGameController();
-    const game = controller.generateGame();
+    const gameGenerator = this.createGameGenerator();
+    const game = gameGenerator.generateGame();
     this.setState({ game, shouldDisplayReinforcementsModal: true });
   }
 
-  createGameController() {
-    const player1 = new Player("Green player", Colour.Green, true);
-    const player2 = new Player("Yellow player", Colour.Yellow, false);
-    const players = [player1, player2];
-    const gameController = new GameController(players, 30);
+  createGameGenerator() {
+    const { numberOfPlayers } = this.props;
+    const maxTurns = 30;
+    const gameGenerator = new GameGenerator(numberOfPlayers, maxTurns);
 
-    return gameController;
+    return gameGenerator;
   }
 
   onAreaSelect(area) {
@@ -91,17 +88,28 @@ class GameDisplay extends Component {
   }
 
   addReinforcements(area) {
-    const { game, shouldHandleStartingReinforcements } = this.state;
-    const currentPlayer = game.getCurrentPlayer();
-    const reinforcementController = new ReinforcementController(currentPlayer);
-
+    const { game } = this.state;
+    const reinforcementController = this.createReinforcementController();
     reinforcementController.addReinforcements(area);
-    const reinforcementsAvailable = currentPlayer.getReinforcements();
     this.setState({ game });
 
-    if (reinforcementsAvailable < 1 && !shouldHandleStartingReinforcements) {
+    if (this.shouldHideReinforcementsModal()) {
       this.setState({ shouldDisplayReinforcementsModal: false });
     }
+  }
+
+  createReinforcementController() {
+    const { game } = this.state;
+    const currentPlayer = game.getCurrentPlayer();
+    const reinforcementController = new ReinforcementController(currentPlayer);
+    return reinforcementController;
+  }
+
+  shouldHideReinforcementsModal() {
+    const { game, shouldHandleStartingReinforcements } = this.state;
+    const currentPlayer = game.getCurrentPlayer();
+    const reinforcementsAvailable = currentPlayer.getReinforcements();
+    return reinforcementsAvailable < 1 && !shouldHandleStartingReinforcements
   }
 
   setAreaForCombat(area) {
@@ -120,19 +128,20 @@ class GameDisplay extends Component {
   }
 
   async onCombatButtonClick() {
-    const {
-      defendingArea,
-      attackingDice,
-      defendingDice
-    } = this.state;
-    const combatController = this.createCombatController();
-    combatController.handleCombat(attackingDice, defendingDice);
+    const { defendingArea } = this.state;
+    this.handleCombat();
     
     if (!defendingArea.hasUnitsRemaining()) {
       await this.setStateForManeuvers();
     }
 
     this.resetCombatState();
+  }
+
+  handleCombat() {
+    const { attackingDice, defendingDice } = this.state;
+    const combatController = this.createCombatController();
+    combatController.handleCombat(attackingDice, defendingDice);
   }
 
   createCombatController() {
@@ -185,7 +194,7 @@ class GameDisplay extends Component {
     const maxTurnsReached = game.checkMaxTurnsReached();
 
     if (maxTurnsReached) {
-      this.setState({ gameOver: true });
+      this.setState({ isGameOver: true });
     }
   }
 
@@ -275,7 +284,7 @@ class GameDisplay extends Component {
           />
         )}
         <EndTurnButton onEndTurnClick={this.onEndTurnClick} />
-        {this.state.gameOver && (
+        {this.state.isGameOver && (
           <GameOverModal />
         )}
       </div>

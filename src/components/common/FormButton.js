@@ -7,6 +7,7 @@ function FormButton(props) {
       id={props.id}
       onClick={props.onClick}
       class='button'
+      disabled={props.disabled}
     >
       {props.label}
     </Button>

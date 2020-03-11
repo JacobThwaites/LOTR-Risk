@@ -8,6 +8,6 @@ export class ReinforcementController {
     }
 
     addReinforcements(area: Area) {
-        this.player.addReinforcementsToArea(1, area);
+        this.player.addReinforcementsToArea(area);
     }
 }
