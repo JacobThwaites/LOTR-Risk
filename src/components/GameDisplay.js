@@ -10,6 +10,7 @@ import EndTurnButton from "./EndTurnButton";
 import ReinforcementsModal from "./ReinforcementsModal";
 import GameOverModal from "./GameOverModal";
 import TurnInformation from "./TurnInformation";
+import { Combat } from '../logic/Enums/Combat'; 
 
 class GameDisplay extends Component {
   constructor({ props }) {
@@ -243,6 +244,18 @@ class GameDisplay extends Component {
     return currentPlayer;
   }
 
+  getMaxAttackingDice() {
+    const { attackingArea } = this.state;
+    const { MAX_ATTACKING_DICE } = Combat;
+    return Math.min(MAX_ATTACKING_DICE, attackingArea.getUnits() - 1);
+  }
+
+  getMaxDefendingDice() {
+    const { defendingArea, attackingDice } = this.state;
+    const { MAX_DEFENDING_DICE } = Combat;
+    return Math.min(attackingDice, defendingArea.getUnits(), MAX_DEFENDING_DICE);
+  }
+
   render() {
     if (!this.state.game) {
       return ('');
@@ -266,6 +279,8 @@ class GameDisplay extends Component {
           <CombatHandler
             attackingDice={this.state.attackingDice}
             defendingDice={this.state.defendingDice}
+            maxAttackingDice={this.getMaxAttackingDice()}
+            maxDefendingDice={this.getMaxDefendingDice()}
             onCombatButtonClick={this.onCombatButtonClick}
             onNumberSelect={this.onNumberSelect}
           />

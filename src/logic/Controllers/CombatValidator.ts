@@ -20,8 +20,6 @@ export class CombatValidator {
 
     validateAttackingDice(attackingDice: number): boolean {
         const attackingAreaUnits = this.attackingArea.getUnits();
-        console.log(attackingDice, attackingAreaUnits);
-        
         return (
             attackingAreaUnits > attackingDice &&
             attackingDice <= MAX_ATTACKING_DICE &&
@@ -31,8 +29,6 @@ export class CombatValidator {
 
     validateDefendingDice(defendingDice: number): boolean {
         const defendingAreaUnits = this.defendingArea.getUnits();
-        console.log(defendingDice, defendingAreaUnits);
-        
         return (
             defendingAreaUnits >= defendingDice &&
             defendingDice <= MAX_DEFENDING_DICE &&
