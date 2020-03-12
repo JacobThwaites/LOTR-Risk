@@ -6,7 +6,7 @@ import { UnitManeuverController } from "../logic/Controllers/UnitManeuverControl
 import CombatHandler from "./CombatHandler";
 import UnitManeuverHandler from "./UnitManeuverHandler";
 import Map from "./Map";
-import EndTurnButton from "./EndTurnButton";
+import EndTurnButton from "./buttons/EndTurnButton";
 import ReinforcementsModal from "./ReinforcementsModal";
 import GameOverModal from "./GameOverModal";
 import TurnInformation from "./TurnInformation";
@@ -264,6 +264,11 @@ class GameDisplay extends Component {
     return isValid;
   }
 
+  isMoveUnitsButtonDisabled() {
+    const { unitsToMove } = this.state;
+    return unitsToMove < 1;
+  }
+
   render() {
     if (!this.state.game) {
       return ('');
@@ -300,6 +305,7 @@ class GameDisplay extends Component {
             unitsToMove={this.state.unitsToMove}
             onMoveUnits={this.onMoveUnits}
             onNumberSelect={this.onNumberSelect}
+            isButtonDisabled={this.isMoveUnitsButtonDisabled()}
           />
         )}
         {this.state.shouldDisplayReinforcementsModal && (

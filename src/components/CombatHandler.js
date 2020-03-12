@@ -1,5 +1,5 @@
 import React from "react";
-import CombatButton from "./CombatButton";
+import CombatButton from "./buttons/CombatButton";
 import UnitInput from "./common/UnitInput";
 
 function CombatHandler(props) {

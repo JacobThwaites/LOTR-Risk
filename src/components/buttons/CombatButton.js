@@ -1,5 +1,5 @@
 import React from "react";
-import FormButton from './common/FormButton';
+import FormButton from '../common/FormButton';
 
 function CombatButton(props) {
   return (

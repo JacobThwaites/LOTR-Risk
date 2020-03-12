@@ -1,5 +1,5 @@
 import React from "react";
-import FormButton from './common/FormButton';
+import FormButton from '../common/FormButton';
 
 function EndTurnButton(props) {
   return (
