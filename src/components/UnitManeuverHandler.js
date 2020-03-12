@@ -1,5 +1,6 @@
 import React from "react";
 import UnitInput from "./common/UnitInput";
+import MoveUnitsButton from "./buttons/MoveUnitsButton";
 
 function UnitManeuverHandler(props) {
   return (
@@ -13,9 +14,10 @@ function UnitManeuverHandler(props) {
           value={props.unitsToMove}
         />
       </div>
-      <button id='unit-maneuver-button' class='button' onClick={props.onMoveUnits}>
-        move units
-      </button>
+      <MoveUnitsButton 
+        onMoveUnits={props.onMoveUnits}
+        isDisabled={props.isButtonDisabled}
+      />
     </div>
   );
 }

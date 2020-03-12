@@ -27,7 +27,7 @@ export class PlayerGenerator {
   }
 
   generateColour(index: number): Colour {
-    const colours = [Colour.Black, Colour.Green, Colour.Red, Colour.Yellow];
+    const colours = [Colour.BLACK, Colour.GREEN, Colour.RED, Colour.YELLOW];
     return colours[index];
   }
 }

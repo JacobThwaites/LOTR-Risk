@@ -19,15 +19,15 @@ describe('Player', () => {
     let player: Player;
     let region: Region;
     beforeEach(function () {
-        area1 = Areas.Harondor;
-        area2 = Areas.Umbar;
-        area3 = Areas.DeepHarad;
-        area4 = Areas.Harad;
-        area5 = Areas.NearHarad;
-        area6 = Areas.Khand;
-        region = Regions.Harawaith;
+        area1 = Areas.HARONDOR;
+        area2 = Areas.UMBAR;
+        area3 = Areas.DEEP_HARAD;
+        area4 = Areas.HARAD;
+        area5 = Areas.NEAR_HARAD;
+        area6 = Areas.KHAND;
+        region = Regions.HARADWAITH;
         card1 = new AdventureCard('Do something');
-        player = new Player('Jake', Colour.Green, true);
+        player = new Player('Jake', Colour.GREEN, true);
         player.addUnits(10);
         player.addReinforcements(5);
     })

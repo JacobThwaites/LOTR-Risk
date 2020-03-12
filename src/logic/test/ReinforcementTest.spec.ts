@@ -7,9 +7,9 @@ import { Area } from '../Models/Area';
 import { AreaName } from '../Enums/AreaNames';
 
 describe('Reinforcements', () => {
-    const player = new Player('test', Colour.Green, true);
+    const player = new Player('test', Colour.GREEN, true);
     player.addReinforcements(1);
-    const area = new Area(AreaName.Andrast, false, false, [AreaName.AnduinValley]);
+    const area = new Area(AreaName.ANDRAST, false, false, [AreaName.ANDUIN_VALLEY]);
     const rc = new ReinforcementController(player);
 
     it('should be able to add reinforcements to an area', () => {

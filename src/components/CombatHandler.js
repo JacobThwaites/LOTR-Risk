@@ -1,5 +1,5 @@
 import React from "react";
-import CombatButton from "./CombatButton";
+import CombatButton from "./buttons/CombatButton";
 import UnitInput from "./common/UnitInput";
 
 function CombatHandler(props) {
@@ -9,7 +9,7 @@ function CombatHandler(props) {
         <UnitInput
           label="Attacking Dice"
           name="attackingDice"
-          max={3}
+          max={props.maxAttackingDice}
           value={props.attackingDice}
           onChange={props.onNumberSelect}
         />
@@ -18,12 +18,15 @@ function CombatHandler(props) {
         <UnitInput
           label="Defending Dice"
           name="defendingDice"
-          max={2}
+          max={props.maxDefendingDice}
           value={props.defendingDice}
           onChange={props.onNumberSelect}
         />
       </div>
-      <CombatButton onCombatButtonClick={props.onCombatButtonClick} />
+      <CombatButton 
+        onCombatButtonClick={props.onCombatButtonClick} 
+        isDisabled={!props.isCombatButtonClickable}
+      />
     </div>
   );
 }

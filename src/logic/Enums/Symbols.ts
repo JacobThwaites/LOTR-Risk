@@ -1,5 +1,5 @@
 export enum Symbol {
-    elvenArcher = 1,
-    darkRider = 3,
-    eagle = 5,
+    ELVEN_ARCHER = 1,
+    DARK_RIDER = 3,
+    EAGLE = 5,
 }
