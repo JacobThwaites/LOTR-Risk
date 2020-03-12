@@ -11,6 +11,7 @@ import ReinforcementsModal from "./ReinforcementsModal";
 import GameOverModal from "./GameOverModal";
 import TurnInformation from "./TurnInformation";
 import { Combat } from '../logic/Enums/Combat'; 
+import { CombatValidator } from "../logic/Controllers/CombatValidator";
 
 class GameDisplay extends Component {
   constructor({ props }) {
@@ -256,6 +257,13 @@ class GameDisplay extends Component {
     return Math.min(attackingDice, defendingArea.getUnits(), MAX_DEFENDING_DICE);
   }
 
+  isCombatButtonClickable() {
+    const { defendingDice, attackingDice, attackingArea, defendingArea } = this.state;
+    const combatValidator = new CombatValidator(attackingArea, defendingArea);
+    const isValid = combatValidator.isCombatValid(attackingDice, defendingDice);
+    return isValid;
+  }
+
   render() {
     if (!this.state.game) {
       return ('');
@@ -283,6 +291,7 @@ class GameDisplay extends Component {
             maxDefendingDice={this.getMaxDefendingDice()}
             onCombatButtonClick={this.onCombatButtonClick}
             onNumberSelect={this.onNumberSelect}
+            isCombatButtonClickable={this.isCombatButtonClickable()}
           />
         )}
         {this.state.shouldDisplayUnitManeuverButton && (

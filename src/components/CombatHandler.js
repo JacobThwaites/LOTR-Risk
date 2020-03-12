@@ -23,7 +23,10 @@ function CombatHandler(props) {
           onChange={props.onNumberSelect}
         />
       </div>
-      <CombatButton onCombatButtonClick={props.onCombatButtonClick} />
+      <CombatButton 
+        onCombatButtonClick={props.onCombatButtonClick} 
+        isDisabled={!props.isCombatButtonClickable}
+      />
     </div>
   );
 }
