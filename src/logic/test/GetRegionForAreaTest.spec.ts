@@ -10,8 +10,8 @@ describe('getRegionForArea method', () => {
     let area: Area;
     let region: Region;
     beforeEach(function () {
-        area = Areas.Forlindon;
-        region = Regions.Eriador;
+        area = Areas.FORLINDON;
+        region = Regions.ERIADOR;
     })
 
     it('should return the region which owns an area', () => {

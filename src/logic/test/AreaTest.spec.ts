@@ -1,18 +1,18 @@
 import { Area } from '../Models/Area';
 import { AreaName} from '../Enums/AreaNames';
-import { TheShire } from '../Enums/AreaAdjacencies';
+import { THE_SHIRE } from '../Enums/AreaAdjacencies';
 import { assert } from 'chai';
 import 'mocha';
 
 describe('Area', () => {
     let area: Area;
     beforeEach(function () {
-        area = new Area(AreaName.TheShire, false, true, TheShire);
+        area = new Area(AreaName.THE_SHIRE, false, true, THE_SHIRE);
     })
 
     it('should have a name', () => {
         const result = area.getName();
-        assert.equal(result, AreaName.TheShire);
+        assert.equal(result, AreaName.THE_SHIRE);
     });
 
     it('should specify stronghold', () => {

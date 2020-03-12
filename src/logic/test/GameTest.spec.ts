@@ -14,13 +14,13 @@ describe('Game', () => {
     let area2: Area;
     let game: Game;
     beforeEach(function () {
-        player1 = new Player('Biff', Colour.Green, true);
-        player2 = new Player('Chip', Colour.Red, false);
+        player1 = new Player('Biff', Colour.GREEN, true);
+        player2 = new Player('Chip', Colour.RED, false);
         playersList = [player1, player2];
-        const adjacentAreas1 = [AreaName.WeatherHills, AreaName.Carrock, AreaName.Eregion];
-        const adjacentAreas2 = [AreaName.DeadMarshes, AreaName.SouthIthilien, AreaName.MinasMorgul, AreaName.MinasTirith];
-        area1 = new Area(AreaName.Rhudaur, true, false, adjacentAreas1);
-        area2 = new Area(AreaName.Ithilien, false, true, adjacentAreas2);
+        const adjacentAreas1 = [AreaName.WEATHER_HILLS, AreaName.CARROCK, AreaName.EREGION];
+        const adjacentAreas2 = [AreaName.DEAD_MARSHES, AreaName.SOUTH_ITHILIEN, AreaName.MINAS_MORGUL, AreaName.MINAS_TIRITH];
+        area1 = new Area(AreaName.RHUDAUR, true, false, adjacentAreas1);
+        area2 = new Area(AreaName.ITHILIEN, false, true, adjacentAreas2);
         player1.addArea(area1);
         player2.addArea(area2);
         game = new Game(playersList, 1);

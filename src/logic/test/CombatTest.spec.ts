@@ -12,11 +12,11 @@ describe('Combat', () => {
     let attacker: Player;
     let defender: Player;
     beforeEach(function () {
-        const areas = [AreaName.TowerHills];
-        attackingArea = new Area(AreaName.EvendimHills, false, true, areas);
-        defendingArea = new Area(AreaName.TowerHills, true, false, areas);
-        attacker = new Player('Good Person', Colour.Green, true);
-        defender = new Player('Evil Person', Colour.Red, false);
+        const areas = [AreaName.TOWER_HILLS];
+        attackingArea = new Area(AreaName.EVENDIM_HILLS, false, true, areas);
+        defendingArea = new Area(AreaName.TOWER_HILLS, true, false, areas);
+        attacker = new Player('Good Person', Colour.GREEN, true);
+        defender = new Player('Evil Person', Colour.RED, false);
         attacker.addUnits(10);
         defender.addUnits(10);
         attackingArea.setPlayer(attacker);
