@@ -1,7 +1,7 @@
 import { Region } from '../Models/Region';
 import { Areas } from '../Enums/Areas';
 
-const eriadorAreas = [Areas.FORLINDON, Areas.MITHLOND, Areas.HARLINDON, Areas.TowerHills, Areas.EVENDIM_HILLS, Areas.LUNE_VALLEY, Areas.THE_SHIRE];
+const eriadorAreas = [Areas.FORLINDON, Areas.MITHLOND, Areas.HARLINDON, Areas.TOWER_HILLS, Areas.EVENDIM_HILLS, Areas.LUNE_VALLEY, Areas.THE_SHIRE];
 const arnorAreas = [Areas.FORODWAITH, Areas.ANGMAR, Areas.EASTERN_ANGMAR, Areas.BORDERLANDS, Areas.NORTH_DOWNS, Areas.RHUDAUR, Areas.FORNOST, Areas.WEATHER_HILLS, Areas.BUCKLAND, Areas.OLD_FOREST, Areas.SOUTH_DOWNS];
 const rhunAreas = [Areas.NORTH_RHUN, Areas.WITHERED_HEATH, Areas.ESGAROTH, Areas.SOUTH_RHUN];
 const mirkwoodAreas = [Areas.CARROCK, Areas.NORTH_MIRKWOOD, Areas.ANDUIN_VALLEY, Areas.EASTERN_MIRKWOOD, Areas.SOUTH_MIRKWOOD];

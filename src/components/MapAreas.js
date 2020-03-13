@@ -6,7 +6,7 @@ function MapAreas(props) {
   const areas = areaDetails.map(function(a) {
     return (
       <MapArea 
-        className={a.area === props.attackingArea ? 'attacker' : a.area === props.defendingArea ? 'defender' : a.region}
+        className={props.generateAreaClassName(a)}
         id={a.area.getName()}
         key={a.area.getName()}
         path={a.path}

@@ -70,4 +70,8 @@ export class Area {
     belongsToPlayer(player: Player): boolean {
         return this.player === player;
     }
+
+    isNextToArea(area: Area): boolean {
+        return this.adjacentAreas.includes(area.name);
+    }
 }

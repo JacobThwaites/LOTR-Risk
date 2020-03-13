@@ -6,7 +6,7 @@ export const Areas = {
     FORLINDON: new Area(AreaName.FORLINDON, false, false, Adjacencies.FORLINDON),
     MITHLOND: new Area(AreaName.MITHLOND, false, true, Adjacencies.MITHLOND),
     EVENDIM_HILLS: new Area(AreaName.EVENDIM_HILLS, true, false, Adjacencies.EVENDIM_HILLS),
-    TowerHills: new Area(AreaName.TOWER_HILLS, false, false, Adjacencies.TOWER_HILLS),
+    TOWER_HILLS: new Area(AreaName.TOWER_HILLS, false, false, Adjacencies.TOWER_HILLS),
     LUNE_VALLEY: new Area(AreaName.LUNE_VALLEY, false, false, Adjacencies.LUNE_VALLEY),
     THE_SHIRE: new Area(AreaName.THE_SHIRE, false, true, Adjacencies.THE_SHIRE),
     HARLINDON: new Area(AreaName.HARLINDON, false, true, Adjacencies.HARLINDON),

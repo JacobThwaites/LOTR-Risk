@@ -1,69 +1,39 @@
 .area {
-    &:hover {
-        cursor: pointer;
-    }
 
     &.eriador {
         fill: $color-eriador-green;
-        &:hover {
-            fill: darken($color-eriador-green, 15%);
-        }
     }
 
     &.arnor {
         fill: $color-arnor-red;
-        &:hover {
-            fill: darken($color-arnor-red, 15%);
-        }
     }
 
     &.rhun {
         fill: $color-rhun-grey;
-        &:hover {
-            fill: darken($color-rhun-grey, 15%);
-        }
     }
 
     &.mirkwood {
         fill: $color-mirkwood-green;
-        &:hover {
-            fill: darken($color-mirkwood-green, 15%);
-        }
     }
 
     &.rohan {
         fill: $color-rohan-blue;
-        &:hover {
-            fill: darken($color-rohan-blue, 15%);
-        }
     }
 
     &.rhovanion {
         fill: $color-rhovanion-yellow;
-        &:hover {
-            fill: darken($color-rhovanion-yellow, 15%);
-        }
     }
 
     &.gondor {
         fill: $color-gondor-red;
-        &:hover {
-            fill: darken($color-gondor-red, 15%);
-        }
     }
 
     &.mordor {
         fill: $color-mordor-dark;
-        &:hover {
-            fill: darken($color-mordor-dark, 15%);
-        }
     }
 
     &.haradwaith {
         fill: $color-haradwaith-yellow;
-        &:hover {
-            fill: darken($color-haradwaith-yellow, 15%);
-        }
     }
 
     &.attacker {
@@ -72,5 +42,65 @@
 
     &.defender {
         fill: blue;
+    }
+}
+
+.area.clickable {
+    &:hover {
+        cursor: pointer;
+    }
+
+    &.eriador {
+        &:hover {
+            fill: darken($color-eriador-green, 15%);
+        }
+    }
+
+    &.arnor {
+        &:hover {
+            fill: darken($color-arnor-red, 15%);
+        }
+    }
+
+    &.rhun {
+        &:hover {
+            fill: darken($color-rhun-grey, 15%);
+        }
+    }
+
+    &.mirkwood {
+        &:hover {
+            fill: darken($color-mirkwood-green, 15%);
+        }
+    }
+
+    &.rohan {
+        &:hover {
+            fill: darken($color-rohan-blue, 15%);
+        }
+    }
+
+    &.rhovanion {
+        &:hover {
+            fill: darken($color-rhovanion-yellow, 15%);
+        }
+    }
+
+    &.gondor {
+        &:hover {
+            fill: darken($color-gondor-red, 15%);
+        }
+    }
+
+    &.mordor {
+        &:hover {
+            fill: darken($color-mordor-dark, 15%);
+        }
+    }
+
+    &.haradwaith {
+        &:hover {
+            fill: darken($color-haradwaith-yellow, 15%);
+        }
     }
 }
