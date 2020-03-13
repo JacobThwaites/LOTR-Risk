@@ -19,4 +19,8 @@
     width: 16rem;
     color: white;
     font-size: 3rem;
+    
+    &.disabled {
+        cursor: default !important;
+    }
 }

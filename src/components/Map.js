@@ -13,6 +13,7 @@ class Map extends Component {
     };
     this.isAreaClickable = this.isAreaClickable.bind(this);
     this.onAreaSelect = this.onAreaSelect.bind(this);
+    this.generateAreaClassName= this.generateAreaClassName.bind(this);
   }
 
   componentDidMount() {
@@ -23,6 +24,24 @@ class Map extends Component {
     if (this.isAreaClickable(area)) {
       this.props.onAreaSelect(area);
     }
+  }
+
+  generateAreaClassName(a) {
+    const { attackingArea, defendingArea } = this.props;
+    let className;
+    if (a.area === attackingArea) {
+      className = 'attacker';
+    } else if (a.area === defendingArea) {
+      className = 'defender';
+    } else {
+      className =  a.region;
+    }
+
+    if (this.isAreaClickable(a.area)) {
+      className = `${className} clickable`;
+    }
+    
+    return className;
   }
 
   isAreaClickable(area) {
@@ -44,7 +63,7 @@ class Map extends Component {
     if (!isRendered) {
       return false;
     }
-
+    
     return area.belongsToPlayer(currentPlayer);
   }
 
@@ -57,7 +76,7 @@ class Map extends Component {
     }
 
     const defendingPlayer = area.player;
-    return currentPlayer !== defendingPlayer || attackingArea.area === area;
+    return (attackingArea.isNextToArea(area) && currentPlayer !== defendingPlayer) || attackingArea.area === area;
   }
 
   render() {
@@ -80,6 +99,7 @@ class Map extends Component {
               defendingArea={this.props.defendingArea}
               isRendered={this.state.isRendered}
               isAreaClickable={this.isAreaClickable}
+              generateAreaClassName={this.generateAreaClassName}
             />
             <Islands />
             <Strongholds />
