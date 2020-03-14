@@ -2,19 +2,21 @@ import { AreaName } from '../Enums/AreaNames';
 import { Player } from './Player';
 import { IDefendingBonus } from './IDefendingBonus';
 import { NoDefendingBonus } from './NoDefendingBonus';
+import { ISiteOfPower } from './ISiteOfPower';
+import { NotSiteOfPower } from './NotSiteOfPower';
 
 export abstract class AreaType {
     protected name: AreaName;
     protected defendingBonus: IDefendingBonus;
-    protected isSiteOfPower: boolean; // TODO: refactor using strategy pattern
+    protected isSiteOfPower: ISiteOfPower;
     protected player: Player | null;
     protected hasLeader: boolean;
     protected units: number;
     protected adjacentAreas: Array<AreaName>
-    constructor(name: AreaName, isSiteOfPower: boolean, adjacentAreas: Array<AreaName>) {
+    constructor(name: AreaName, adjacentAreas: Array<AreaName>) {
         this.name = name;
         this.defendingBonus = new NoDefendingBonus();
-        this.isSiteOfPower = isSiteOfPower;
+        this.isSiteOfPower = new NotSiteOfPower();
         this.player = null;
         this.hasLeader = false;
         this.units = 0;
@@ -30,7 +32,7 @@ export abstract class AreaType {
     }
     
     getIsSiteOfPower(): boolean {
-        return this.isSiteOfPower;
+        return this.isSiteOfPower.isSiteOfPower();
     }
 
     getPlayer(): Player | null {
