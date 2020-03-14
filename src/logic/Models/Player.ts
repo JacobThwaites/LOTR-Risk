@@ -1,8 +1,8 @@
 import { AdventureCard } from './AdventureCard';
-import { Area } from './Area';
 import { Region } from './Region';
 import { Colour } from '../Enums/Colours';
 import { getRegionForArea } from '../../utils/getRegionForArea';
+import { AreaType } from './AreaType';
 
 export class Player {
     private name: String;
@@ -10,7 +10,7 @@ export class Player {
     private units: number;
     private reinforcements: number;
     private adventureCards: Array<AdventureCard>;
-    private areas: Array<Area>;
+    private areas: Array<AreaType>;
     private regions: Array<Region>;
     private colour: Colour;
     constructor(
@@ -36,7 +36,7 @@ export class Player {
         return this.units;
     }
 
-    getAreas(): Array<Area> {
+    getAreas(): Array<AreaType> {
         return this.areas;
     }
 
@@ -64,7 +64,7 @@ export class Player {
         this.units -= numberOfUnits;
     }
 
-    addArea(area: Area) {
+    addArea(area: AreaType) {
         this.areas.push(area);
 
         const regionForArea = getRegionForArea(area);
@@ -120,7 +120,7 @@ export class Player {
         return bonusUnits;
     }
 
-    addLeader(area: Area) {
+    addLeader(area: AreaType) {
         if (!area.getHasLeader()) {
             area.changeHasLeader();
         }
@@ -130,7 +130,7 @@ export class Player {
         this.reinforcements += reinforcements;
     }
 
-    addReinforcementsToArea(area: Area) {
+    addReinforcementsToArea(area: AreaType) {
         if (this.reinforcements >= 1) {
             this.reinforcements -= 1;
             area.addUnits(1);
@@ -143,7 +143,7 @@ export class Player {
         }
     }
 
-    ownsArea(area: Area): boolean {
+    ownsArea(area: AreaType): boolean {
         return this.areas.includes(area);
     }
 

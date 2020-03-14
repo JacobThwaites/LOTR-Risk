@@ -1,9 +1,9 @@
-import { Area } from '../Models/Area';
+import { AreaType } from '../Models/AreaType';
 
 export class UnitManeuverController {
-    private origin: Area;
-    private destination: Area;
-    constructor(origin: Area, destination: Area) {
+    private origin: AreaType;
+    private destination: AreaType;
+    constructor(origin: AreaType, destination: AreaType) {
         this.origin = origin;
         this.destination = destination;
     }

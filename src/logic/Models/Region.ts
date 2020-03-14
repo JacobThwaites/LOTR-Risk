@@ -1,10 +1,10 @@
-import { Area } from './Area';
+import { AreaType } from './AreaType';
 
 export class Region {
     private name: string;
-    private areas: Array<Area>;
+    private areas: Array<AreaType>;
     private bonusUnits: number;
-    constructor(name: string, areas: Array<Area>, bonusUnits: number) {
+    constructor(name: string, areas: Array<AreaType>, bonusUnits: number) {
         this.name = name;
         this.areas = areas;
         this.bonusUnits = bonusUnits;
@@ -14,7 +14,7 @@ export class Region {
         return this.name;
     }
 
-    getAreas(): Array<Area> {
+    getAreas(): Array<AreaType> {
         return this.areas;
     }
 

@@ -7,7 +7,7 @@ import 'mocha';
 describe('Area', () => {
     let area: Area;
     beforeEach(function () {
-        area = new Area(AreaName.THE_SHIRE, false, true, THE_SHIRE);
+        area = new Area(AreaName.THE_SHIRE, THE_SHIRE);
     })
 
     it('should have a name', () => {
@@ -15,14 +15,9 @@ describe('Area', () => {
         assert.equal(result, AreaName.THE_SHIRE);
     });
 
-    it('should specify stronghold', () => {
-        const result = area.getIsStronghold();
-        assert.equal(result, false);
-    });
-
     it('should specify site of power', () => {
         const result = area.getIsSiteOfPower();
-        assert.equal(result, true);
+        assert.equal(result, false);
     });
 
     it('should not start with a leader', () => {

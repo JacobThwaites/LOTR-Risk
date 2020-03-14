@@ -4,17 +4,18 @@ import { AreaName } from '../Enums/AreaNames';
 import { Player } from '../Models/Player';
 import { Colour } from '../Enums/Colours';
 import { assert } from 'chai';
+import { Stronghold } from '../Models/Stronghold';
 
 describe('Combat', () => {
     let combatController: CombatController;
     let attackingArea: Area;
-    let defendingArea: Area;
+    let defendingArea: Stronghold;
     let attacker: Player;
     let defender: Player;
     beforeEach(function () {
         const areas = [AreaName.TOWER_HILLS];
-        attackingArea = new Area(AreaName.EVENDIM_HILLS, false, true, areas);
-        defendingArea = new Area(AreaName.TOWER_HILLS, true, false, areas);
+        attackingArea = new Area(AreaName.TOWER_HILLS, areas);
+        defendingArea = new Stronghold(AreaName.EVENDIM_HILLS, areas);
         attacker = new Player('Good Person', Colour.GREEN, true);
         defender = new Player('Evil Person', Colour.RED, false);
         attacker.addUnits(10);
