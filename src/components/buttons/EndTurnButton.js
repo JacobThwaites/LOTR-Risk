@@ -8,6 +8,7 @@ function EndTurnButton(props) {
         id='end-turn-button'
         label='End Turn'
         onClick={props.onEndTurnClick}
+        disabled={props.disabled}
       />
     </div>
   );
