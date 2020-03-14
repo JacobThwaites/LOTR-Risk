@@ -28,7 +28,6 @@ class GameDisplay extends Component {
       areaToMoveUnits: null,
       areaToReceiveUnits: null,
       unitsToMove: 0,
-      reinforcementsAvailable: 0,
       isGameOver: false,
     };
     this.onAreaSelect = this.onAreaSelect.bind(this);
@@ -72,7 +71,7 @@ class GameDisplay extends Component {
 
   handleStartingReinforcements(area) {
     const { game } = this.state;
-    const currentPlayer = game.getCurrentPlayer();
+    const currentPlayer = this.getCurrentPlayer();
 
     if (game.playersHaveReinforcements()) {
       if (currentPlayer.getReinforcements() < 1) {
@@ -89,6 +88,11 @@ class GameDisplay extends Component {
     this.setState({ shouldDisplayReinforcementsModal: false, shouldHandleStartingReinforcements: false });
   }
 
+  getCurrentPlayer() {
+    const { game } = this.state;
+    return game.getCurrentPlayer();
+  }
+
   addReinforcements(area) {
     const { game } = this.state;
     const reinforcementController = this.createReinforcementController();
@@ -101,15 +105,14 @@ class GameDisplay extends Component {
   }
 
   createReinforcementController() {
-    const { game } = this.state;
-    const currentPlayer = game.getCurrentPlayer();
+    const currentPlayer = this.getCurrentPlayer();
     const reinforcementController = new ReinforcementController(currentPlayer);
     return reinforcementController;
   }
 
   shouldHideReinforcementsModal() {
-    const { game, shouldHandleStartingReinforcements } = this.state;
-    const currentPlayer = game.getCurrentPlayer();
+    const { shouldHandleStartingReinforcements } = this.state;
+    const currentPlayer = this.getCurrentPlayer();
     const reinforcementsAvailable = currentPlayer.getReinforcements();
     return reinforcementsAvailable < 1 && !shouldHandleStartingReinforcements
   }
@@ -190,7 +193,7 @@ class GameDisplay extends Component {
     this.resetCombatState();
     this.checkIfGameOver();
   }
-
+  
   checkIfGameOver() {
     const { game } = this.state;
     const maxTurnsReached = game.checkMaxTurnsReached();
@@ -237,12 +240,6 @@ class GameDisplay extends Component {
     }
 
     return game.getTurnsRemaining();
-  }
-
-  getCurrentPlayer() {
-    const { game } = this.state;
-    const currentPlayer = game.getCurrentPlayer();
-    return currentPlayer;
   }
 
   getMaxAttackingDice() {
@@ -313,7 +310,10 @@ class GameDisplay extends Component {
             reinforcementsAvailable={currentPlayer.getReinforcements()}
           />
         )}
-        <EndTurnButton onEndTurnClick={this.onEndTurnClick} />
+        <EndTurnButton 
+          onEndTurnClick={this.onEndTurnClick} 
+          disabled={currentPlayer.getReinforcements() > 0}
+        />
         {this.state.isGameOver && (
           <GameOverModal />
         )}
