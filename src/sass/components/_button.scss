@@ -23,10 +23,10 @@
 }
 
 #number-of-players-button {
-    background-color: green;
+    background-color: #04ba04;
 
     &:hover {
-        background-color: darken(green, 10%);
+        background-color: darken(#04ba04, 10%);
     }
 }
 
