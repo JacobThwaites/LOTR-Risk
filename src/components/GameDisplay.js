@@ -266,6 +266,19 @@ class GameDisplay extends Component {
     return unitsToMove < 1;
   }
 
+  isEndTurnButtonDisabled() {
+    const { 
+      shouldDisplayUnitManeuverButton, 
+      shouldDisplayReinforcementsModal,
+      shouldHandleStartingReinforcements 
+    } = this.state;
+    return (
+      shouldDisplayUnitManeuverButton || 
+      shouldDisplayReinforcementsModal || 
+      shouldHandleStartingReinforcements
+    );
+  }
+
   render() {
     if (!this.state.game) {
       return ('');
@@ -312,7 +325,7 @@ class GameDisplay extends Component {
         )}
         <EndTurnButton 
           onEndTurnClick={this.onEndTurnClick} 
-          disabled={currentPlayer.getReinforcements() > 0}
+          disabled={this.isEndTurnButtonDisabled()}
         />
         {this.state.isGameOver && (
           <GameOverModal />
