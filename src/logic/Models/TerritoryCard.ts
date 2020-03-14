@@ -1,15 +1,15 @@
-import { Area } from './Area';
 import { Symbol } from '../Enums/Symbols';
+import { AreaType } from './AreaType';
 
 export class TerritoryCard {
-    private area: Area;
+    private area: AreaType;
     private symbol: Symbol;
-    constructor(area: Area, symbol: Symbol) {
+    constructor(area: AreaType, symbol: Symbol) {
         this.area = area;
         this.symbol = symbol;
     }
 
-    getArea(): Area {
+    getArea(): AreaType {
         return this.area;
     }
 

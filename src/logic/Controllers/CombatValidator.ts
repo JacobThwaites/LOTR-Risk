@@ -1,11 +1,11 @@
-import { Area } from '../Models/Area';
 import { Combat } from '../Enums/Combat'; 
+import { AreaType } from '../Models/AreaType';
 const { MAX_ATTACKING_DICE, MAX_DEFENDING_DICE } = Combat;
 
 export class CombatValidator {
-    private attackingArea: Area;
-    private defendingArea: Area;
-    constructor(attackingArea: Area, defendingArea: Area) {
+    private attackingArea: AreaType;
+    private defendingArea: AreaType;
+    constructor(attackingArea: AreaType, defendingArea: AreaType) {
         this.attackingArea = attackingArea;
         this.defendingArea = defendingArea;
     }

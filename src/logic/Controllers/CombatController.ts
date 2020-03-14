@@ -1,10 +1,10 @@
-import { Area } from '../Models/Area';
+import { AreaType } from '../Models/AreaType';
 import { CombatValidator } from '../Controllers/CombatValidator';
 
 export class CombatController {
-    private attackingArea: Area;
-    private defendingArea: Area;
-    constructor(attackingArea: Area, defendingArea: Area) {
+    private attackingArea: AreaType;
+    private defendingArea: AreaType;
+    constructor(attackingArea: AreaType, defendingArea: AreaType) {
         this.attackingArea = attackingArea;
         this.defendingArea = defendingArea;
     }
@@ -58,18 +58,17 @@ export class CombatController {
         this.removeUnitsFromLoser(attackerScore, defenderScore);
     }
 
-    getDefenderDiceBonus(defendingArea: Area): number {
+    getDefenderDiceBonus(defendingArea: AreaType): number {
         let bonus = 0;
-        if (defendingArea.getIsStronghold()) {
-            bonus += 1;
-        }
+        bonus += defendingArea.getDefendingBonus();
+
         if (defendingArea.getHasLeader()) {
             bonus += 1;
         }
         return bonus;
     }
 
-    getAttackerDiceBonus(attackingArea: Area): number {
+    getAttackerDiceBonus(attackingArea: AreaType): number {
         let bonus = 0;
         if (attackingArea.getHasLeader()) {
             bonus += 1;

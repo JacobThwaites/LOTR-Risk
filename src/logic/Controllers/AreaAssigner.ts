@@ -1,5 +1,5 @@
 import { Player } from "../Models/Player";
-import { Area } from "../Models/Area";
+import { AreaType } from "../Models/AreaType";
 import { Areas } from "../Enums/Areas";
 import shuffle from "../../utils/Shuffle";
 
@@ -21,7 +21,7 @@ export class AreaAssigner {
     }
   }
 
-  private addAreaToPlayer(area: Area, player: Player): void {
+  private addAreaToPlayer(area: AreaType, player: Player): void {
     player.addArea(area);
     area.setPlayer(player);
   }

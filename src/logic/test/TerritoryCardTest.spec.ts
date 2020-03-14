@@ -10,7 +10,7 @@ describe('TerritoryCard', () => {
     let area: Area;
     beforeEach(function () {
         const adjacentAreas = [AreaName.THE_SHIRE];
-        area = new Area(AreaName.THE_SHIRE, false, true, adjacentAreas);
+        area = new Area(AreaName.THE_SHIRE, true, adjacentAreas);
         territoryCard = new TerritoryCard(area, Symbol.DARK_RIDER);
     })
 

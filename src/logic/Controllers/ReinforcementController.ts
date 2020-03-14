@@ -1,5 +1,5 @@
 import { Player } from '../Models/Player';
-import { Area } from '../Models/Area';
+import { AreaType } from '../Models/AreaType';
 
 export class ReinforcementController {
     private player: Player;
@@ -7,7 +7,7 @@ export class ReinforcementController {
         this.player = player;
     }
 
-    addReinforcements(area: Area) {
+    addReinforcements(area: AreaType) {
         this.player.addReinforcementsToArea(area);
     }
 }
