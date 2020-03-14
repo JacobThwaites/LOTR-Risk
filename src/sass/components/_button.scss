@@ -1,17 +1,33 @@
 #end-turn-button {
     background-color: lightblue;
+
+    &:hover {
+        background-color: darken(lightblue, 15%);
+    }
 }
 
 #combat-button {
     background-color: red;
+
+    &:hover {
+        background-color: darken(red, 15%);
+    }
 }
 
 #unit-maneuver-button {
     background-color: green;
+
+    &:hover {
+        background-color: darken(green, 15%);
+    }
 }
 
 #number-of-players-button {
     background-color: green;
+
+    &:hover {
+        background-color: darken(green, 10%);
+    }
 }
 
 .button {
@@ -21,6 +37,7 @@
     font-size: 3rem;
     
     &.disabled {
-        cursor: default !important;
+        cursor: not-allowed !important;
+        opacity: .5 !important;
     }
 }
