@@ -1,12 +1,11 @@
 import { Area } from '../Models/Area';
-import { Areas } from '../Enums/Areas';
 import { AdventureCard } from '../Models/AdventureCard';
 import { Player } from '../Models/Player';
 import { Region } from '../Models/Region';
-import { Regions } from '../Enums/Regions';
 import { Colour } from '../Enums/Colours';
 import { assert } from 'chai';
 import 'mocha';
+import { AreaName } from '../Enums/AreaNames';
 
 describe('Player', () => {
     let area1: Area;
@@ -18,16 +17,17 @@ describe('Player', () => {
     let card1: AdventureCard;
     let player: Player;
     let region: Region;
-    beforeEach(function () {
-        area1 = Areas.HARONDOR;
-        area2 = Areas.UMBAR;
-        area3 = Areas.DEEP_HARAD;
-        area4 = Areas.HARAD;
-        area5 = Areas.NEAR_HARAD;
-        area6 = Areas.KHAND;
-        region = Regions.HARADWAITH;
+    beforeEach(function() {
+        area1 = new Area(AreaName.HARONDOR, []);
+        area2 = new Area(AreaName.UMBAR, []);
+        area3 = new Area(AreaName.DEEP_HARAD, []);
+        area4 = new Area(AreaName.HARAD, []);
+        area5 = new Area(AreaName.NEAR_HARAD, []);
+        area6 = new Area(AreaName.KHAND, []);
+        const areas = [area1, area2, area3, area4, area5, area6];
+        region = new Region('haradwaith', areas, 2);
         card1 = new AdventureCard('Do something');
-        player = new Player('Jake', Colour.GREEN, true);
+        player = new Player('Jake', Colour.GREEN);
         player.addUnits(10);
         player.addReinforcements(5);
     })
@@ -154,16 +154,5 @@ describe('Player', () => {
         player.addArea(area1);
         const result = player.ownsRegion(region);
         assert.isFalse(result);
-    });
-
-    it('should check if it owns all areas in a region after adding an area and add the region if it does', () => {
-        player.addArea(area1);
-        player.addArea(area2);
-        player.addArea(area3);
-        player.addArea(area4);
-        player.addArea(area5);
-        player.addArea(area6);
-        const hasRegions = player.calculateRegionBonus();
-        assert.deepStrictEqual(hasRegions, 2);
     });
 });

@@ -15,11 +15,10 @@ export class Player {
     private colour: Colour;
     constructor(
         name: string, 
-        colour: Colour, 
-        isGood: boolean
+        colour: Colour
         ) {
         this.name = name;
-        this.isGood = isGood;
+        this.isGood = colour === (Colour.GREEN || Colour.YELLOW);
         this.units = 0;
         this.reinforcements = 0;
         this.adventureCards = [];
@@ -42,6 +41,10 @@ export class Player {
 
     getTotalAreas(): number {
         return this.areas.length;
+    }
+
+    getColour(): Colour {
+        return this.colour;
     }
 
     getAdventureCard(index: number) {
@@ -96,11 +99,11 @@ export class Player {
     }
 
     calculateTotalReinforcements(): number {
-        let totalReinforments = 0;
-        totalReinforments += this.calculateAreaBonus();
-        totalReinforments += this.calculateRegionBonus();
+        let totalReinforcements = 0;
+        totalReinforcements += this.calculateAreaBonus();
+        totalReinforcements += this.calculateRegionBonus();
 
-        return totalReinforments;
+        return totalReinforcements;
     }
 
     calculateAreaBonus(): number {

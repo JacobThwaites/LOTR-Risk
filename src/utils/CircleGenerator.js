@@ -20,7 +20,7 @@ class CircleGenerator extends Component {
     return (
       <Circle 
         coordinates={coordinates}
-        color={area.player.colour}
+        color={area.player.getColour()}
         areaUnits={parseInt(area.units, 10)}
       />
     );
