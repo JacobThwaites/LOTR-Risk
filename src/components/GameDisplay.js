@@ -12,7 +12,7 @@ import GameOverModal from "./GameOverModal";
 import TurnInformation from "./TurnInformation";
 import { Combat } from '../logic/Enums/Combat'; 
 import { CombatValidator } from "../logic/Controllers/CombatValidator";
-import ChatWindow from "./ChatWindow";
+import ChatWindow from "./chat/ChatWindow";
 
 class GameDisplay extends Component {
   constructor({ props }) {
