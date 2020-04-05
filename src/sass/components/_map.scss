@@ -5,6 +5,10 @@
 
     border: 1px solid black;
     background-size: contain;
+
+    @media only screen and (max-width: 950px) { 
+        grid-column: 2 / 5;
+    };
 }
 
 button {

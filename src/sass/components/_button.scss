@@ -35,7 +35,8 @@
     width: 16rem;
     color: white;
     font-size: 3rem;
-    
+    line-height: 1;
+
     &.disabled {
         cursor: not-allowed !important;
         opacity: .5 !important;
