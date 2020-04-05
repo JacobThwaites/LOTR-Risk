@@ -20,10 +20,6 @@ class ChatWindow extends Component {
   }
 
   _handleKeyDown(event) {
-    console.log(event);
-    console.log(event.key);
-    
-
     switch (event.key) {
       case 'Enter':
         this.onSubmitMessage();
@@ -47,12 +43,9 @@ class ChatWindow extends Component {
     // send websocket update
   }
 
-  onTextChange(event) {
-    console.log(event);
-    
+  onTextChange(event) {    
     const text = event.target.value;
     this.setState({ chatInput: text });
-    console.log(text);
     
     if (text.length > 0) {
       this.setState({ isSomeoneTyping: true });

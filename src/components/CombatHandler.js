@@ -1,28 +1,17 @@
 import React from "react";
 import CombatButton from "./buttons/CombatButton";
-import UnitInput from "./common/UnitInput";
+import CombatInputs from "./CombatInputs";
 
 function CombatHandler(props) {
   return (
     <div className="combat-handler">
-      <div className="combat-handler__diceInput--attacking">
-        <UnitInput
-          label="Attacking Dice"
-          name="attackingDice"
-          max={props.maxAttackingDice}
-          value={props.attackingDice}
-          onChange={props.onNumberSelect}
-        />
-      </div>
-      <div className="combat-handler__diceInput--defending">
-        <UnitInput
-          label="Defending Dice"
-          name="defendingDice"
-          max={props.maxDefendingDice}
-          value={props.defendingDice}
-          onChange={props.onNumberSelect}
-        />
-      </div>
+      <CombatInputs 
+        maxAttackingDice={props.maxAttackingDice}
+        attackingDice={props.attackingDice}
+        maxDefendingDice={props.maxDefendingDice}
+        defendingDice={props.defendingDice}
+        onChange={props.onNumberSelect}
+      />
       <CombatButton 
         onCombatButtonClick={props.onCombatButtonClick} 
         isDisabled={!props.isCombatButtonClickable}
