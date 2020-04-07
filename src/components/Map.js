@@ -13,7 +13,7 @@ class Map extends Component {
     };
     this.isAreaClickable = this.isAreaClickable.bind(this);
     this.onAreaSelect = this.onAreaSelect.bind(this);
-    this.generateAreaClassName= this.generateAreaClassName.bind(this);
+    this.generateAreaClassName = this.generateAreaClassName.bind(this);
   }
 
   componentDidMount() {
@@ -30,17 +30,17 @@ class Map extends Component {
     const { attackingArea, defendingArea } = this.props;
     let className;
     if (a.area === attackingArea) {
-      className = 'attacker';
+      className = "attacker";
     } else if (a.area === defendingArea) {
-      className = 'defender';
+      className = "defender";
     } else {
-      className =  a.region;
+      className = a.region;
     }
 
     if (this.isAreaClickable(a.area)) {
       className = `${className} clickable`;
     }
-    
+
     return className;
   }
 
@@ -53,9 +53,11 @@ class Map extends Component {
   }
 
   isAttackingAreaSelected(area) {
-    return this.props.attackingArea === null || this.props.attackingArea === area;
+    return (
+      this.props.attackingArea === null || this.props.attackingArea === area
+    );
   }
-  
+
   isAttackingAreaClickable(area) {
     const { isRendered } = this.state;
     const { currentPlayer } = this.props;
@@ -63,50 +65,49 @@ class Map extends Component {
     if (!isRendered) {
       return false;
     }
-    
+
     return area.belongsToPlayer(currentPlayer);
   }
 
   isDefendingAreaClickable(area) {
     const { isRendered } = this.state;
     const { currentPlayer, attackingArea } = this.props;
-    
+
     if (!isRendered) {
       return false;
     }
 
     const defendingPlayer = area.player;
-    return (attackingArea.isNextToArea(area) && currentPlayer !== defendingPlayer) || attackingArea.area === area;
+    return (
+      (attackingArea.isNextToArea(area) && currentPlayer !== defendingPlayer) ||
+      attackingArea.area === area
+    );
   }
 
   render() {
     return (
-      <>
-        <svg
-          id="map"
-          height='88vh'
-          width='60vh'
-          version="1.1"
-          viewBox="0 0 1360 2000"
-          xmlns="http://www.w3.org/2000/svg"
-          fill='blue'
-        >
-          <g stroke="#000" strokeWidth="1px">
-            <Mountains />
-            <MapAreas
-              onClick={this.onAreaSelect}
-              attackingArea={this.props.attackingArea}
-              defendingArea={this.props.defendingArea}
-              isRendered={this.state.isRendered}
-              isAreaClickable={this.isAreaClickable}
-              generateAreaClassName={this.generateAreaClassName}
-            />
-            <Islands />
-            <Strongholds />
-            <Bridges />
-          </g>
-        </svg>
-      </>
+      <svg
+        id="map"
+        version="1.1"
+        viewBox="0 0 1360 2000"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="blue"
+      >
+        <g stroke="#000" strokeWidth="1px">
+          <Mountains />
+          <MapAreas
+            onClick={this.onAreaSelect}
+            attackingArea={this.props.attackingArea}
+            defendingArea={this.props.defendingArea}
+            isRendered={this.state.isRendered}
+            isAreaClickable={this.isAreaClickable}
+            generateAreaClassName={this.generateAreaClassName}
+          />
+          <Islands />
+          <Strongholds />
+          <Bridges />
+        </g>
+      </svg>
     );
   }
 }

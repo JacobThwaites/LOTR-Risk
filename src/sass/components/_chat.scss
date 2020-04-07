@@ -1,6 +1,7 @@
 
 #chat {
     max-width: 30rem;
+    width: minmax(15rem, 30rem);
     margin: 3rem auto;
     border: 1px solid #ddd;
     box-shadow: 1px 3px 5px rgba(0,0,0,0.05);
@@ -34,36 +35,30 @@
         margin: 0 2rem;
     }
 
+    &--message {
+        padding: 1rem 2rem;
+        box-sizing: border-box;
+        background: #eee;
+        border: 0;
+        display: block;
+        width: 100%;
+        background: #fff;
+        border-bottom: 1px solid #eee;
+        font-family: Nunito;
+        font-size: 1.6rem;
+    }
+
+    &--send-button {
+        background: #575ed8;
+        color: #fff;
+        font-size: 1.8rem;
+        border: 0;
+        padding: 1.2rem 0;
+        width: 100%;
+        border-radius: 0 0 2px 2px;
+    }
+
     @media only screen and (max-width: 950px) { 
         grid-row: 4 / 4;
     };
-}
-
-label {
-    box-sizing: border-box;
-    display: block;
-    padding: 1rem 2rem;
-}
-
-input {
-    padding: 1rem 2rem;
-    box-sizing: border-box;
-    background: #eee;
-    border: 0;
-    display: block;
-    width: 100%;
-    background: #fff;
-    border-bottom: 1px solid #eee;
-    font-family: Nunito;
-    font-size: 1.6rem;
-}
-
-button {
-    background: #575ed8;
-    color: #fff;
-    font-size: 1.8rem;
-    border: 0;
-    padding: 1.2rem 0;
-    width: 100%;
-    border-radius: 0 0 2px 2px;
 }

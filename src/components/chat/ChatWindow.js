@@ -58,7 +58,7 @@ class ChatWindow extends Component {
     const { chatInput, chatHandle, messages, isSomeoneTyping } = this.state;
     return (
       <div id="chat">
-        <h2>Chat</h2>
+        <h2 id="chat--header">Chat</h2>
         <div id="chat--window">
           <ChatOutput messages={messages} />
           <ChatFeedback isSomeoneTyping={isSomeoneTyping} />
