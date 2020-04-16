@@ -12,7 +12,7 @@ import GameOverModal from "./GameOverModal";
 import TurnInformation from "./TurnInformation";
 import { Combat } from '../logic/Enums/Combat'; 
 import { CombatValidator } from "../logic/Controllers/CombatValidator";
-import ChatWindow from "./chat/ChatWindow";
+import Chat from "./chat/Chat";
 
 class GameDisplay extends Component {
   constructor({ props }) {
@@ -299,7 +299,7 @@ class GameDisplay extends Component {
           turnsRemaining={this.getTurnsRemaining()}
           playerName={currentPlayer.getName()}
         />
-        <ChatWindow />
+        <Chat />
         {this.state.attackingArea && this.state.defendingArea && (
           <CombatHandler
             attackingDice={this.state.attackingDice}
