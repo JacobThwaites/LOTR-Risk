@@ -299,7 +299,9 @@ class GameDisplay extends Component {
           turnsRemaining={this.getTurnsRemaining()}
           playerName={currentPlayer.getName()}
         />
-        <Chat />
+        <Chat 
+          playerName={this.props.playerName}
+        />
         {this.state.attackingArea && this.state.defendingArea && (
           <CombatHandler
             attackingDice={this.state.attackingDice}

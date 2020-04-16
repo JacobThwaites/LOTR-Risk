@@ -26,7 +26,6 @@ class Risk extends Component {
 
     onChangeName(event) {
         const playerName = event.target.value;
-        console.log(playerName);
         this.setState({ playerName });
     }
 
@@ -69,7 +68,13 @@ class Risk extends Component {
     }
 
     render() {
-        const { shouldDisplayPlayerSelector, shouldDisplayNameSelector, numberOfPlayers } = this.state;
+        const { 
+            shouldDisplayPlayerSelector, 
+            shouldDisplayNameSelector, 
+            numberOfPlayers, 
+            playerName 
+        } = this.state;
+
         if (shouldDisplayPlayerSelector) {
             return this.renderPlayerSelector();
         }
@@ -81,6 +86,7 @@ class Risk extends Component {
         return (
             <GameDisplay 
                 numberOfPlayers={numberOfPlayers}
+                playerName={playerName}
             />
         )
     }

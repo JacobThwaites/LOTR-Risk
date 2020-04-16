@@ -11,7 +11,6 @@ class Chat extends Component {
     super(props);
     this.state = {
       chatInput: "",
-      chatHandle: "Test",
       messages: [],
       isSomeoneTyping: false
     };
@@ -45,6 +44,11 @@ class Chat extends Component {
     });
   }
 
+  addMessageToList(message) {
+    const { messages } = this.state;
+    messages.push(message);
+    this.setState({ messages });
+  }
 
   onSubmitMessage() {
     const { chatInput } = this.state;
@@ -57,16 +61,11 @@ class Chat extends Component {
   }
 
   emitChatMessage() {
-    const { chatInput, chatHandle } = this.state;
-    const message = { chatHandle, chatInput };
+    const { chatInput } = this.state;
+    const { playerName } = this.props;
+    const message = { chatHandle: playerName, chatInput };
     socket.emit("chat", message);
     this.setState({ chatInput: "", isSomeoneTyping: false });
-  }
-
-  addMessageToList(message) {
-    const { messages } = this.state;
-    messages.push(message);
-    this.setState({ messages });
   }
 
   onTextChange(event) {
