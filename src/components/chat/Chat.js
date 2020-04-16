@@ -4,7 +4,7 @@ import ChatInput from "./ChatInput";
 import io from "socket.io-client";
 import ChatWindow from "./ChatWindow";
 
-const socket = io('http://localhost:4000');
+const socket = io("http://localhost:4000");
 
 class Chat extends Component {
   constructor({ props }) {
@@ -13,7 +13,7 @@ class Chat extends Component {
       chatInput: "",
       chatHandle: "Test",
       messages: [],
-      isSomeoneTyping: false,
+      isSomeoneTyping: false
     };
 
     this.onTextChange = this.onTextChange.bind(this);
@@ -26,21 +26,28 @@ class Chat extends Component {
   }
 
   componentWillUnmount() {
-    socket.removeAllListeners('chat');
+    socket.removeAllListeners("chat");
   }
-
+  
   handleKeyDown(event) {
     switch (event.key) {
-      case 'Enter':
+      case "Enter":
         this.onSubmitMessage();
         break;
       default:
         break;
     }
   }
+  
+  listenForMessages() {
+    socket.on("chat", message => {
+      this.addMessageToList(message);
+    });
+  }
+
 
   onSubmitMessage() {
-  const { chatInput } = this.state;
+    const { chatInput } = this.state;
 
     if (chatInput.length < 1) {
       return;
@@ -52,14 +59,8 @@ class Chat extends Component {
   emitChatMessage() {
     const { chatInput, chatHandle } = this.state;
     const message = { chatHandle, chatInput };
-    socket.emit('chat', message);
+    socket.emit("chat", message);
     this.setState({ chatInput: "", isSomeoneTyping: false });
-  }
-
-  listenForMessages() {
-    socket.on('chat', (message) => {
-      this.addMessageToList(message)
-    })
   }
 
   addMessageToList(message) {
@@ -68,10 +69,10 @@ class Chat extends Component {
     this.setState({ messages });
   }
 
-  onTextChange(event) {    
+  onTextChange(event) {
     const text = event.target.value;
     this.setState({ chatInput: text });
-    
+
     if (text.length > 0) {
       this.setState({ isSomeoneTyping: true });
     } else {
@@ -84,10 +85,7 @@ class Chat extends Component {
     return (
       <div id="chat">
         <h2 id="chat--header">Chat</h2>
-        <ChatWindow 
-          messages={messages}
-          isSomeoneTyping={isSomeoneTyping}
-        />
+        <ChatWindow messages={messages} isSomeoneTyping={isSomeoneTyping} />
         <ChatInput
           message={chatInput}
           onTextChange={this.onTextChange}

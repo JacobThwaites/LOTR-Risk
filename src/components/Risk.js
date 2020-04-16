@@ -8,6 +8,8 @@ class Risk extends Component {
         this.state = {
             numberOfPlayers: null,
             shouldDisplayPlayerSelector: true,
+            shouldDisplayNameSelector: false,
+            playerName: '',
         }
 
         this.onNumberSelect = this.onNumberSelect.bind(this);
@@ -20,7 +22,15 @@ class Risk extends Component {
       }
 
     onSubmit() {
-        this.setState({ shouldDisplayPlayerSelector: false });
+        this.setState({ 
+            shouldDisplayPlayerSelector: false,
+            shouldDisplayNameSelector: true,
+        });
+    }
+
+    shouldDisplayNameSelector() {
+        const { shouldDisplayPlayerSelector, playerName } = this.state;
+        return !shouldDisplayPlayerSelector && !playerName;
     }
 
     renderPlayerSelector() {
@@ -34,10 +44,20 @@ class Risk extends Component {
         )
     }
 
+    renderNameSelector() {
+        return (
+            <h1>name selector</h1>
+        )
+    }
+
     render() {
-        const { shouldDisplayPlayerSelector, numberOfPlayers } = this.state;
+        const { shouldDisplayPlayerSelector, shouldDisplayNameSelector, numberOfPlayers } = this.state;
         if (shouldDisplayPlayerSelector) {
             return this.renderPlayerSelector();
+        }
+
+        if (shouldDisplayNameSelector) {
+            return this.renderNameSelector();
         }
 
         return (
