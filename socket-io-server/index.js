@@ -18,14 +18,11 @@ app.use(express.static('public'));
 const io = socket(server);
 
 io.on('connection', function(socket) {
-    console.log('connection made to socket', socket.id);
-
     socket.on('chat', function(data) {
         io.sockets.emit('chat', data);
     });
 
     socket.on('typing', function(data) {
-        console.log('index.js typing');
         socket.broadcast.emit('typing', data);
     });
 });
