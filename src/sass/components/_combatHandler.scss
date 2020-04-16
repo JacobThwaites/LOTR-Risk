@@ -4,9 +4,19 @@
     align-items: center;
     justify-content: space-evenly;
 
+    grid-column: 1 / 1;
+    grid-row: 2 / 4;
+
     &__dice-input {
-        height: 10rem;
-        width: 10rem;
-        font-size: 3rem;
+        @media only screen and (max-width: 950px) { 
+            display: flex;
+            flex-direction: row;
+        };
     }
+
+    @media only screen and (max-width: 950px) { 
+        grid-column: 2 / 4;
+        grid-row: 3 / 4;
+        height: 5rem;
+    };
 }

@@ -16,8 +16,8 @@ describe('Combat', () => {
         const areas = [AreaName.TOWER_HILLS];
         attackingArea = new Area(AreaName.TOWER_HILLS, areas);
         defendingArea = new Stronghold(AreaName.EVENDIM_HILLS, areas);
-        attacker = new Player('Good Person', Colour.GREEN, true);
-        defender = new Player('Evil Person', Colour.RED, false);
+        attacker = new Player('Good Person', Colour.GREEN);
+        defender = new Player('Evil Person', Colour.RED);
         attacker.addUnits(10);
         defender.addUnits(10);
         attackingArea.setPlayer(attacker);

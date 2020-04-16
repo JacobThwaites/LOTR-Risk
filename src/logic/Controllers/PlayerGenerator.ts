@@ -22,7 +22,7 @@ export class PlayerGenerator {
   createPlayer(index: number): Player {
     const playerName = this.playerNames[index];
     const colour = this.generateColour(index);
-    const player = new Player(playerName, colour, true);
+    const player = new Player(playerName, colour);
     return player;
   }
 
