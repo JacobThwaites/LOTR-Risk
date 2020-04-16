@@ -26,6 +26,10 @@ class ChatWindow extends Component {
     this.listenForMessages();
   }
 
+  componentWillUnmount() {
+    socket.removeAllListeners('chat');
+  }
+
   handleKeyDown(event) {
     switch (event.key) {
       case 'Enter':
