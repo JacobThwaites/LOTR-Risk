@@ -3,6 +3,9 @@ import FormButton from "../common/FormButton";
 import ChatOutput from "./ChatOutput";
 import ChatInput from "./ChatInput";
 import ChatFeedback from "./ChatFeedback";
+import io from "socket.io-client";
+
+const socket = io('http://localhost:4000');
 
 class ChatWindow extends Component {
   constructor({ props }) {
@@ -30,17 +33,33 @@ class ChatWindow extends Component {
   }
 
   onSubmitMessage() {
-    const { chatInput, chatHandle, messages } = this.state;
+  const { chatInput } = this.state;
 
     if (chatInput.length < 1) {
       return;
     }
 
-    const message = { chatHandle, chatInput };
-    messages.push(message);
-    this.setState({ messages, chatInput: "", isSomeoneTyping: false });
-
+    this.emitChatMessage();
+    this.addEmittedMessageToList();
+    
     // send websocket update
+  }
+
+  emitChatMessage() {
+    const { chatInput, chatHandle } = this.state;
+    const message = { chatHandle, chatInput };
+    socket.emit('chat', message);
+    return message;
+  }
+
+  addEmittedMessageToList() {
+    const { messages } = this.state;
+    socket.on('chat', (message) => {
+      console.log(message);
+      messages.push(message);
+      console.log(messages);
+      this.setState({ messages, chatInput: "", isSomeoneTyping: false });
+    })
   }
 
   onTextChange(event) {    
@@ -55,7 +74,7 @@ class ChatWindow extends Component {
   }
 
   render() {
-    const { chatInput, chatHandle, messages, isSomeoneTyping } = this.state;
+    const { chatInput, messages, isSomeoneTyping } = this.state;
     return (
       <div id="chat">
         <h2 id="chat--header">Chat</h2>
@@ -64,7 +83,6 @@ class ChatWindow extends Component {
           <ChatFeedback isSomeoneTyping={isSomeoneTyping} />
         </div>
         <ChatInput
-          chatHandle={chatHandle}
           message={chatInput}
           onTextChange={this.onTextChange}
           onKeyPress={this._handleKeyDown}

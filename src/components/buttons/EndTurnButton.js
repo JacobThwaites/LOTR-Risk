@@ -3,7 +3,7 @@ import FormButton from '../common/FormButton';
 
 function EndTurnButton(props) {
   return (
-    <div class='end-turn'>
+    <div className='end-turn'>
       <FormButton 
         id='end-turn-button'
         label='End Turn'
