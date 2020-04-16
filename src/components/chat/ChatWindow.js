@@ -19,10 +19,14 @@ class ChatWindow extends Component {
 
     this.onTextChange = this.onTextChange.bind(this);
     this.onSubmitMessage = this.onSubmitMessage.bind(this);
-    this._handleKeyDown = this._handleKeyDown.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
-  _handleKeyDown(event) {
+  componentDidMount() {
+    this.listenForMessages();
+  }
+
+  handleKeyDown(event) {
     switch (event.key) {
       case 'Enter':
         this.onSubmitMessage();
@@ -40,26 +44,25 @@ class ChatWindow extends Component {
     }
 
     this.emitChatMessage();
-    this.addEmittedMessageToList();
-    
-    // send websocket update
   }
 
   emitChatMessage() {
     const { chatInput, chatHandle } = this.state;
     const message = { chatHandle, chatInput };
     socket.emit('chat', message);
-    return message;
+    this.setState({ chatInput: "", isSomeoneTyping: false });
   }
 
-  addEmittedMessageToList() {
-    const { messages } = this.state;
+  listenForMessages() {
     socket.on('chat', (message) => {
-      console.log(message);
-      messages.push(message);
-      console.log(messages);
-      this.setState({ messages, chatInput: "", isSomeoneTyping: false });
+      this.addMessageToList(message)
     })
+  }
+
+  addMessageToList(message) {
+    const { messages } = this.state;
+    messages.push(message);
+    this.setState({ messages });
   }
 
   onTextChange(event) {    
@@ -85,7 +88,7 @@ class ChatWindow extends Component {
         <ChatInput
           message={chatInput}
           onTextChange={this.onTextChange}
-          onKeyPress={this._handleKeyDown}
+          onKeyPress={this.handleKeyDown}
         />
         <FormButton
           id="chat--send-button"
