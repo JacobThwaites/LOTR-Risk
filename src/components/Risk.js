@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PlayerSelector from './PlayerSelector';
 import GameDisplay from './GameDisplay';
+import NameSelector from './NameSelector';
 
 class Risk extends Component {
     constructor({ props }) {
@@ -13,19 +14,31 @@ class Risk extends Component {
         }
 
         this.onNumberSelect = this.onNumberSelect.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
+        this.onChangeName = this.onChangeName.bind(this);
+        this.onSubmitNumberOfPlayers = this.onSubmitNumberOfPlayers.bind(this);
+        this.onSubmitPlayerName = this.onSubmitPlayerName.bind(this);
     }
 
     onNumberSelect(number, b, a) {
         const { name } = a;
         this.setState({ [name]: number });
-      }
+    }
 
-    onSubmit() {
+    onChangeName(event) {
+        const playerName = event.target.value;
+        console.log(playerName);
+        this.setState({ playerName });
+    }
+
+    onSubmitNumberOfPlayers() {
         this.setState({ 
             shouldDisplayPlayerSelector: false,
             shouldDisplayNameSelector: true,
         });
+    }
+
+    onSubmitPlayerName() {
+        this.setState({ shouldDisplayNameSelector: false });
     }
 
     shouldDisplayNameSelector() {
@@ -39,14 +52,19 @@ class Risk extends Component {
             <PlayerSelector 
                 numberOfPlayers={numberOfPlayers}
                 onChange={this.onNumberSelect}
-                onSubmit={this.onSubmit}
+                onSubmit={this.onSubmitNumberOfPlayers}
             />
         )
     }
 
     renderNameSelector() {
+        const { playerName } = this.state;
         return (
-            <h1>name selector</h1>
+            <NameSelector 
+                playerName={playerName}
+                onChangeName={this.onChangeName}
+                onSubmit={this.onSubmitPlayerName}
+            />
         )
     }
 
