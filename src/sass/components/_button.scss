@@ -30,6 +30,14 @@
     }
 }
 
+#name-selector--button {
+    background-color: #04ba04;
+
+    &:hover {
+        background-color: darken(#04ba04, 10%);
+    }
+}
+
 .button {
     height: 8rem;
     width: 16rem;
