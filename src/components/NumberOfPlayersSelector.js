@@ -2,7 +2,7 @@ import React from 'react';
 import NumberSelector from './common/NumberSelector';
 import FormButton from './common/FormButton';
 
-function PlayerSelector(props) {
+function NumberOfPlayersSelector(props) {
     return (
         <div>
             <h1>Select number of players:</h1>
@@ -23,4 +23,4 @@ function PlayerSelector(props) {
     ); 
 }
 
-export default PlayerSelector;
+export default NumberOfPlayersSelector;

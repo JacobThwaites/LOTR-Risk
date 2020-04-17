@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
-import PlayerSelector from './PlayerSelector';
 import GameDisplay from './GameDisplay';
-import NameSelector from './NameSelector';
+import GameSetup from './GameSetup';
 
 class Risk extends Component {
     constructor({ props }) {
         super(props);
         this.state = {
             numberOfPlayers: null,
-            shouldDisplayPlayerSelector: true,
+            shouldDisplayNumberOfPlayersSelector: true,
             shouldDisplayNameSelector: false,
+            shouldDisplayGameSetup: true,
             playerName: '',
         }
 
         this.onNumberSelect = this.onNumberSelect.bind(this);
         this.onChangeName = this.onChangeName.bind(this);
         this.onSubmitNumberOfPlayers = this.onSubmitNumberOfPlayers.bind(this);
-        this.onSubmitPlayerName = this.onSubmitPlayerName.bind(this);
+        this.onSubmitName = this.onSubmitName.bind(this);
     }
 
     onNumberSelect(number, b, a) {
@@ -31,56 +31,39 @@ class Risk extends Component {
 
     onSubmitNumberOfPlayers() {
         this.setState({ 
-            shouldDisplayPlayerSelector: false,
+            shouldDisplayNumberOfPlayersSelector: false,
             shouldDisplayNameSelector: true,
         });
     }
 
-    onSubmitPlayerName() {
-        this.setState({ shouldDisplayNameSelector: false });
+    onSubmitName() {
+        this.setState({ shouldDisplayGameSetup: false });
     }
 
-    shouldDisplayNameSelector() {
-        const { shouldDisplayPlayerSelector, playerName } = this.state;
-        return !shouldDisplayPlayerSelector && !playerName;
-    }
-
-    renderPlayerSelector() {
-        const { numberOfPlayers } = this.state;
+    renderGameSetup() {
+        const { numberOfPlayers, playerName, shouldDisplayNumberOfPlayersSelector } = this.state;
         return (
-            <PlayerSelector 
+            <GameSetup 
                 numberOfPlayers={numberOfPlayers}
-                onChange={this.onNumberSelect}
-                onSubmit={this.onSubmitNumberOfPlayers}
-            />
-        )
-    }
-
-    renderNameSelector() {
-        const { playerName } = this.state;
-        return (
-            <NameSelector 
                 playerName={playerName}
+                shouldDisplayNumberOfPlayersSelector={shouldDisplayNumberOfPlayersSelector}
+                onChangeNumberOfPlayers={this.onNumberSelect}
+                onSubmitNumberOfPlayers={this.onSubmitNumberOfPlayers}
                 onChangeName={this.onChangeName}
-                onSubmit={this.onSubmitPlayerName}
+                onSubmitPlayerName={this.onSubmitName}
             />
         )
     }
 
     render() {
         const { 
-            shouldDisplayPlayerSelector, 
-            shouldDisplayNameSelector, 
             numberOfPlayers, 
-            playerName 
+            playerName,
+            shouldDisplayGameSetup
         } = this.state;
 
-        if (shouldDisplayPlayerSelector) {
-            return this.renderPlayerSelector();
-        }
-
-        if (shouldDisplayNameSelector) {
-            return this.renderNameSelector();
+        if (shouldDisplayGameSetup) {
+            return this.renderGameSetup();
         }
 
         return (
