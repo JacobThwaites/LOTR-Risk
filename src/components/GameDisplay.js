@@ -51,7 +51,7 @@ class GameDisplay extends Component {
   }
 
   createGameGenerator() {
-    const { numberOfPlayers } = this.props;
+    const { numberOfPlayers } = this.props.location.state;
     const maxTurns = 30;
     const gameGenerator = new GameGenerator(numberOfPlayers, maxTurns);
 
@@ -300,7 +300,7 @@ class GameDisplay extends Component {
           playerName={currentPlayer.getName()}
         />
         <Chat 
-          playerName={this.props.playerName}
+          playerName={this.props.location.state.playerName}
         />
         {this.state.attackingArea && this.state.defendingArea && (
           <CombatHandler

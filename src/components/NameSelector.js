@@ -5,7 +5,7 @@ function NameSelector({ onChangeName, playerName, onSubmit }) {
   return (
     <div className='name-selector'>
       <label className='name-selector--label'>Choose Name: </label>
-      <input className='name-selector--input' onChange={onChangeName} value={playerName} maxlength={15}/>
+      <input className='name-selector--input' onChange={onChangeName} value={playerName} maxLength={15}/>
       <FormButton 
         onClick={onSubmit}
         label='Submit'

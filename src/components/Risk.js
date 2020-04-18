@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import GameDisplay from './GameDisplay';
 import GameSetup from './GameSetup';
+import { Redirect } from 'react-router';
+
 
 class Risk extends Component {
     constructor({ props }) {
@@ -40,6 +42,10 @@ class Risk extends Component {
         this.setState({ shouldDisplayGameSetup: false });
     }
 
+    startGame() {
+
+    }
+
     renderGameSetup() {
         const { numberOfPlayers, playerName, shouldDisplayNumberOfPlayersSelector } = this.state;
         return (
@@ -66,12 +72,10 @@ class Risk extends Component {
             return this.renderGameSetup();
         }
 
-        return (
-            <GameDisplay 
-                numberOfPlayers={numberOfPlayers}
-                playerName={playerName}
-            />
-        )
+        return <Redirect to={{
+            pathname: '/game',
+            state: { numberOfPlayers, playerName }
+        }}/>;
     }
 }
 
