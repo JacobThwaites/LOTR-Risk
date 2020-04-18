@@ -1,24 +1,13 @@
 .reinforcements {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-    grid-column: 4 / 4;
-    grid-row: 1 / 2;
-    label {
-        font-size: 2rem;
-    }
+  grid-column: 4 / 4;
+  grid-row: 1 / 2;
 
-  input {
-    height: $input-field-height;
-    width: $input-field-width;
-    font-size: 3rem;
-    font-weight: 200;
-    text-align: center;
-  }
-
-  @media only screen and (max-width: 950px) { 
+  @media only screen and (max-width: 950px) {
     grid-column: 1 / 1;
     grid-row: 2 / 2;
-};
+  }
 }

@@ -6,14 +6,9 @@
     align-self: center;
     height: 50vh;
     justify-content: space-around;
-
-    &--label {
-        font-size: 2rem;
-    }
-
+    
     &--input {
         height: 5rem;
         width: 25rem;
-        font-size: 3rem;
     }
 }
