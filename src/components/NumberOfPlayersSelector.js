@@ -2,11 +2,12 @@ import React from 'react';
 import NumberSelector from './common/NumberSelector';
 import FormButton from './common/FormButton';
 
-function PlayerSelector(props) {
+function NumberOfPlayersSelector(props) {
     return (
-        <div>
-            <h1>Select number of players:</h1>
+        <div id='number-of-players'>
+            <label id='number-of-players--header'>Select number of players:</label>
             <NumberSelector 
+                id='number-of-players--selector'
                 max={4}
                 min={2}
                 name='numberOfPlayers'
@@ -14,7 +15,8 @@ function PlayerSelector(props) {
                 onChange={props.onChange}
             />
             <FormButton 
-                id='number-of-players-button'
+                id='number-of-players--button'
+                className='button'
                 label='Submit'
                 onClick={props.onSubmit}
                 disabled={!props.numberOfPlayers}
@@ -23,4 +25,4 @@ function PlayerSelector(props) {
     ); 
 }
 
-export default PlayerSelector;
+export default NumberOfPlayersSelector;

@@ -22,7 +22,15 @@
     }
 }
 
-#number-of-players-button {
+#number-of-players--button {
+    background-color: #04ba04;
+
+    &:hover {
+        background-color: darken(#04ba04, 10%);
+    }
+}
+
+#name-selector--button {
     background-color: #04ba04;
 
     &:hover {

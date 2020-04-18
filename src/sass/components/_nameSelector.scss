@@ -1,0 +1,14 @@
+.name-selector {
+    @include absCenter;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    align-self: center;
+    height: 50vh;
+    justify-content: space-around;
+    
+    &--input {
+        height: 5rem;
+        width: 25rem;
+    }
+}
