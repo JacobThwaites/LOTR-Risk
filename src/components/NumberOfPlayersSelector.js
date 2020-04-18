@@ -4,9 +4,10 @@ import FormButton from './common/FormButton';
 
 function NumberOfPlayersSelector(props) {
     return (
-        <div>
-            <h1>Select number of players:</h1>
+        <div id='number-of-players'>
+            <h1 id='number-of-players--header'>Select number of players:</h1>
             <NumberSelector 
+                id='number-of-players--selector'
                 max={4}
                 min={2}
                 name='numberOfPlayers'
@@ -14,7 +15,7 @@ function NumberOfPlayersSelector(props) {
                 onChange={props.onChange}
             />
             <FormButton 
-                id='number-of-players-button'
+                id='number-of-players--button'
                 label='Submit'
                 onClick={props.onSubmit}
                 disabled={!props.numberOfPlayers}
