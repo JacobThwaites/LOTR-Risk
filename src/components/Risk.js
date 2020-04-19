@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import GameDisplay from './GameDisplay';
 import GameSetup from './GameSetup';
+import { Redirect } from 'react-router';
+import { URLGenerator } from '../logic/Controllers/URLGenerator';
+
 
 class Risk extends Component {
     constructor({ props }) {
@@ -40,6 +42,13 @@ class Risk extends Component {
         this.setState({ shouldDisplayGameSetup: false });
     }
 
+    generateURL() {
+        const { numberOfPlayers } = this.state;
+        const urlGenerator = new URLGenerator(numberOfPlayers);
+        const url = urlGenerator.generateURL();
+        return url; 
+    }
+
     renderGameSetup() {
         const { numberOfPlayers, playerName, shouldDisplayNumberOfPlayersSelector } = this.state;
         return (
@@ -55,10 +64,17 @@ class Risk extends Component {
         )
     }
 
+    renderGame() {
+        const { numberOfPlayers, playerName } = this.state;
+        const url = this.generateURL();
+        return <Redirect to={{
+            pathname: url,
+            state: { numberOfPlayers, playerName }
+        }}/>;
+    }
+
     render() {
         const { 
-            numberOfPlayers, 
-            playerName,
             shouldDisplayGameSetup
         } = this.state;
 
@@ -66,12 +82,7 @@ class Risk extends Component {
             return this.renderGameSetup();
         }
 
-        return (
-            <GameDisplay 
-                numberOfPlayers={numberOfPlayers}
-                playerName={playerName}
-            />
-        )
+        return this.renderGame();
     }
 }
 
