@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import GameDisplay from './GameDisplay';
 import GameSetup from './GameSetup';
 import { Redirect } from 'react-router';
+import { URLGenerator } from '../logic/Controllers/URLGenerator';
 
 
 class Risk extends Component {
@@ -42,8 +42,11 @@ class Risk extends Component {
         this.setState({ shouldDisplayGameSetup: false });
     }
 
-    startGame() {
-
+    generateURL() {
+        const { numberOfPlayers } = this.state;
+        const urlGenerator = new URLGenerator(numberOfPlayers);
+        const url = urlGenerator.generateURL();
+        return url; 
     }
 
     renderGameSetup() {
@@ -61,10 +64,17 @@ class Risk extends Component {
         )
     }
 
+    renderGame() {
+        const { numberOfPlayers, playerName } = this.state;
+        const url = this.generateURL();
+        return <Redirect to={{
+            pathname: url,
+            state: { numberOfPlayers, playerName }
+        }}/>;
+    }
+
     render() {
         const { 
-            numberOfPlayers, 
-            playerName,
             shouldDisplayGameSetup
         } = this.state;
 
@@ -72,10 +82,7 @@ class Risk extends Component {
             return this.renderGameSetup();
         }
 
-        return <Redirect to={{
-            pathname: '/game',
-            state: { numberOfPlayers, playerName }
-        }}/>;
+        return this.renderGame();
     }
 }
 
