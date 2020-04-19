@@ -14,6 +14,7 @@ class Risk extends Component {
             shouldDisplayNameSelector: false,
             shouldDisplayGameSetup: true,
             playerName: '',
+            gameType: 'online'
         }
 
         this.onNumberSelect = this.onNumberSelect.bind(this);
@@ -56,11 +57,13 @@ class Risk extends Component {
             playerName, 
             shouldDisplayNumberOfPlayersSelector,
             shouldDisplayChooseGameType,
+            gameType
         } = this.state;
         return (
             <GameSetup 
                 numberOfPlayers={numberOfPlayers}
                 playerName={playerName}
+                gameType={gameType}
                 shouldDisplayChooseGameType={shouldDisplayChooseGameType}
                 shouldDisplayNumberOfPlayersSelector={shouldDisplayNumberOfPlayersSelector}
                 onChangeNumberOfPlayers={this.onNumberSelect}

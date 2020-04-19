@@ -1,0 +1,6 @@
+#game-type-selector {
+    @include absCenter;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

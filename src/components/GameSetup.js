@@ -12,8 +12,11 @@ class GameSetup extends Component {
   }
 
   renderChooseGameType() {
+    const { gameType } = this.props;
     return (
-      <GameTypeSelector />
+      <GameTypeSelector 
+        gameType={gameType}
+      />
     )
   }
 
