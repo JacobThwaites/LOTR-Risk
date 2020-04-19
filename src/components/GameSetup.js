@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import NumberOfPlayersSelector from "./NumberOfPlayersSelector";
 import NameSelector from "./NameSelector";
+import GameTypeSelector from "./GameTypeSelector";
 
 class GameSetup extends Component {
   constructor({ props }) {
@@ -8,6 +9,12 @@ class GameSetup extends Component {
     this.state = {
       numberOfPlayers: null
     };
+  }
+
+  renderChooseGameType() {
+    return (
+      <GameTypeSelector />
+    )
   }
 
   renderNumberOfPlayerSelector() {
@@ -34,8 +41,13 @@ class GameSetup extends Component {
 
   render() {
     const {
+      shouldDisplayChooseGameType,
       shouldDisplayNumberOfPlayersSelector,
     } = this.props;
+
+    if (shouldDisplayChooseGameType) {
+      return this.renderChooseGameType();
+    }
 
     if (shouldDisplayNumberOfPlayersSelector) {
         return this.renderNumberOfPlayerSelector();

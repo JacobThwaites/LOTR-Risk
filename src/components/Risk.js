@@ -9,7 +9,8 @@ class Risk extends Component {
         super(props);
         this.state = {
             numberOfPlayers: null,
-            shouldDisplayNumberOfPlayersSelector: true,
+            shouldDisplayChooseGameType: true,
+            shouldDisplayNumberOfPlayersSelector: false,
             shouldDisplayNameSelector: false,
             shouldDisplayGameSetup: true,
             playerName: '',
@@ -50,11 +51,17 @@ class Risk extends Component {
     }
 
     renderGameSetup() {
-        const { numberOfPlayers, playerName, shouldDisplayNumberOfPlayersSelector } = this.state;
+        const { 
+            numberOfPlayers, 
+            playerName, 
+            shouldDisplayNumberOfPlayersSelector,
+            shouldDisplayChooseGameType,
+        } = this.state;
         return (
             <GameSetup 
                 numberOfPlayers={numberOfPlayers}
                 playerName={playerName}
+                shouldDisplayChooseGameType={shouldDisplayChooseGameType}
                 shouldDisplayNumberOfPlayersSelector={shouldDisplayNumberOfPlayersSelector}
                 onChangeNumberOfPlayers={this.onNumberSelect}
                 onSubmitNumberOfPlayers={this.onSubmitNumberOfPlayers}
