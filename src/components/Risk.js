@@ -21,6 +21,7 @@ class Risk extends Component {
         this.onChangeName = this.onChangeName.bind(this);
         this.onSubmitNumberOfPlayers = this.onSubmitNumberOfPlayers.bind(this);
         this.onSubmitName = this.onSubmitName.bind(this);
+        this.onSubmitGameType = this.onSubmitGameType.bind(this);
     }
 
     onNumberSelect(number, b, a) {
@@ -42,6 +43,14 @@ class Risk extends Component {
 
     onSubmitName() {
         this.setState({ shouldDisplayGameSetup: false });
+    }
+
+    onSubmitGameType(gameType) {
+        this.setState({ 
+            gameType, 
+            shouldDisplayChooseGameType: false,
+            shouldDisplayNumberOfPlayersSelector: true
+        });
     }
 
     generateURL() {
@@ -70,6 +79,7 @@ class Risk extends Component {
                 onSubmitNumberOfPlayers={this.onSubmitNumberOfPlayers}
                 onChangeName={this.onChangeName}
                 onSubmitPlayerName={this.onSubmitName}
+                onSubmitGameType={this.onSubmitGameType}
             />
         )
     }

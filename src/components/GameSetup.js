@@ -12,10 +12,16 @@ class GameSetup extends Component {
     };
 
     this.selectGameType = this.selectGameType.bind(this);
+    this.onSubmitGameType = this.onSubmitGameType.bind(this);
   }
 
   selectGameType(gameType) {
     this.setState({ gameType });
+  }
+
+  onSubmitGameType() {
+    const { gameType } = this.state;
+    this.props.onSubmitGameType(gameType);
   }
 
   renderChooseGameType() {
@@ -24,8 +30,9 @@ class GameSetup extends Component {
     return (
       <GameTypeSelector 
         gameType={gameType}
-        selectGameType={this.selectGameType}
         isGameTypeOnline={isGameTypeOnline}
+        selectGameType={this.selectGameType}
+        onSubmitGameType={this.onSubmitGameType}
       />
     )
   }
