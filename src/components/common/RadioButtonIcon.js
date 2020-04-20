@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 function RadioButtonIcon(props) {
   return (
     <div className="radio-button-icon">
-      <label>
+      <label className='radio-button-icon--container'>
         <input
           type="radio"
           name="test"
