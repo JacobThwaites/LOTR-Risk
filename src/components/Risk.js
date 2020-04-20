@@ -9,16 +9,19 @@ class Risk extends Component {
         super(props);
         this.state = {
             numberOfPlayers: null,
-            shouldDisplayNumberOfPlayersSelector: true,
+            shouldDisplayChooseGameType: true,
+            shouldDisplayNumberOfPlayersSelector: false,
             shouldDisplayNameSelector: false,
             shouldDisplayGameSetup: true,
             playerName: '',
+            gameType: 'online'
         }
 
         this.onNumberSelect = this.onNumberSelect.bind(this);
         this.onChangeName = this.onChangeName.bind(this);
         this.onSubmitNumberOfPlayers = this.onSubmitNumberOfPlayers.bind(this);
         this.onSubmitName = this.onSubmitName.bind(this);
+        this.onSubmitGameType = this.onSubmitGameType.bind(this);
     }
 
     onNumberSelect(number, b, a) {
@@ -42,6 +45,14 @@ class Risk extends Component {
         this.setState({ shouldDisplayGameSetup: false });
     }
 
+    onSubmitGameType(gameType) {
+        this.setState({ 
+            gameType, 
+            shouldDisplayChooseGameType: false,
+            shouldDisplayNumberOfPlayersSelector: true
+        });
+    }
+
     generateURL() {
         const { numberOfPlayers } = this.state;
         const urlGenerator = new URLGenerator(numberOfPlayers);
@@ -50,16 +61,25 @@ class Risk extends Component {
     }
 
     renderGameSetup() {
-        const { numberOfPlayers, playerName, shouldDisplayNumberOfPlayersSelector } = this.state;
+        const { 
+            numberOfPlayers, 
+            playerName, 
+            shouldDisplayNumberOfPlayersSelector,
+            shouldDisplayChooseGameType,
+            gameType
+        } = this.state;
         return (
             <GameSetup 
                 numberOfPlayers={numberOfPlayers}
                 playerName={playerName}
+                gameType={gameType}
+                shouldDisplayChooseGameType={shouldDisplayChooseGameType}
                 shouldDisplayNumberOfPlayersSelector={shouldDisplayNumberOfPlayersSelector}
                 onChangeNumberOfPlayers={this.onNumberSelect}
                 onSubmitNumberOfPlayers={this.onSubmitNumberOfPlayers}
                 onChangeName={this.onChangeName}
                 onSubmitPlayerName={this.onSubmitName}
+                onSubmitGameType={this.onSubmitGameType}
             />
         )
     }
