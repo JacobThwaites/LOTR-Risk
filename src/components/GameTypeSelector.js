@@ -8,6 +8,8 @@ function GameTypeSelector(props) {
       <h1 id="game-type-selector--header">select game type</h1>
       <GameTypeSelectorOptions 
         online={props.online}
+        selectGameType={props.selectGameType}
+        gameType={props.gameType}
       />
       <FormButton
         label="submit"

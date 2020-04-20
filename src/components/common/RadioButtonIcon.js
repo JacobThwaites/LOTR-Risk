@@ -1,8 +1,9 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function RadioButtonIcon(props) {
   return (
-    <div className='radio-button-icon'>
+    <div className="radio-button-icon">
       <label>
         <input
           type="radio"
@@ -10,7 +11,12 @@ function RadioButtonIcon(props) {
           value={props.value}
           checked={props.checked}
         />
-        <img alt="alt" src="http://placehold.it/40x60/0bf/fff&text=A" />
+        <FontAwesomeIcon
+          value={props.value}
+          className={props.checked ? 'font-awesome-icon--checked' : 'font-awesome-icon'}
+          onClick={() => props.onClick(props.value)}
+          icon={props.icon}
+        />
       </label>
     </div>
   );

@@ -6,11 +6,16 @@
     height: 0;
   }
 
-  [type="radio"] + img {
-    cursor: pointer;
-  }
-
   [type=radio]:checked + img {
     outline: 2px solid black;
   }
+}
+
+.font-awesome-icon {
+    cursor: pointer;
+    color: blue;
+
+    &--checked {
+      color: darken($color: blue, $amount: 50)
+    }
 }

@@ -7,15 +7,25 @@ class GameSetup extends Component {
   constructor({ props }) {
     super(props);
     this.state = {
-      numberOfPlayers: null
+      numberOfPlayers: null,
+      gameType: 'online',
     };
+
+    this.selectGameType = this.selectGameType.bind(this);
+  }
+
+  selectGameType(gameType) {
+    this.setState({ gameType });
   }
 
   renderChooseGameType() {
-    const { gameType } = this.props;
+    const { isGameTypeOnline } = this.state;
+    const { gameType } = this.state;
     return (
       <GameTypeSelector 
         gameType={gameType}
+        selectGameType={this.selectGameType}
+        isGameTypeOnline={isGameTypeOnline}
       />
     )
   }
