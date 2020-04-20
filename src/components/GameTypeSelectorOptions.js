@@ -1,23 +1,23 @@
 import React from "react";
-import RadioButtonIcon from "./common/RadioButtonIcon";
 import { faGlobe, faDesktop } from '@fortawesome/free-solid-svg-icons'
+import GameTypeOption from "./GameTypeOption";
 
 function GameTypeSelectorOptions(props) {
   return (
     <div id="game-type-selector--options">
-        <RadioButtonIcon 
-            id="game-type-selector--option_online"
+        <GameTypeOption 
+            label='Online'
             value='online'
-            checked={props.gameType === 'online'}
             icon={faGlobe}
-            onClick={props.selectGameType}
+            selectGameType={props.selectGameType}
+            gameType={props.gameType}
         />
-        <RadioButtonIcon 
-            id="game-type-selector--option_local"
+        <GameTypeOption 
+            label='Local'
             value='local'
-            checked={props.gameType === 'local'}
             icon={faDesktop}
-            onClick={props.selectGameType}
+            selectGameType={props.selectGameType}
+            gameType={props.gameType}
         />
     </div>
   );
