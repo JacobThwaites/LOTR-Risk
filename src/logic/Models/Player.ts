@@ -5,7 +5,7 @@ import { getRegionForArea } from '../../utils/getRegionForArea';
 import { AreaType } from './AreaType';
 
 export class Player {
-    private name: String;
+    private name: string;
     private isGood: boolean;
     private units: number;
     private reinforcements: number;
@@ -27,7 +27,7 @@ export class Player {
         this.colour = colour;
     }
 
-    getName(): String {
+    getName(): string {
         return this.name;
     }
     
