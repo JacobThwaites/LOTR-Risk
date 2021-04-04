@@ -1,11 +1,5 @@
-export class URLGenerator {
-  private numberOfPlayers: number;
-  constructor(numberOfPlayers: number) {
-    this.numberOfPlayers = numberOfPlayers;
-  }
-
-  generateURL(): String {
-    let url = "/";
+export function generateURL(): string {
+  let url = "/";
     let characters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let charactersLength = characters.length;
@@ -14,5 +8,4 @@ export class URLGenerator {
       url += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return url;
-  }
 }
