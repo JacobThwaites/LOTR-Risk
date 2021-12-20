@@ -10,10 +10,8 @@ describe('Continent', () => {
     let areas: Array<Area>;
     let region: Region;
     beforeEach(function () {
-        const adjacentAreas1 = [AreaName.TOWER_HILLS];
-        const adjacentAreas2 = [AreaName.THE_SHIRE];
-        area = new Area(AreaName.THE_SHIRE, adjacentAreas1);
-        area2 = new Area(AreaName.TOWER_HILLS, adjacentAreas2);
+        area = new Area(AreaName.THE_SHIRE);
+        area2 = new Area(AreaName.TOWER_HILLS);
         areas = [area, area2];
         region = new Region('Test Area', areas, 5);
     })

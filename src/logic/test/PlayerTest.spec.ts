@@ -18,12 +18,12 @@ describe('Player', () => {
     let player: Player;
     let region: Region;
     beforeEach(function() {
-        area1 = new Area(AreaName.HARONDOR, []);
-        area2 = new Area(AreaName.UMBAR, []);
-        area3 = new Area(AreaName.DEEP_HARAD, []);
-        area4 = new Area(AreaName.HARAD, []);
-        area5 = new Area(AreaName.NEAR_HARAD, []);
-        area6 = new Area(AreaName.KHAND, []);
+        area1 = new Area(AreaName.HARONDOR);
+        area2 = new Area(AreaName.UMBAR);
+        area3 = new Area(AreaName.DEEP_HARAD);
+        area4 = new Area(AreaName.HARAD);
+        area5 = new Area(AreaName.NEAR_HARAD);
+        area6 = new Area(AreaName.KHAND);
         const areas = [area1, area2, area3, area4, area5, area6];
         region = new Region('haradwaith', areas, 2);
         card1 = new AdventureCard('Do something');
