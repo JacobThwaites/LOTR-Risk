@@ -17,10 +17,8 @@ describe('Game', () => {
         player1 = new Player('Biff', Colour.GREEN);
         player2 = new Player('Chip', Colour.RED);
         playersList = [player1, player2];
-        const adjacentAreas1 = [AreaName.WEATHER_HILLS, AreaName.CARROCK, AreaName.EREGION];
-        const adjacentAreas2 = [AreaName.DEAD_MARSHES, AreaName.SOUTH_ITHILIEN, AreaName.MINAS_MORGUL, AreaName.MINAS_TIRITH];
-        area1 = new Area(AreaName.RHUDAUR, adjacentAreas1);
-        area2 = new Area(AreaName.ITHILIEN, adjacentAreas2);
+        area1 = new Area(AreaName.RHUDAUR);
+        area2 = new Area(AreaName.ITHILIEN);
         player1.addArea(area1);
         player2.addArea(area2);
         game = new Game(playersList, 1);

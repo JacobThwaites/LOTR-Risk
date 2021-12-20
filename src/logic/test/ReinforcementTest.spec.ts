@@ -9,7 +9,7 @@ import { AreaName } from '../Enums/AreaNames';
 describe('Reinforcements', () => {
     const player = new Player('test', Colour.GREEN);
     player.addReinforcements(1);
-    const area = new Area(AreaName.ANDRAST, [AreaName.ANDUIN_VALLEY]);
+    const area = new Area(AreaName.ANDRAST);
     const rc = new ReinforcementController(player);
 
     it('should be able to add reinforcements to an area', () => {

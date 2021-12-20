@@ -6,6 +6,7 @@ import Islands from "./svgPaths/Islands";
 import Strongholds from "./svgPaths/Strongholds";
 import { AreaType } from "../logic/Models/AreaType"; 
 import { Player } from "../logic/Models/Player";
+import { areAreasConnected } from "../utils/areAreasConnected";
 
 type Props = {
   attackingArea: any,
@@ -80,20 +81,20 @@ export default class Map extends Component<Props, State> {
       return false;
     }
 
-    return area.belongsToPlayer(currentPlayer);
+    return currentPlayer.ownsArea(area);
   }
 
   isDefendingAreaClickable(area: AreaType) {
     const { isRendered } = this.state;
     const { currentPlayer, attackingArea } = this.props;
 
-    if (!isRendered) {
+    if (!isRendered || !attackingArea) {
       return false;
     }
 
     const defendingPlayer = area.getPlayer();
     return (
-      (attackingArea.isNextToArea(area) && currentPlayer !== defendingPlayer) ||
+      (areAreasConnected(attackingArea, area) && currentPlayer !== defendingPlayer) ||
       attackingArea.area === area
     );
   }

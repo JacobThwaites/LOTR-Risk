@@ -12,15 +12,13 @@ export abstract class AreaType {
     protected player: Player | null;
     protected hasLeader: boolean;
     protected units: number;
-    protected adjacentAreas: Array<AreaName>
-    constructor(name: AreaName, adjacentAreas: Array<AreaName>) {
+    constructor(name: AreaName) {
         this.name = name;
         this.defendingBonus = new NoDefendingBonus();
         this.isSiteOfPower = new NotSiteOfPower();
         this.player = null;
         this.hasLeader = false;
         this.units = 0;
-        this.adjacentAreas = adjacentAreas;
     }
 
     getName(): AreaName {
@@ -65,17 +63,5 @@ export abstract class AreaType {
 
     removeUnits(units: number) {
         this.units -= units;
-    }
-
-    getAdjacentAreas(): Array<AreaName> {
-        return this.adjacentAreas;
-    }
-
-    belongsToPlayer(player: Player): boolean {
-        return this.player === player;
-    }
-
-    isNextToArea(area: AreaType): boolean {
-        return this.adjacentAreas.includes(area.getName());
     }
 }

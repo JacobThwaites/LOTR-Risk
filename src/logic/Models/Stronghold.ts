@@ -3,8 +3,8 @@ import { AreaType } from './AreaType';
 import { HasDefendingBonus } from './HasDefendingBonus';
 
 export class Stronghold extends AreaType {
-    constructor(name: AreaName, adjacentAreas: Array<AreaName>) {
-        super(name, adjacentAreas);
+    constructor(name: AreaName) {
+        super(name);
         this.defendingBonus = new HasDefendingBonus();
     }
 }

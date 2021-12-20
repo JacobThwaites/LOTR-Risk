@@ -9,8 +9,7 @@ describe('TerritoryCard', () => {
     let territoryCard: TerritoryCard;
     let area: Area;
     beforeEach(function () {
-        const adjacentAreas = [AreaName.THE_SHIRE];
-        area = new Area(AreaName.THE_SHIRE, adjacentAreas);
+        area = new Area(AreaName.THE_SHIRE);
         territoryCard = new TerritoryCard(area, Symbol.DARK_RIDER);
     })
 
