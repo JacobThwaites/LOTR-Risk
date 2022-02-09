@@ -2,8 +2,7 @@
 
 A web based implementation of the board game 'Lord of the Rings Risk', built in TypeScript and React.js. 
 
-
-
+<img src='./public/gameplay-example.png' alt='gameplay image' width='375' height='450'>
 
 ### Running Locally
 This project requires TypeScript and React to run. It can be run locally using the following commands:
