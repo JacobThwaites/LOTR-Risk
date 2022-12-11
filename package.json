@@ -16,7 +16,7 @@
     "chai": "^4.2.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.3",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "font-awesome": "^4.7.0",
     "mocha": "^6.2.3",
     "node-sass": "^4.14.1",
