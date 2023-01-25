@@ -6,7 +6,7 @@ import ChatWindow from "./ChatWindow";
 import { ChatMessage } from './ChatMessageType';
 
 
-const socket = io("http://localhost:4000");
+// const socket = io("http://localhost:4000");
 
 type Props = {
   playerName: string
@@ -37,7 +37,7 @@ class Chat extends Component<Props, State> {
   }
 
   componentWillUnmount() {
-    socket.removeAllListeners();
+    // socket.removeAllListeners();
   }
   
   handleKeyDown(event: any) {
@@ -51,9 +51,9 @@ class Chat extends Component<Props, State> {
   }
   
   listenForMessages() {
-    socket.on("chat", (message: ChatMessage) => {
-      this.addMessageToList(message);
-    });
+    // socket.on("chat", (message: ChatMessage) => {
+    //   this.addMessageToList(message);
+    // });
   }
 
   addMessageToList(message: ChatMessage) {
@@ -76,7 +76,7 @@ class Chat extends Component<Props, State> {
     const { chatInput } = this.state;
     const { playerName } = this.props;
     const message = { chatHandle: playerName, chatInput };
-    socket.emit("chat", message);
+    // socket.emit("chat", message);
     this.setState({ chatInput: "", isSomeoneTyping: false });
   }
 

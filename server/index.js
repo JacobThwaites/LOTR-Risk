@@ -4,10 +4,21 @@ const { v4: uuidv4 } = require('uuid');
 const express = require("express")
 const app = express()
 const db = require("./database.js")
+const cors = require('cors')
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+ // enable cors to the server
+ const corsOpt = {
+    origin: process.env.CORS_ALLOW_ORIGIN || '*', // this work well to configure origin url in the server
+    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'], // to works well with web app, OPTIONS is required
+    allowedHeaders: ['Content-Type', 'Authorization'] // allow json and token in the headers
+};
+app.use(cors(corsOpt)); // cors for all the routes of the application
+app.options('*', cors(corsOpt)); // automatic cors gen for HTTP verbs in all routes, This can be redundant but I kept to be sure that will always work.
+
 
 // Server port
 const HTTP_PORT = 8000
@@ -87,7 +98,7 @@ app.post("/api/game/", (req, res, next) => {
             res.status(400).json({"error": err.message})
             return;
         }
-        res.json({
+        res.status(201).json({
             "message": "success",
             "data": data,
             "id" : this.lastID
