@@ -7,7 +7,6 @@ export default function Risk() {
     const [numberOfPlayers, setNumberOfPlayers] = useState(0);
     const [shouldDisplayChooseGameType, setShouldDisplayChooseGameType] = useState(true);
     const [shouldDisplayNumberOfPlayersSelector, setShouldDisplayNumberOfPlayersSelector] = useState(false);
-    const [shouldDisplayNameSelector, setShouldDisplayNameSelector] = useState(false);
     const [shouldDisplayGameSetup, setShouldDisplayGameSetup] = useState(true);
     const [playerName, setPlayerName] = useState('');
     const [gameType, setGameType] = useState('online');
@@ -23,7 +22,6 @@ export default function Risk() {
 
     function onSubmitNumberOfPlayers() {
         setShouldDisplayNumberOfPlayersSelector(false);
-        setShouldDisplayNameSelector(true);
     }
 
     async function onSubmitName() {

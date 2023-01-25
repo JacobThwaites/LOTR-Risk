@@ -9,3 +9,19 @@ export function generateURL(): string {
     }
     return url;
 }
+
+export async function createGame(numberOfPlayers: number) {
+  try {
+      return fetch('http://localhost:8000/api/game', {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ numPlayers: numberOfPlayers })
+      });
+  } catch(err) {
+      console.error(err);
+      return;
+  }
+}
