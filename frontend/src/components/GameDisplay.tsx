@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import { GameGenerator } from "../logic/Controllers/GameGenerator";
 import { CombatController } from "../logic/Controllers/CombatController";
 import { ReinforcementController } from "../logic/Controllers/ReinforcementController";
@@ -10,365 +10,290 @@ import EndTurnButton from "./buttons/EndTurnButton";
 import ReinforcementsModal from "./ReinforcementsModal";
 import GameOverModal from "./GameOverModal";
 import TurnInformation from "./TurnInformation";
-import { Combat } from '../logic/Enums/Combat'; 
+import { Combat } from '../logic/Enums/Combat';
 import { CombatValidator } from "../logic/Controllers/CombatValidator";
 import Chat from "./chat/Chat";
 import { Game } from "../logic/Models/Game";
 import { Area } from "../logic/Models/Area";
+import { useLocation } from "react-router";
+import { Player } from "../logic/Models/Player";
 
-type Props = {
-  location: any
-}
-
-type State = {
-  game: Game | null,
-  attackingArea: Area | null,
-  defendingArea: Area | null,
-  attackingDice: number,
-  defendingDice: number,
-  shouldDisplayUnitManeuverButton: boolean,
-  shouldDisplayReinforcementsModal: boolean,
-  shouldHandleStartingReinforcements: boolean,
-  areaToMoveUnits: Area | null,
-  areaToReceiveUnits: Area | null,
-  unitsToMove: number,
-  isGameOver: boolean,
-  isRendered: boolean
-}
-
-class GameDisplay extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      game: null,
-      attackingArea: null,
-      defendingArea: null,
-      attackingDice: 1,
-      defendingDice: 1,
-      shouldDisplayUnitManeuverButton: false,
-      shouldDisplayReinforcementsModal: false,
-      shouldHandleStartingReinforcements: true,
-      areaToMoveUnits: null,
-      areaToReceiveUnits: null,
-      unitsToMove: 0,
-      isGameOver: false,
-      isRendered: false
-    };
-    this.onAreaSelect = this.onAreaSelect.bind(this);
-    this.addReinforcements = this.addReinforcements.bind(this);
-    this.onNumberSelect = this.onNumberSelect.bind(this);
-    this.onEndTurnClick = this.onEndTurnClick.bind(this);
-    this.onMoveUnits = this.onMoveUnits.bind(this);
-    this.onCombatButtonClick = this.onCombatButtonClick.bind(this);
-  }
-
-  componentDidMount() {
-    this.setState({ isRendered: true });
-    this.setupGame();
-  }
-
-  setupGame() {
-    const gameGenerator = this.createGameGenerator();
-    const game = gameGenerator.generateGame();
-    this.setState({ game, shouldDisplayReinforcementsModal: true });
-  }
-
-  createGameGenerator() {
-    const { numberOfPlayers } = this.props.location.state;
-    const maxTurns = 30;
-    const gameGenerator = new GameGenerator(numberOfPlayers, maxTurns);
-
-    return gameGenerator;
-  }
-
-  onAreaSelect(area: Area) {
-    const { shouldDisplayReinforcementsModal, shouldHandleStartingReinforcements } = this.state;
-
-    if (shouldHandleStartingReinforcements) {
-      this.handleStartingReinforcements(area);
-    } else if (shouldDisplayReinforcementsModal) {
-      this.addReinforcements(area);
-    } else {
-      this.setAreaForCombat(area);
+type Location = {
+    state: {
+        numberOfPlayers: number,
+        playerName: string
     }
-  }
+}
 
-  handleStartingReinforcements(area: Area) {
-    const { game } = this.state;
-    const currentPlayer = this.getCurrentPlayer();
+function GameDisplay(): JSX.Element {
+    const [game, setGame] = useState<Game | null>(null);
+    const [attackingArea, setAttackingArea] = useState<Area | null>(null);
+    const [defendingArea, setDefendingArea] = useState<Area | null>(null);
+    const [attackingDice, setAttackingDice] = useState<number>(1);
+    const [defendingDice, setDefendingDice] = useState<number>(1);
+    const [shouldDisplayUnitManeuverButton, setShouldDisplayUnitManeuverButton] = useState<boolean>(false);
+    const [shouldDisplayReinforcementsModal, setShouldDisplayReinforcementsModal] = useState<boolean>(false);
+    const [shouldHandleStartingReinforcements, setShouldHandleStartingReinforcements] = useState<boolean>(true);
+    const [areaToMoveUnits, setAreaToMoveUnits] = useState<Area | null>(null);
+    const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<Area | null>(null);
+    const [unitsToMove, setUnitsToMove] = useState<number>(0);
+    const [isGameOver, setIsGameOver] = useState<boolean>(false);
+    const [rerender, setRerender] = useState(false);
+    const location: Location = useLocation();
 
-    if (game!.playersHaveReinforcements()) {
-      if (currentPlayer!.getReinforcements() < 1) {
+    useEffect(() => {
+        setupGame();
+    }, [])
+
+    function setupGame(): void {
+        const gameGenerator = createGameGenerator();
+        const game = gameGenerator.generateGame();
+        setGame(game);
+        setShouldDisplayReinforcementsModal(true);
+    }
+
+    function createGameGenerator(): GameGenerator {
+        const { numberOfPlayers } = location.state;
+        const maxTurns = 30;
+        const gameGenerator = new GameGenerator(numberOfPlayers, maxTurns);
+
+        return gameGenerator;
+    }
+
+    function onAreaSelect(area: Area): void {
+        if (shouldHandleStartingReinforcements) {
+            handleStartingReinforcements(area);
+        } else if (shouldDisplayReinforcementsModal) {
+            addReinforcements(area);
+        } else {
+            setAreaForCombat(area);
+        }
+    }
+
+    function handleStartingReinforcements(area: Area): void {
+        const currentPlayer = getCurrentPlayer();
+
+        if (game!.playersHaveReinforcements()) {
+            addReinforcements(area);
+
+            if (currentPlayer!.getReinforcements() < 1) {
+                game!.changeCurrentPlayer();
+                setGame(game);
+                setRerender(!rerender);
+            }
+
+            return;
+        }
+
         game!.changeCurrentPlayer();
-        this.setState({ game });
-        return;
-      }
-
-      this.addReinforcements(area);
-      return;
+        setShouldDisplayReinforcementsModal(false);
+        setShouldHandleStartingReinforcements(false)
     }
 
-    game!.changeCurrentPlayer();
-    this.setState({ shouldDisplayReinforcementsModal: false, shouldHandleStartingReinforcements: false });
-  }
-
-  getCurrentPlayer() {
-    const { game } = this.state;
-
-    return game?.getCurrentPlayer();
-  }
-
-  addReinforcements(area: Area) {
-    const { game } = this.state;
-    const reinforcementController = this.createReinforcementController();
-    reinforcementController.addReinforcements(area);
-    this.setState({ game });
-
-    if (this.shouldHideReinforcementsModal()) {
-      this.setState({ shouldDisplayReinforcementsModal: false });
-    }
-  }
-
-  createReinforcementController() {
-    const currentPlayer = this.getCurrentPlayer();
-    const reinforcementController = new ReinforcementController(currentPlayer!);
-    return reinforcementController;
-  }
-
-  shouldHideReinforcementsModal() {
-    const { shouldHandleStartingReinforcements } = this.state;
-    const currentPlayer = this.getCurrentPlayer();
-    const reinforcementsAvailable = currentPlayer!.getReinforcements();
-    return reinforcementsAvailable < 1 && !shouldHandleStartingReinforcements
-  }
-
-  setAreaForCombat(area: Area) {
-    if (this.state.attackingArea === area) {
-      this.setState({
-        attackingArea: null,
-        defendingArea: null
-      });
-    } else if (this.state.defendingArea === area) {
-      this.setState({ defendingArea: null });
-    } else if (this.state.attackingArea !== null) {
-      this.setState({ defendingArea: area });
-    } else {
-      this.setState({ attackingArea: area });
-    }
-  }
-
-  async onCombatButtonClick() {
-    const { defendingArea } = this.state;
-    this.handleCombat();
-
-    if (!defendingArea) {
-      return;
-    }
-    
-    if (!defendingArea.hasUnitsRemaining()) {
-      await this.setStateForManeuvers();
+    function getCurrentPlayer(): Player | undefined {
+        return game?.getCurrentPlayer();
     }
 
-    this.resetCombatState();
-  }
+    function addReinforcements(area: Area): void {
+        const reinforcementController = createReinforcementController();
+        reinforcementController.addReinforcements(area);
+        setRerender(!rerender);
 
-  handleCombat() {
-    const { attackingDice, defendingDice } = this.state;
-    const combatController = this.createCombatController();
-    combatController!.handleCombat(attackingDice, defendingDice);
-  }
-
-  createCombatController() {
-    const {
-      attackingArea,
-      defendingArea,
-    } = this.state;
-
-    const combatController = new CombatController(
-      attackingArea!,
-      defendingArea!
-    );
-
-    return combatController;
-  }
-  
-  setStateForManeuvers() {
-    const { attackingArea, defendingArea } = this.state;
-    this.setState({
-      shouldDisplayUnitManeuverButton: true,
-      areaToMoveUnits: attackingArea,
-      areaToReceiveUnits: defendingArea
-    });
-  }
-
-  resetCombatState() {
-    this.setState({
-      attackingArea: null,
-      defendingArea: null,
-      attackingDice: 1,
-      defendingDice: 1
-    });
-  }
-
-  onNumberSelect(number: number, b: any, a: any) {
-    const { name } = a;
-    this.setState(this.updateState(name, number))
-  }
-
-  updateState = <T extends number>(key: keyof State, value: T) => (
-    prevState: State
-  ): State => ({
-    ...prevState,
-    [key]: value
-  })
-
-
-  onEndTurnClick() {
-    const { game } = this.state;
-    
-    game!.handleNewTurn(); 
-    this.setState({ shouldDisplayReinforcementsModal: true });
-    this.resetCombatState();
-    this.checkIfGameOver();
-  }
-  
-  checkIfGameOver() {
-    const { game } = this.state;
-    const maxTurnsReached = game!.checkMaxTurnsReached();
-
-    if (maxTurnsReached) {
-      this.setState({ isGameOver: true });
+        if (shouldHideReinforcementsModal()) {
+            setShouldDisplayReinforcementsModal(false);
+        }
     }
-  }
 
-  onMoveUnits() {
-    const { unitsToMove } = this.state;
-    const unitManeuverController = this.createUnitManeuverController();
-    const areUnitsMoved = unitManeuverController.handleManeuver(unitsToMove);
-    
-    if (areUnitsMoved) {
-      this.resetManeuverState();
+    function createReinforcementController(): ReinforcementController {
+        const currentPlayer = getCurrentPlayer();
+        const reinforcementController = new ReinforcementController(currentPlayer!);
+        return reinforcementController;
     }
-  }
 
-  createUnitManeuverController() {
-    const { areaToMoveUnits, areaToReceiveUnits } = this.state;
-    const unitManeuverController = new UnitManeuverController(
-      areaToMoveUnits!,
-      areaToReceiveUnits!
-    );
+    function shouldHideReinforcementsModal(): boolean {
+        const currentPlayer = getCurrentPlayer();
+        const reinforcementsAvailable = currentPlayer!.getReinforcements();
+        return reinforcementsAvailable < 1 && !shouldHandleStartingReinforcements
+    }
 
-    return unitManeuverController;
-  }
+    function setAreaForCombat(area: Area): void {
+        if (attackingArea === area) {
+            setAttackingArea(null);
+            setDefendingArea(null);
+        } else if (defendingArea === area) {
+            setDefendingArea(null);
+        } else if (attackingArea !== null) {
+            setDefendingArea(area);
+        } else {
+            setAttackingArea(area);
+        }
+    }
 
-  resetManeuverState() {
-    this.setState({
-      shouldDisplayUnitManeuverButton: false,
-      areaToMoveUnits: null,
-      areaToReceiveUnits: null,
-      unitsToMove: 0
-    });
-  }
+    async function onCombatButtonClick() {
+        handleCombat();
 
-  getTurnsRemaining() {
-    const { game } = this.state;
-    return game!.getTurnsRemaining();
-  }
+        if (!defendingArea) {
+            return;
+        }
 
-  getMaxAttackingDice() {
-    const { attackingArea } = this.state;
-    const { MAX_ATTACKING_DICE } = Combat;
-    return Math.min(MAX_ATTACKING_DICE, attackingArea!.getUnits() - 1);
-  }
+        if (!defendingArea.hasUnitsRemaining()) {
+            await setStateForManeuvers();
+        }
 
-  getMaxDefendingDice() {
-    const { defendingArea, attackingDice } = this.state;
-    const { MAX_DEFENDING_DICE } = Combat;
-    return Math.min(attackingDice, defendingArea!.getUnits(), MAX_DEFENDING_DICE);
-  }
+        resetCombatState();
+    }
 
-  isCombatButtonClickable() {
-    const { defendingDice, attackingDice, attackingArea, defendingArea } = this.state;
-    const combatValidator = new CombatValidator(attackingArea!, defendingArea!);
-    const isValid = combatValidator.isCombatValid(attackingDice, defendingDice);
-    return isValid;
-  }
+    function handleCombat(): void {
+        const combatController = createCombatController();
+        combatController!.handleCombat(attackingDice, defendingDice);
+    }
 
-  isMoveUnitsButtonDisabled() {
-    const { unitsToMove } = this.state;
-    return unitsToMove < 1;
-  }
+    function createCombatController(): CombatController {
+        const combatController = new CombatController(
+            attackingArea!,
+            defendingArea!
+        );
 
-  isEndTurnButtonDisabled() {
-    const { 
-      shouldDisplayUnitManeuverButton, 
-      shouldDisplayReinforcementsModal,
-      shouldHandleStartingReinforcements 
-    } = this.state;
+        return combatController;
+    }
+
+    function setStateForManeuvers(): void {
+        setShouldDisplayUnitManeuverButton(true);
+        setAreaToMoveUnits(attackingArea);
+        setAreaToReceiveUnits(defendingArea);
+    }
+
+    function resetCombatState(): void {
+        setAttackingArea(null);
+        setDefendingArea(null);
+        setAttackingDice(1);
+        setDefendingDice(1);
+    }
+
+    function onEndTurnClick(): void {
+        game!.handleNewTurn();
+        setShouldDisplayReinforcementsModal(true);
+        resetCombatState();
+        checkIfGameOver();
+    }
+
+    function checkIfGameOver(): void {
+        const maxTurnsReached = game!.checkMaxTurnsReached();
+
+        if (maxTurnsReached) {
+            setIsGameOver(true);
+        }
+    }
+
+    function onMoveUnits(): void {
+        const unitManeuverController = createUnitManeuverController();
+        const areUnitsMoved = unitManeuverController.handleManeuver(unitsToMove);
+
+        if (areUnitsMoved) {
+            resetManeuverState();
+        }
+    }
+
+    function createUnitManeuverController(): UnitManeuverController {
+        const unitManeuverController = new UnitManeuverController(
+            areaToMoveUnits!,
+            areaToReceiveUnits!
+        );
+
+        return unitManeuverController;
+    }
+
+    function resetManeuverState(): void {
+        setShouldDisplayUnitManeuverButton(false);
+        setAreaToMoveUnits(null);
+        setAreaToReceiveUnits(null);
+        setUnitsToMove(0);
+    }
+
+    function getMaxAttackingDice(): number {
+        const { MAX_ATTACKING_DICE } = Combat;
+        return Math.min(MAX_ATTACKING_DICE, attackingArea!.getUnits() - 1);
+    }
+
+    function getMaxDefendingDice(): number {
+        const { MAX_DEFENDING_DICE } = Combat;
+        return Math.min(attackingDice, defendingArea!.getUnits(), MAX_DEFENDING_DICE);
+    }
+
+    function isCombatButtonClickable(): boolean {
+        const combatValidator = new CombatValidator(attackingArea!, defendingArea!);
+        const isValid = combatValidator.isCombatValid(attackingDice, defendingDice);
+        return isValid;
+    }
+
+    function isMoveUnitsButtonDisabled(): boolean {
+        return unitsToMove < 1;
+    }
+
+    function isEndTurnButtonDisabled(): boolean {
+        return (
+            shouldDisplayUnitManeuverButton ||
+            shouldDisplayReinforcementsModal ||
+            shouldHandleStartingReinforcements
+        );
+    }
+
+    if (!game) {
+        return (<></>);
+    }
+
+    const currentPlayer = getCurrentPlayer();
     return (
-      shouldDisplayUnitManeuverButton || 
-      shouldDisplayReinforcementsModal || 
-      shouldHandleStartingReinforcements
+        <div id='game-display'>
+            <Map
+                attackingArea={attackingArea}
+                defendingArea={defendingArea}
+                attackingDice={attackingDice}
+                currentPlayer={currentPlayer!}
+                onAreaSelect={onAreaSelect}
+            />
+            <TurnInformation
+                turnsRemaining={game!.getTurnsRemaining()}
+                playerName={currentPlayer!.getName()}
+            />
+            <Chat
+                playerName={location.state.playerName}
+            />
+            {attackingArea && defendingArea && (
+                <CombatHandler
+                    attackingDice={attackingDice}
+                    defendingDice={defendingDice}
+                    maxAttackingDice={getMaxAttackingDice()}
+                    maxDefendingDice={getMaxDefendingDice()}
+                    onCombatButtonClick={onCombatButtonClick}
+                    setAttackingDice={setAttackingDice}
+                    setDefendingDice={setDefendingDice}
+                    isCombatButtonClickable={isCombatButtonClickable()}
+                />
+            )}
+            {shouldDisplayUnitManeuverButton && (
+                <UnitManeuverHandler
+                    max={areaToMoveUnits!.getUnits() - 1}
+                    unitsToMove={unitsToMove}
+                    onMoveUnits={onMoveUnits}
+                    setUnitsToMove={setUnitsToMove}
+                    isButtonDisabled={isMoveUnitsButtonDisabled()}
+                />
+            )}
+            {shouldDisplayReinforcementsModal && (
+                <ReinforcementsModal
+                    reinforcementsAvailable={currentPlayer!.getReinforcements()}
+                />
+            )}
+            <EndTurnButton
+                onEndTurnClick={onEndTurnClick}
+                isDisabled={isEndTurnButtonDisabled()}
+            />
+            {isGameOver && (
+                <GameOverModal />
+            )}
+        </div>
     );
-  }
-
-  render() {
-    if (!this.state.game) {
-      return ('');
-    }
-    
-    const currentPlayer = this.getCurrentPlayer();
-    return (
-      <div id='game-display'>
-        <Map
-          attackingArea={this.state.attackingArea}
-          defendingArea={this.state.defendingArea}
-          attackingDice={this.state.attackingDice}
-          currentPlayer={currentPlayer!}
-          onAreaSelect={this.onAreaSelect}
-        />
-        <TurnInformation 
-          turnsRemaining={this.getTurnsRemaining()}
-          playerName={currentPlayer!.getName()}
-        />
-        <Chat 
-          playerName={this.props.location.state.playerName}
-        />
-        {this.state.attackingArea && this.state.defendingArea && (
-          <CombatHandler
-            attackingDice={this.state.attackingDice}
-            defendingDice={this.state.defendingDice}
-            maxAttackingDice={this.getMaxAttackingDice()}
-            maxDefendingDice={this.getMaxDefendingDice()}
-            onCombatButtonClick={this.onCombatButtonClick}
-            onNumberSelect={this.onNumberSelect}
-            isCombatButtonClickable={this.isCombatButtonClickable()}
-          />
-        )}
-        {this.state.shouldDisplayUnitManeuverButton && (
-          <UnitManeuverHandler
-            max={this.state.areaToMoveUnits!.getUnits() - 1}
-            unitsToMove={this.state.unitsToMove}
-            onMoveUnits={this.onMoveUnits}
-            onNumberSelect={this.onNumberSelect}
-            isButtonDisabled={this.isMoveUnitsButtonDisabled()}
-          />
-        )}
-        {this.state.shouldDisplayReinforcementsModal && (
-          <ReinforcementsModal
-            reinforcementsAvailable={currentPlayer!.getReinforcements()}
-          />
-        )}
-        <EndTurnButton 
-          onEndTurnClick={this.onEndTurnClick} 
-          isDisabled={this.isEndTurnButtonDisabled()}
-        />
-        {this.state.isGameOver && (
-          <GameOverModal />
-        )}
-      </div>
-    );
-  }
 }
 
 export default GameDisplay;
