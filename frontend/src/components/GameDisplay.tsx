@@ -17,11 +17,13 @@ import { Game } from "../logic/Models/Game";
 import { Area } from "../logic/Models/Area";
 import { useLocation } from "react-router";
 import { Player } from "../logic/Models/Player";
+import { getGame } from "../logic/Controllers/requests";
 
 type Location = {
     state: {
         numberOfPlayers: number,
-        playerName: string
+        playerName: string,
+        gameUuid: string
     }
 }
 
@@ -45,7 +47,9 @@ function GameDisplay(): JSX.Element {
         setupGame();
     }, [])
 
-    function setupGame(): void {
+    async function setupGame() {
+        const res = await getGame(location.state.gameUuid);
+        const json = await res!.json(); 
         const gameGenerator = createGameGenerator();
         const game = gameGenerator.generateGame();
         setGame(game);
