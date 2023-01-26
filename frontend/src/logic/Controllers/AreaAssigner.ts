@@ -24,7 +24,7 @@ export class AreaAssigner {
   }
 }
 
-export function assignAreasNew(numPlayers: number): Array<AreaType[]> {
+export function setupAreaAssignments(numPlayers: number): Array<AreaType[]> {
   const playerAreas: Array<Array<AreaType>> = create2DArray(numPlayers);
 
   const areas = Object.values(Areas);

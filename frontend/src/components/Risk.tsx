@@ -3,7 +3,7 @@ import GameSetup from "./GameSetup";
 import { Redirect } from "react-router";
 import { saveGame } from "../logic/Controllers/requests";
 import { convertPlayerAreasToString } from "../utils/playerAreaParser";
-import { assignAreasNew } from "../logic/Controllers/AreaAssigner";
+import { setupAreaAssignments } from "../logic/Controllers/AreaAssigner";
 
 export default function Risk() {
     const [numberOfPlayers, setNumberOfPlayers] = useState(0);
@@ -62,7 +62,7 @@ function GameRedirect(props: { numberOfPlayers: number, playerName: string }) {
 
     const getData = async () => {
         try {
-            const areas = assignAreasNew(props.numberOfPlayers);
+            const areas = setupAreaAssignments(props.numberOfPlayers);
             const areaStrings = convertPlayerAreasToString(areas);
             const res = await saveGame(props.numberOfPlayers, areaStrings);
             const json = await res!.json()
