@@ -18,6 +18,7 @@ export default function RadioButtonIcon(props: Props) {
           name="test"
           value={props.value}
           checked={props.checked}
+          onChange={() => {}}
         />
         <FontAwesomeIcon
           // value={props.value}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import CombatButton from "./buttons/CombatButton";
 import CombatInputs from "./CombatInputs";
 
@@ -7,7 +7,8 @@ type Props = {
   attackingDice: number,
   maxDefendingDice: number,
   defendingDice: number,
-  onNumberSelect: Function,
+  setAttackingDice: Dispatch<SetStateAction<number>>,
+  setDefendingDice: Dispatch<SetStateAction<number>>,
   onCombatButtonClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
   isCombatButtonClickable: boolean
 }
@@ -20,7 +21,8 @@ export default function CombatHandler(props: Props) {
         attackingDice={props.attackingDice}
         maxDefendingDice={props.maxDefendingDice}
         defendingDice={props.defendingDice}
-        onNumberSelect={props.onNumberSelect}
+        setAttackingDice={props.setAttackingDice}
+        setDefendingDice={props.setDefendingDice}
       />
       <CombatButton 
         onCombatButtonClick={props.onCombatButtonClick} 

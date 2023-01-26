@@ -1,13 +1,13 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import UnitInput from "./common/UnitInput";
 import MoveUnitsButton from "./buttons/MoveUnitsButton";
 
 type Props = {
   max: number,
-  onNumberSelect: Function, 
   unitsToMove: number,
   onMoveUnits: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
-  isButtonDisabled: boolean
+  isButtonDisabled: boolean,
+  setUnitsToMove: Dispatch<SetStateAction<number>>
 }
 
 export default function UnitManeuverHandler(props: Props) {
@@ -18,7 +18,7 @@ export default function UnitManeuverHandler(props: Props) {
           label="Unit Maneuvers"
           name="unitsToMove"
           max={props.max}
-          onChange={props.onNumberSelect}
+          onChange={(num: number) => props.setUnitsToMove(num)}
           value={props.unitsToMove}
         />
       </div>

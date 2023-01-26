@@ -1,12 +1,13 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import UnitInput from "./common/UnitInput";
 
 type Props = {
   maxAttackingDice: number,
   attackingDice: number,
-  onNumberSelect: Function,
   maxDefendingDice: number,
   defendingDice: number
+  setAttackingDice: Dispatch<SetStateAction<number>>,
+  setDefendingDice: Dispatch<SetStateAction<number>>,
 }
 
 export default function CombatInputs(props: Props) {
@@ -18,7 +19,7 @@ export default function CombatInputs(props: Props) {
           name="attackingDice"
           max={props.maxAttackingDice}
           value={props.attackingDice}
-          onChange={props.onNumberSelect}
+          onChange={(num: number) => props.setAttackingDice(num)}
         />
       </div>
       <div className="combat-handler__dice-input--defending">
@@ -27,7 +28,7 @@ export default function CombatInputs(props: Props) {
           name="defendingDice"
           max={props.maxDefendingDice}
           value={props.defendingDice}
-          onChange={props.onNumberSelect}
+          onChange={(num: number) => props.setDefendingDice(num)}
         />
       </div>
     </div>

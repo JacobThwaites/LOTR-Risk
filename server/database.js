@@ -13,6 +13,10 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             uuid text UNIQUE,
             num_players INTEGER,
+            player_1_areas TEXT,
+            player_2_areas TEXT,
+            player_3_areas TEXT,
+            player_4_areas TEXT,
             CONSTRAINT uuid_unique UNIQUE (uuid)
             )`);
     }
