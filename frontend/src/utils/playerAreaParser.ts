@@ -1,3 +1,4 @@
+import { Areas } from "../logic/Enums/Areas";
 import { Area } from "../logic/Models/Area";
 import { AreaType } from "../logic/Models/AreaType";
 
@@ -18,10 +19,26 @@ export function convertPlayerAreasToString(areas: Array<AreaType[]>): Array<stri
     return parsedAreas;
 }
 
-export function getAreasByNames(areasString: Array<string>): Array<Area> {
-    const areas: Array<Area> = [];
+export function getAreas(areaNames: Array<string | null>) {
+    const playerAreas: Array<Array<AreaType>> = [];
 
-// TODO: implement logic
+    for (let i = 0; i < areaNames.length; i++) {
+        if (typeof areaNames[i] === 'string') {
+            const names = areaNames[i]!.split(', ');
+            const areas = getAreasByNames(names);
+            playerAreas.push(areas);
+        }
+    }
+
+    return playerAreas;
+}
+
+export function getAreasByNames(areaNames: Array<string>): Array<Area> {
+    const areas: Array<Area> = [];
+    for (let i = 0; i < areaNames.length; i++) {
+        const area: AreaType = Areas[areaNames[i]];
+        areas.push(area);
+    }
 
     return areas;
 }

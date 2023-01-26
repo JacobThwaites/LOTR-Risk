@@ -15,17 +15,10 @@ import { CombatValidator } from "../logic/Controllers/CombatValidator";
 import Chat from "./chat/Chat";
 import { Game } from "../logic/Models/Game";
 import { Area } from "../logic/Models/Area";
-import { useLocation } from "react-router";
+import { useParams } from "react-router";
 import { Player } from "../logic/Models/Player";
 import { getGame } from "../logic/Controllers/requests";
-
-type Location = {
-    state: {
-        numberOfPlayers: number,
-        playerName: string,
-        gameUuid: string
-    }
-}
+import { getAreas } from "../utils/playerAreaParser";
 
 function GameDisplay(): JSX.Element {
     const [game, setGame] = useState<Game | null>(null);
@@ -41,23 +34,24 @@ function GameDisplay(): JSX.Element {
     const [unitsToMove, setUnitsToMove] = useState<number>(0);
     const [isGameOver, setIsGameOver] = useState<boolean>(false);
     const [rerender, setRerender] = useState(false);
-    const location: Location = useLocation();
+    const { gameUUID } = useParams<{ gameUUID: string }>();
 
     useEffect(() => {
         setupGame();
     }, [])
 
     async function setupGame() {
-        const res = await getGame(location.state.gameUuid);
+        const res = await getGame(gameUUID);
         const json = await res!.json(); 
-        const gameGenerator = createGameGenerator();
-        const game = gameGenerator.generateGame();
+        const areaNames = [json.data.player_1_areas,json.data.player_2_areas,json.data.player_3_areas,json.data.player_4_areas];
+        const areas = getAreas(areaNames);
+        const gameGenerator = createGameGenerator(json.data.num_players);
+        const game = gameGenerator.generateGame(areas);
         setGame(game);
         setShouldDisplayReinforcementsModal(true);
     }
 
-    function createGameGenerator(): GameGenerator {
-        const { numberOfPlayers } = location.state;
+    function createGameGenerator(numberOfPlayers: number): GameGenerator {
         const maxTurns = 30;
         const gameGenerator = new GameGenerator(numberOfPlayers, maxTurns);
 
@@ -261,7 +255,8 @@ function GameDisplay(): JSX.Element {
                 playerName={currentPlayer!.getName()}
             />
             <Chat
-                playerName={location.state.playerName}
+            // TODO: get player name 
+                playerName={''}
             />
             {attackingArea && defendingArea && (
                 <CombatHandler

@@ -69,7 +69,6 @@ export class Player {
 
     addArea(area: AreaType) {
         this.areas.push(area);
-
         const regionForArea = getRegionForArea(area);
 
         if (this.ownsRegion(regionForArea)) {

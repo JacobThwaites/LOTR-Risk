@@ -2,8 +2,9 @@ import { Area } from '../Models/Area';
 import { Stronghold } from '../Models/Stronghold';
 import { SiteOfPower } from '../Models/SiteOfPower';
 import { AreaName } from './AreaNames';
+import { AreaType } from '../Models/AreaType';
 
-export const Areas = {
+export const Areas: {[key: string]: AreaType} = {
     FORLINDON: new Area(AreaName.FORLINDON),
     MITHLOND: new SiteOfPower(AreaName.MITHLOND),
     EVENDIM_HILLS: new Stronghold(AreaName.EVENDIM_HILLS),

@@ -2,10 +2,8 @@ import React, { useEffect, useState } from "react";
 import GameSetup from "./GameSetup";
 import { Redirect } from "react-router";
 import { saveGame } from "../logic/Controllers/requests";
-import { Game } from "../logic/Models/Game";
-import { GameGenerator } from "../logic/Controllers/GameGenerator";
 import { convertPlayerAreasToString } from "../utils/playerAreaParser";
-import { AreaAssigner, assignAreasNew } from "../logic/Controllers/AreaAssigner";
+import { assignAreasNew } from "../logic/Controllers/AreaAssigner";
 
 export default function Risk() {
     const [numberOfPlayers, setNumberOfPlayers] = useState(0);
@@ -62,22 +60,10 @@ export default function Risk() {
 function GameRedirect(props: { numberOfPlayers: number, playerName: string }) {
     const [uuid, setUuid] = useState('');
 
-    function generateGame(numberOfPlayers: number): Game {
-        const maxTurns = 30;
-        const gameGenerator = new GameGenerator(numberOfPlayers, maxTurns);
-        const game = gameGenerator.generateGame();
-
-        return game;
-    }
-
     const getData = async () => {
         try {
-            // const game = generateGame(props.numberOfPlayers);
             const areas = assignAreasNew(props.numberOfPlayers);
-            console.log('areas');
-            console.log(areas);
             const areaStrings = convertPlayerAreasToString(areas);
-            console.log(areaStrings);
             const res = await saveGame(props.numberOfPlayers, areaStrings);
             const json = await res!.json()
             const { uuid } = json.data;
