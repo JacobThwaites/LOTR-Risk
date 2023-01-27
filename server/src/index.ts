@@ -1,11 +1,8 @@
-const { v4: uuidv4 } = require('uuid');
+import express from 'express';
+import cors from 'cors';
+import * as routes from './routes';
 
-// Create express app
-const express = require("express")
 const app = express()
-const cors = require('cors')
-const routes = require('./routes.js');
-
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -19,15 +16,15 @@ const corsOpt = {
 app.use(cors(corsOpt)); // cors for all the routes of the application
 app.options('*', cors(corsOpt)); // automatic cors gen for HTTP verbs in all routes, This can be redundant but I kept to be sure that will always work.
 
-const HTTP_PORT = 8000
+const HTTP_PORT = 8000;
 
 app.listen(HTTP_PORT, () => {
-    console.log("Server running on port %PORT%".replace("%PORT%", HTTP_PORT))
+    console.log("Server running on port %PORT%".replace("%PORT%", HTTP_PORT.toString()));
 });
 
 
 // Root endpoint
-app.get("/", (req, res, next) => {
+app.get("/", (req: express.Request, res: express.Response) => {
     res.json({ "message": "Ok" })
 });
 
@@ -39,7 +36,7 @@ app.post("/api/game/", routes.createGame);
 
 
 // Default response for any other request
-app.use(function (req, res) {
+app.use(function (_req: express.Request, res: express.Response) {
     res.status(404);
 });
 
