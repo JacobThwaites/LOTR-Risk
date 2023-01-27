@@ -1,8 +1,9 @@
+import request from 'supertest';
+
 require('jest');
 const app = require('./index');
-const request = require('supertest');
 
-let uuid;
+let uuid: any;
 
 describe('GET /', function () {
   it('responds with json', function (done) {
@@ -30,7 +31,7 @@ describe('POST /api/game', function () {
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(201)
-      .end(function(err, res) {
+      .end(function(err: Error, res: request.Response) {
         expect(res.body.data.numPlayers).toEqual(payload.numPlayers);
         expect(res.body.data.player1Areas).toEqual(payload.player1Areas);
         expect(res.body.data.player2Areas).toEqual(payload.player2Areas);
