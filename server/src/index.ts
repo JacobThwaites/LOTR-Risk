@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import * as routes from './routes';
+import * as games from './games';
+import * as players from './players';
 
 const app = express()
 const bodyParser = require("body-parser");
@@ -30,10 +31,14 @@ app.get("/", (req: express.Request, res: express.Response) => {
 
 
 // Game 
-app.get('/api/game', routes.allGames);
-app.get("/api/game/:uuid", routes.getGameByUUID);
-app.post("/api/game/", routes.createGame);
+app.get('/api/game', games.allGames);
+app.get("/api/game/:uuid", games.getGameByUUID);
+app.post("/api/game/", games.createGame);
 
+// Player
+app.get('/api/player', players.allPlayers);
+app.get('/api/player/:id', players.getPlayerById);
+app.post("/api/player/", players.createPlayer);
 
 // Default response for any other request
 app.use(function (_req: express.Request, res: express.Response) {
