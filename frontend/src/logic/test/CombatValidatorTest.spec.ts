@@ -8,7 +8,7 @@ describe('CombatValidator', () => {
     let attackingArea: Area;
     let defendingArea: Area;
     let combatValidator: CombatValidator;
-    before(function() {
+    beforeAll(function() {
         attackingArea = Areas.FORLINDON;
         defendingArea = Areas.MINHIRIATH;
         attackingArea.addUnits(3);

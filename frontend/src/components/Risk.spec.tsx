@@ -16,7 +16,6 @@ it('renders Risk correctly', () => {
 it('handles game setup', () => {
     const { getByText } = render(<Risk />);
 
-    // const gameTypeButton = getByText('Submit');
     const gameTypeButton = screen.getByRole('button')
     fireEvent.click(gameTypeButton);
 

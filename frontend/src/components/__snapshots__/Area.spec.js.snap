@@ -4,6 +4,7 @@ exports[`should render an SVG path 1`] = `
 <path
   className="area test"
   d="test"
+  data-cy="area"
   id={1}
   onClick={[Function]}
 />

@@ -15,5 +15,3 @@ test('should render an SVG path', () => {
   let tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });
-
-it('should change colour when clicked', );
