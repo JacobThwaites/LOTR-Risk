@@ -9,6 +9,9 @@
 # testing
 /frontend/coverage
 
+# server compiled JS files
+/server/dist
+
 # production
 /build
 

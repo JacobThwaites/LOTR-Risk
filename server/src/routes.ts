@@ -1,12 +1,13 @@
 'use strict'
-const db = require("./database.js")
-const { v4: uuidv4 } = require('uuid');
+import { db } from './database';
+import { v4 as uuidv4 } from 'uuid';
+import { Request, Response } from 'express';
 
 
-exports.allGames = function(req, res) {
+export const allGames = function(req: Request, res: Response) {
     const sql = "select * from games"
-    const params = []
-    db.all(sql, params, (err, rows) => {
+    const params: any[] = []
+    db.all(sql, params, (err: Error, rows: any[]) => {
         if (err) {
             res.status(400).json({ "error": err.message });
             return;
@@ -19,11 +20,11 @@ exports.allGames = function(req, res) {
     });
 };
 
-exports.getGameByUUID = function(req, res, next) {
+export const getGameByUUID = function(req: Request, res: Response) {
     const sql = "select * from games where uuid = ?"
     const params = [req.params.uuid];
 
-    db.get(sql, params, (err, row) => {
+    db.get(sql, params, (err: Error, row: any) => {
         if (err) {
             res.status(400).json({ "error": err.message });
             return;
@@ -41,7 +42,7 @@ exports.getGameByUUID = function(req, res, next) {
     });
 }
 
-exports.createGame = function(req, res, next) {
+export const createGame = function(req: Request, res: Response) {
     const errors = []
     if (!req.body.numPlayers) {
         errors.push("Number of players not specified");
@@ -66,15 +67,15 @@ exports.createGame = function(req, res, next) {
 
     const sql = 'INSERT INTO games (uuid, num_players, player_1_areas, player_2_areas, player_3_areas, player_4_areas) VALUES (?,?,?,?,?,?)'
     const params = [data.uuid, data.numPlayers, data.player1Areas, data.player2Areas, data.player3Areas, data.player4Areas];
-    db.run(sql, params, function (err, result) {
+    db.run(sql, params,  (err: Error, response: Response) => {
         if (err) {
             res.status(400).json({ "error": err.message })
             return;
         }
+
         res.status(201).json({
             "message": "success",
-            "data": data,
-            "id": this.lastID
+            "data": data
         })
     });
 }

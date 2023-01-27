@@ -1,10 +1,8 @@
 const sqlite3 = require('sqlite3').verbose()
-
 const DBSOURCE = "db.sqlite"
 
-let db = new sqlite3.Database(DBSOURCE, (err) => {
+export const db = new sqlite3.Database(DBSOURCE, (err: { message: any; }) => {
     if (err) {
-        // Cannot open database
         console.error(err.message)
         throw err
     } else {
@@ -21,6 +19,3 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             )`);
     }
 });
-
-
-module.exports = db
