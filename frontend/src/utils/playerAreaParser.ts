@@ -23,7 +23,7 @@ export function getAreas(areaNames: Array<string>) {
     const playerAreas: Array<Array<AreaType>> = [];
 
     for (let i = 0; i < areaNames.length; i++) {
-        const names = areaNames[i]!.split(', ');
+        const names = areaNames[i].split(', ');
         const areas = getAreasByNames(names);
         playerAreas.push(areas);
     }

@@ -1,6 +1,6 @@
-export async function saveGame(numPlayers: number, playerAreas: Array<string>) {
-    const players = formatPlayerData(playerAreas);
-    
+export async function saveGame(numPlayers: number, playerAreas: Array<string>, playerName: string) {
+    const players = formatPlayerData(playerAreas, playerName);
+
     try {
         const body = {
             numPlayers: numPlayers,
@@ -21,12 +21,11 @@ export async function saveGame(numPlayers: number, playerAreas: Array<string>) {
     }
 }
 
-function formatPlayerData(playerAreas: Array<string>): Array<{ name: string, areas: string }> {
+function formatPlayerData(playerAreas: Array<string>, playerName: string): Array<{ name: string, areas: string }> {
     const players = [];
 
     const firstPlayer = {
-        // TODO: get name from setup
-        name: 'name',
+        name: playerName,
         areas: playerAreas[0]
     }
     players.push(firstPlayer);
