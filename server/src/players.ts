@@ -1,11 +1,10 @@
-'use strict'
 import { db } from './database';
 import { v4 as uuidv4 } from 'uuid';
 import { Request, Response } from 'express';
 
 
-export const allGames = function(req: Request, res: Response) {
-    const sql = "select * from games"
+export const allPlayers = function(req: Request, res: Response) {
+    const sql = "select * from player"
     const params: any[] = []
     db.all(sql, params, (err: Error, rows: any[]) => {
         if (err) {
@@ -20,9 +19,9 @@ export const allGames = function(req: Request, res: Response) {
     });
 };
 
-export const getGameByUUID = function(req: Request, res: Response) {
-    const sql = "select * from games where uuid = ?"
-    const params = [req.params.uuid];
+export const getPlayerById = function(req: Request, res: Response) {
+    const sql = "select * from player where id = ?"
+    const params = [req.params.id];
 
     db.get(sql, params, (err: Error, row: any) => {
         if (err) {
@@ -31,7 +30,7 @@ export const getGameByUUID = function(req: Request, res: Response) {
         }
 
         if (!row) {
-            res.status(404).json({ "error": "No game found with UUID" });
+            res.status(404).json({ "error": "No player found with ID" });
             return;
         }
 
@@ -42,10 +41,16 @@ export const getGameByUUID = function(req: Request, res: Response) {
     });
 }
 
-export const createGame = function(req: Request, res: Response) {
+export const createPlayer = function(req: Request, res: Response) {
     const errors = []
-    if (!req.body.numPlayers) {
-        errors.push("Number of players not specified");
+    if (!req.body.name) {
+        errors.push("Name not specified");
+    }
+    if (!req.body.gameUUID) {
+        errors.push("Game ID not specified");
+    }
+    if (!req.body.areas) {
+        errors.push("Areas not specified");
     }
 
     if (errors.length) {
@@ -57,16 +62,13 @@ export const createGame = function(req: Request, res: Response) {
     uuid = uuid.substring(0, 8);
 
     const data = {
-        uuid: uuid,
-        numPlayers: req.body.numPlayers,
-        player1Areas: req.body.player1Areas,
-        player2Areas: req.body.player2Areas,
-        player3Areas: req.body.player3Areas,
-        player4Areas: req.body.player4Areas,
+        name: req.body.name,
+        areas: req.body.areas,
+        gameId: req.body.gameId
     }
 
-    const sql = 'INSERT INTO games (uuid, num_players, player_1_areas, player_2_areas, player_3_areas, player_4_areas) VALUES (?,?,?,?,?,?)'
-    const params = [data.uuid, data.numPlayers, data.player1Areas, data.player2Areas, data.player3Areas, data.player4Areas];
+    const sql = 'INSERT INTO player (name, areas, game_id) VALUES (?,?,?)'
+    const params = [data.name, data.areas, data.gameId];
     db.run(sql, params,  (err: Error, response: Response) => {
         if (err) {
             res.status(400).json({ "error": err.message })

@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import * as routes from './routes';
+import * as games from './games';
+import * as players from './players';
 
 const app = express()
 const bodyParser = require("body-parser");
@@ -18,9 +19,12 @@ app.options('*', cors(corsOpt)); // automatic cors gen for HTTP verbs in all rou
 
 const HTTP_PORT = 8000;
 
-app.listen(HTTP_PORT, () => {
-    console.log("Server running on port %PORT%".replace("%PORT%", HTTP_PORT.toString()));
-});
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(HTTP_PORT, () => {
+        console.log("Server running on port %PORT%".replace("%PORT%", HTTP_PORT.toString()));
+    });
+  }
+
 
 
 // Root endpoint
@@ -30,10 +34,14 @@ app.get("/", (req: express.Request, res: express.Response) => {
 
 
 // Game 
-app.get('/api/game', routes.allGames);
-app.get("/api/game/:uuid", routes.getGameByUUID);
-app.post("/api/game/", routes.createGame);
+app.get('/api/game', games.allGames);
+app.get("/api/game/:uuid", games.getGameByUUID);
+app.post("/api/game/", games.createGame);
 
+// Player
+app.get('/api/player', players.allPlayers);
+app.get('/api/player/:id', players.getPlayerById);
+app.post("/api/player/", players.createPlayer);
 
 // Default response for any other request
 app.use(function (_req: express.Request, res: express.Response) {

@@ -64,7 +64,7 @@ function GameRedirect(props: { numberOfPlayers: number, playerName: string }) {
         try {
             const areas = setupAreaAssignments(props.numberOfPlayers);
             const areaStrings = convertPlayerAreasToString(areas);
-            const res = await saveGame(props.numberOfPlayers, areaStrings);
+            const res = await saveGame(props.numberOfPlayers, areaStrings, props.playerName);
             const json = await res!.json()
             const { uuid } = json.data;
             setUuid(uuid);

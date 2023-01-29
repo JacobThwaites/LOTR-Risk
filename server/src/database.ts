@@ -7,15 +7,18 @@ export const db = new sqlite3.Database(DBSOURCE, (err: { message: any; }) => {
         throw err
     } else {
         console.log('Connected to the SQLite database.')
-        db.run(`CREATE TABLE IF NOT EXISTS games (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            uuid text UNIQUE,
-            num_players INTEGER,
-            player_1_areas TEXT,
-            player_2_areas TEXT,
-            player_3_areas TEXT,
-            player_4_areas TEXT,
+        db.run(`CREATE TABLE IF NOT EXISTS game (
+            uuid TEXT PRIMARY KEY,
+            num_players INTEGER NOT NULL,
             CONSTRAINT uuid_unique UNIQUE (uuid)
             )`);
+
+        db.run(`CREATE TABLE IF NOT EXISTS player (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                game_uuid INTEGER NOT NULL,
+                areas TEXT NOT NULL,
+                name TEXT NOT NULL,
+                FOREIGN KEY(game_uuid) REFERENCES game(uuid)
+                )`);
     }
 });
