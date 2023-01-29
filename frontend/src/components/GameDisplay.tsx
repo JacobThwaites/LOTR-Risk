@@ -20,6 +20,13 @@ import { Player } from "../logic/Models/Player";
 import { getGame } from "../logic/Controllers/requests";
 import { getAreas } from "../utils/playerAreaParser";
 
+type PlayerResponseType = {
+    "id": string,
+    "name": string,
+    "areas": string,
+    "gameUUID": string
+}
+
 function GameDisplay(): JSX.Element {
     const [game, setGame] = useState<Game | null>(null);
     const [attackingArea, setAttackingArea] = useState<Area | null>(null);
@@ -43,12 +50,22 @@ function GameDisplay(): JSX.Element {
     async function setupGame() {
         const res = await getGame(gameUUID);
         const json = await res!.json(); 
-        const areaNames = [json.data.player_1_areas,json.data.player_2_areas,json.data.player_3_areas,json.data.player_4_areas];
+        const areaNames = formatPlayerAreas(json.data.players);
         const areas = getAreas(areaNames);
         const gameGenerator = createGameGenerator(json.data.num_players);
         const game = gameGenerator.generateGame(areas);
         setGame(game);
         setShouldDisplayReinforcementsModal(true);
+    }
+
+    function formatPlayerAreas(playerData: Array<PlayerResponseType>): Array<string> {
+        const playerAreas = [];
+
+        for (let i = 0; i < playerData.length; i++) {
+            playerAreas.push(playerData[i].areas);   
+        }
+
+        return playerAreas;
     }
 
     function createGameGenerator(numberOfPlayers: number): GameGenerator {

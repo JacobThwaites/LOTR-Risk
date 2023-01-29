@@ -3,8 +3,8 @@ import { Area } from "../logic/Models/Area";
 import { AreaType } from "../logic/Models/AreaType";
 
 
-export function convertPlayerAreasToString(areas: Array<AreaType[]>): Array<string | null> {
-    const parsedAreas: Array<string | null> = [null, null, null, null];
+export function convertPlayerAreasToString(areas: Array<AreaType[]>): Array<string> {
+    const parsedAreas: Array<string> = [];
     for (let i = 0; i < areas.length; i++) {
         let areasString = '';
 
@@ -13,21 +13,19 @@ export function convertPlayerAreasToString(areas: Array<AreaType[]>): Array<stri
         }
 
         areasString += `${areas[i][areas[i].length - 1].getName()}`;
-        parsedAreas[i] = (areasString);
+        parsedAreas.push(areasString);
     }
 
     return parsedAreas;
 }
 
-export function getAreas(areaNames: Array<string | null>) {
+export function getAreas(areaNames: Array<string>) {
     const playerAreas: Array<Array<AreaType>> = [];
 
     for (let i = 0; i < areaNames.length; i++) {
-        if (typeof areaNames[i] === 'string') {
-            const names = areaNames[i]!.split(', ');
-            const areas = getAreasByNames(names);
-            playerAreas.push(areas);
-        }
+        const names = areaNames[i]!.split(', ');
+        const areas = getAreasByNames(names);
+        playerAreas.push(areas);
     }
 
     return playerAreas;
