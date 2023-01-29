@@ -10,10 +10,6 @@ export const db = new sqlite3.Database(DBSOURCE, (err: { message: any; }) => {
         db.run(`CREATE TABLE IF NOT EXISTS game (
             uuid TEXT PRIMARY KEY,
             num_players INTEGER NOT NULL,
-            player_1_areas TEXT,
-            player_2_areas TEXT,
-            player_3_areas TEXT,
-            player_4_areas TEXT,
             CONSTRAINT uuid_unique UNIQUE (uuid)
             )`);
 

@@ -3,42 +3,35 @@ import { v4 as uuidv4 } from 'uuid';
 import { Request, Response } from 'express';
 
 
-export const allGames = function (req: Request, res: Response) {
-    const db = new sqlite3.Database('./db.sqlite');
-    const sql = "SELECT g.*, json_group_array(json_object('id', p.id, 'name', p.name, 'areas', p.areas, 'gameUUID', p.game_uuid)) as players FROM game g LEFT JOIN player p ON g.uuid = p.game_uuid GROUP BY g.uuid;";
-    const params: any[] = []
-    db.all(sql, params, (err: Error, rows: any[]) => {
-        if (err) {
-            res.status(400).json({ "error": err.message });
-            return;
-        }
+export const allGames = async function (req: Request, res: Response) {
+    const response: any = await getGamesFromDatabase();
 
-        res.json({
-            "message": "success",
-            "data": rows
-        })
-    });
+    if (!response) {
+        res.status(500).json({ "error": "error retrieving data" });
+    }
+
+    for (let i = 0; i < response.length; i++) {
+        response[i].players = JSON.parse(response[i].players);
+    }
+
+    res.json({
+        "message": "success",
+        "data": response
+    })
 };
 
-export const getGameByUUID = function (req: Request, res: Response) {
-    const db = new sqlite3.Database('./db.sqlite');
-    const sql = "SELECT g.*, json_group_array(json_object('id', p.id, 'name', p.name, 'areas', p.areas, 'gameUUID', p.game_uuid)) as players FROM game g LEFT JOIN player p ON g.uuid = p.game_uuid WHERE g.uuid = ? GROUP BY g.uuid;";
-    
-    const params = [req.params.uuid];
-    db.get(sql, params, (err: Error, response: Response) => {
-        if (err) {
-            console.log(err)
-            res.status(400).json({ 'error': err })
-        }
+export const getGameByUUID = async function (req: Request, res: Response) {
+    const game: any = await getGameByUUIDFromDatabase(req.params.uuid)
 
-        else if (!response) {
-            res.status(404).json({ 'error': err, 'res': response })
-        } else {
-            res.json({
-                "message": "success",
-                "data": response
-            })
-        }
+    if (!game) {
+        res.status(404).json({ 'error': 'No game found with UUID' })
+    }
+
+    game.players = JSON.parse(game.players);
+
+    res.json({
+        "message": "success",
+        "data": game
     });
 }
 
@@ -84,8 +77,7 @@ export const createGame = async function (req: Request, res: Response) {
     const params = [uuid];
     db.get(sql, params, (err: Error, response: Response) => {
         if (err) {
-            console.log('asdfasdfasdf')
-            console.log(err)
+            console.error(err)
             res.status(400).json({ 'error': err })
         }
 
@@ -110,23 +102,23 @@ async function savePlayers(playerData: Player[]): Promise<boolean> {
     const db = new sqlite3.Database('./db.sqlite');
     return new Promise((resolve, reject) => {
         try {
-          db.serialize(() => {
-            const sql = 'INSERT INTO player (name, areas, game_uuid) VALUES (?, ?, ?)';
-
             db.serialize(() => {
-                const stmt = db.prepare(sql);
+                const sql = 'INSERT INTO player (name, areas, game_uuid) VALUES (?, ?, ?)';
 
-                playerData.forEach((player) => {
-                    stmt.run(player.name, player.areas, player.gameUUID);
+                db.serialize(() => {
+                    const stmt = db.prepare(sql);
+
+                    playerData.forEach((player) => {
+                        stmt.run(player.name, player.areas, player.gameUUID);
+                    });
+
+                    stmt.finalize(() => resolve(true));
                 });
-
-                stmt.finalize(() => resolve(true));
             });
-          });
         } catch (error) {
-          resolve(false);
+            resolve(false);
         }
-      });
+    });
 }
 
 type GameData = {
@@ -148,7 +140,50 @@ async function saveGame(data: GameData): Promise<boolean> {
                 resolve(true);
             });
         } catch (error) {
-          resolve(false);
+            resolve(false);
         }
-      });
+    });
+}
+
+
+async function getGamesFromDatabase() {
+    const db = new sqlite3.Database('./db.sqlite');
+    return new Promise((resolve, reject) => {
+        try {
+            const sql = "SELECT g.*, json_group_array(json_object('id', p.id, 'name', p.name, 'areas', p.areas, 'gameUUID', p.game_uuid)) as players FROM game g LEFT JOIN player p ON g.uuid = p.game_uuid GROUP BY g.uuid;";
+            const params: any[] = []
+            db.all(sql, params, (err: Error, rows: any[]) => {
+                if (err) {
+                    resolve(false);
+                }
+
+                resolve(rows);
+            });
+        } catch (error) {
+            resolve(false);
+        }
+    });
+}
+
+async function getGameByUUIDFromDatabase(uuid: string) {
+    const db = new sqlite3.Database('./db.sqlite');
+    return new Promise((resolve, reject) => {
+        try {
+            const sql = "SELECT g.*, json_group_array(json_object('id', p.id, 'name', p.name, 'areas', p.areas, 'gameUUID', p.game_uuid)) as players FROM game g LEFT JOIN player p ON g.uuid = p.game_uuid WHERE g.uuid = ? GROUP BY g.uuid;";
+
+            const params = [uuid];
+            db.get(sql, params, (err: Error, response: Response) => {
+                if (err) {
+                    console.log(err)
+                    resolve(false);
+                } else if (!response) {
+                    resolve(false);
+                } else {
+                    resolve(response);
+                }
+            });
+        } catch (error) {
+            resolve(false);
+        }
+    });
 }
