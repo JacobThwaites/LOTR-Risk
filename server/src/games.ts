@@ -1,4 +1,3 @@
-'use strict'
 import * as sqlite3 from 'sqlite3';
 import { v4 as uuidv4 } from 'uuid';
 import { Request, Response } from 'express';
@@ -6,7 +5,7 @@ import { Request, Response } from 'express';
 
 export const allGames = function (req: Request, res: Response) {
     const db = new sqlite3.Database('./db.sqlite');
-    const sql = "select * from game"
+    const sql = "SELECT g.*, json_group_array(json_object('id', p.id, 'name', p.name, 'areas', p.areas, 'gameUUID', p.game_uuid)) as players FROM game g LEFT JOIN player p ON g.uuid = p.game_uuid GROUP BY g.uuid;";
     const params: any[] = []
     db.all(sql, params, (err: Error, rows: any[]) => {
         if (err) {
@@ -71,8 +70,8 @@ export const createGame = async function (req: Request, res: Response) {
         playerData[i].gameUUID = uuid;
     }
 
-    const isGameSaved = saveGame(gameData);
-    const arePlayersSaved = savePlayers(playerData);
+    const isGameSaved = await saveGame(gameData);
+    const arePlayersSaved = await savePlayers(playerData);
 
     if (!isGameSaved || !arePlayersSaved) {
         res.status(500).json({
@@ -81,19 +80,23 @@ export const createGame = async function (req: Request, res: Response) {
     }
 
     const db = new sqlite3.Database('./db.sqlite');
-    const sql = 'SELECT * FROM game g JOIN player p ON p.game_uuid = g.uuid WHERE uuid = ?';
+    const sql = "SELECT g.*, json_group_array(json_object('id', p.id, 'name', p.name, 'areas', p.areas, 'gameUUID', p.game_uuid)) as players FROM game g LEFT JOIN player p ON g.uuid = p.game_uuid WHERE g.uuid = ? GROUP BY g.uuid;";
     const params = [uuid];
-    db.run(sql, params, (err: Error, response: Response) => {
+    db.get(sql, params, (err: Error, response: Response) => {
         if (err) {
+            console.log('asdfasdfasdf')
             console.log(err)
-            return err;
+            res.status(400).json({ 'error': err })
+        }
+
+        else if (!response) {
+            res.status(404).json({ 'error': err, 'res': response })
         } else {
-            res.status(201).json({
+            res.json({
                 "message": "success",
                 "data": response
             })
         }
-
     });
 }
 
@@ -103,30 +106,28 @@ type Player = {
     gameUUID: string
 }
 
-function savePlayers(playerData: Player[]): boolean {
-    // TODO: modify all routes to use db like this and close after use.
+async function savePlayers(playerData: Player[]): Promise<boolean> {
     const db = new sqlite3.Database('./db.sqlite');
+    return new Promise((resolve, reject) => {
+        try {
+          db.serialize(() => {
+            const sql = 'INSERT INTO player (name, areas, game_uuid) VALUES (?, ?, ?)';
 
-    try {
-        const sql = 'INSERT INTO player (name, areas, game_uuid) VALUES (?, ?, ?)';
+            db.serialize(() => {
+                const stmt = db.prepare(sql);
 
-        db.serialize(() => {
-            const stmt = db.prepare(sql);
+                playerData.forEach((player) => {
+                    stmt.run(player.name, player.areas, player.gameUUID);
+                });
 
-            playerData.forEach((player) => {
-                stmt.run(player.name, player.areas, player.gameUUID);
+                stmt.finalize();
+                resolve(true);
             });
-
-            stmt.finalize();
-        });
-
-        return true;
-    } catch (err: any) {
-        console.error(err);
-        return false;
-    } finally {
-        db.close();
-    }
+          });
+        } catch (error) {
+          resolve(false);
+        }
+      });
 }
 
 type GameData = {
@@ -134,23 +135,21 @@ type GameData = {
     numPlayers: number
 }
 
-function saveGame(data: GameData): boolean {
+async function saveGame(data: GameData): Promise<boolean> {
     const db = new sqlite3.Database('./db.sqlite');
+    return new Promise((resolve, reject) => {
+        try {
+            const sql = 'INSERT INTO game (uuid, num_players) VALUES (?,?)'
+            const params = [data.uuid, data.numPlayers];
+            db.run(sql, params, (err: Error, response: Response) => {
+                if (err) {
+                    resolve(false);
+                }
 
-    try {
-        const sql = 'INSERT INTO game (uuid, num_players) VALUES (?,?)'
-        const params = [data.uuid, data.numPlayers];
-        db.run(sql, params, (err: Error, response: Response) => {
-            if (err) {
-                return false;
-            }
-        });
-
-        return true;
-    } catch (err: any) {
-        console.error(err);
-        return false;
-    } finally {
-        db.close();
-    }
+                resolve(true);
+            });
+        } catch (error) {
+          resolve(false);
+        }
+      });
 }
