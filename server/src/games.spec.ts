@@ -18,18 +18,18 @@ describe('GET /', function () {
 describe('POST /api/game', function () {
   it('save a game to the database', function (done) {
     const payload = {
-      numPlayers: 4,
+      numPlayers: 2,
       players: [
-        {
-          name: 'name1',
-          areas: 'area1'
-        },
-        {
-          name: 'name2',
-          areas: 'area2'
-        }
+          {
+              name: "name1",
+              areas: "area1"
+          },
+          {
+              name: "name2",
+              areas: "area2"
+          }
       ]
-    }
+  }
 
     request(app)
       .post('/api/game')
@@ -38,10 +38,11 @@ describe('POST /api/game', function () {
       .expect('Content-Type', /json/)
       .expect(201)
       .end(function(err: Error, res: request.Response) {
-        expect(res.body.data.numPlayers).toEqual(payload.numPlayers);
-        expect(res.body.data.players).toHaveLength(2);
-        expect(res.body.data.players[0].name).toEqual('name1');
-        expect(res.body.data.players[0].areas).toEqual('area1');
+        expect(res.body.data.num_players).toEqual(payload.numPlayers);
+        const players = JSON.parse(res.body.data.players);
+        expect(players).toHaveLength(2);
+        expect(players[0].name).toEqual('name1');
+        expect(players[0].areas).toEqual('area1');
         uuid = res.body.data.uuid;
         expect(res.statusCode).toEqual(201);
         if (err) return done(err);

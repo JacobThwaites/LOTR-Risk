@@ -19,9 +19,12 @@ app.options('*', cors(corsOpt)); // automatic cors gen for HTTP verbs in all rou
 
 const HTTP_PORT = 8000;
 
-app.listen(HTTP_PORT, () => {
-    console.log("Server running on port %PORT%".replace("%PORT%", HTTP_PORT.toString()));
-});
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(HTTP_PORT, () => {
+        console.log("Server running on port %PORT%".replace("%PORT%", HTTP_PORT.toString()));
+    });
+  }
+
 
 
 // Root endpoint

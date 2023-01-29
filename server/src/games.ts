@@ -92,7 +92,7 @@ export const createGame = async function (req: Request, res: Response) {
         else if (!response) {
             res.status(404).json({ 'error': err, 'res': response })
         } else {
-            res.json({
+            res.status(201).json({
                 "message": "success",
                 "data": response
             })
