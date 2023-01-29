@@ -3,10 +3,32 @@ import cors from 'cors';
 import * as games from './games';
 import * as players from './players';
 
+// Web Sockets
+const http = require('http');
 const app = express()
+
+const WebSocket = require('ws');
+
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (ws: any) => {
+    ws.send('Connected to the WebSocket server');
+    console.log('connected!');
+});
+
+server.listen(8001, () => {
+    console.log('Listening on port 8001');
+});
+
+
+//   REST API
+
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+
 
 // enable cors to the server
 const corsOpt = {
@@ -23,7 +45,8 @@ if (process.env.NODE_ENV !== 'test') {
     app.listen(HTTP_PORT, () => {
         console.log("Server running on port %PORT%".replace("%PORT%", HTTP_PORT.toString()));
     });
-  }
+}
+
 
 
 
