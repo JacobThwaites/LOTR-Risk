@@ -120,8 +120,7 @@ async function savePlayers(playerData: Player[]): Promise<boolean> {
                     stmt.run(player.name, player.areas, player.gameUUID);
                 });
 
-                stmt.finalize();
-                resolve(true);
+                stmt.finalize(() => resolve(true));
             });
           });
         } catch (error) {
