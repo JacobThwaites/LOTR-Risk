@@ -42,10 +42,35 @@ function GameDisplay(): JSX.Element {
     const [isGameOver, setIsGameOver] = useState<boolean>(false);
     const [rerender, setRerender] = useState(false);
     const { gameUUID } = useParams<{ gameUUID: string }>();
+    const [socket, setSocket] = useState<WebSocket | null>(null);
 
     useEffect(() => {
         setupGame();
     }, [])
+
+    useEffect(() => {
+        setSocket(new WebSocket(`ws://localhost:8001/${gameUUID}`));
+    
+        return () => {
+          if (socket) {
+            socket.close();
+          }
+        };
+      }, [gameUUID]);
+
+      useEffect(() => {
+        if (!socket) {
+          return;
+        }
+    
+        socket.onopen = () => {
+          console.log('Connected to the WebSocket server');
+        };
+    
+        socket.onmessage = (event) => {
+          console.log(event.data);
+        };
+      }, [socket]);
 
     async function setupGame() {
         const res = await getGame(gameUUID);

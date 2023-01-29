@@ -12,9 +12,14 @@ const WebSocket = require('ws');
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-wss.on('connection', (ws: any) => {
-    ws.send('Connected to the WebSocket server');
-    console.log('connected!');
+
+app.use('/:gameUUID', (req: any, res, next) => {
+    const { gameUUID } = req.params;
+  
+  wss.on('connection', (ws: any) => {
+    ws.send(`Connected to the WebSocket server with ID: ${gameUUID}`);
+  });
+  next();
 });
 
 server.listen(8001, () => {
