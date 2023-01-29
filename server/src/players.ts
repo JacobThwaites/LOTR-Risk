@@ -46,7 +46,7 @@ export const createPlayer = function(req: Request, res: Response) {
     if (!req.body.name) {
         errors.push("Name not specified");
     }
-    if (!req.body.gameId) {
+    if (!req.body.gameUUID) {
         errors.push("Game ID not specified");
     }
     if (!req.body.areas) {
