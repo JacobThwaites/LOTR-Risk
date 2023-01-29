@@ -12,14 +12,24 @@ const WebSocket = require('ws');
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+const connectedUsers = new Map<string, number>();
 
-app.use('/:gameUUID', (req: any, res, next) => {
+app.use('/api/game/:gameUUID', (req: any, res, next) => {
     const { gameUUID } = req.params;
-  
-  wss.on('connection', (ws: any) => {
-    ws.send(`Connected to the WebSocket server with ID: ${gameUUID}`);
-  });
-  next();
+    let count = connectedUsers.get(gameUUID) || 0;
+
+    wss.on('connection', (ws: any) => {
+        count++;
+        connectedUsers.set(gameUUID, count);
+        ws.send(`Connected to the WebSocket server with ID: ${gameUUID}. Total connected users: ${count}`);
+        wss.clients.forEach((client: { readyState: any; send: (arg0: string) => void; }) => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(`New user connected to the WebSocket server with ID: ${gameUUID}. Total connected users: ${count}`);
+            }
+          });
+        ws.send(`Connected to the WebSocket server with ID: ${gameUUID}`);
+    });
+    next();
 });
 
 server.listen(8001, () => {
