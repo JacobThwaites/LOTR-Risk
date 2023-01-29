@@ -39,10 +39,9 @@ describe('POST /api/game', function () {
       .expect(201)
       .end(function(err: Error, res: request.Response) {
         expect(res.body.data.num_players).toEqual(payload.numPlayers);
-        const players = JSON.parse(res.body.data.players);
-        expect(players).toHaveLength(2);
-        expect(players[0].name).toEqual('name1');
-        expect(players[0].areas).toEqual('area1');
+        expect(res.body.data.players).toHaveLength(2);
+        expect(res.body.data.players[0].name).toEqual('name1');
+        expect(res.body.data.players[0].areas).toEqual('area1');
         uuid = res.body.data.uuid;
         expect(res.statusCode).toEqual(201);
         if (err) return done(err);

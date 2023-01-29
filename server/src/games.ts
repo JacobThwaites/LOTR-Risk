@@ -72,23 +72,17 @@ export const createGame = async function (req: Request, res: Response) {
         })
     }
 
-    const db = new sqlite3.Database('./db.sqlite');
-    const sql = "SELECT g.*, json_group_array(json_object('id', p.id, 'name', p.name, 'areas', p.areas, 'gameUUID', p.game_uuid)) as players FROM game g LEFT JOIN player p ON g.uuid = p.game_uuid WHERE g.uuid = ? GROUP BY g.uuid;";
-    const params = [uuid];
-    db.get(sql, params, (err: Error, response: Response) => {
-        if (err) {
-            console.error(err)
-            res.status(400).json({ 'error': err })
-        }
+    const game: any = await getGameByUUIDFromDatabase(uuid);
 
-        else if (!response) {
-            res.status(404).json({ 'error': err, 'res': response })
-        } else {
-            res.status(201).json({
-                "message": "success",
-                "data": response
-            })
-        }
+    if (!game) {
+        res.status(500).json({ 'error': 'There was an error retrieving the game data' })
+    }
+
+    game.players = JSON.parse(game.players);
+
+    res.status(201).json({
+        "message": "success",
+        "data": game
     });
 }
 
@@ -174,7 +168,7 @@ async function getGameByUUIDFromDatabase(uuid: string) {
             const params = [uuid];
             db.get(sql, params, (err: Error, response: Response) => {
                 if (err) {
-                    console.log(err)
+                    console.error(err)
                     resolve(false);
                 } else if (!response) {
                     resolve(false);
