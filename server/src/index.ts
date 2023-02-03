@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import * as games from './games';
 import * as players from './players';
+import { WSClientList } from './WSClientList';
 
 // Web Sockets
 const http = require('http');
@@ -13,18 +14,32 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 const connectedUsers = new Map<string, number>();
+const clientsList = new WSClientList();
+let clientIdCounter = 1;
 
 app.use('/api/game/:gameUUID', (req: any, res, next) => {
     const { gameUUID } = req.params;
     let count = connectedUsers.get(gameUUID) || 0;
 
-    wss.on('connection', (ws: any) => {
+    wss.on('connection', (ws: any, upgradeReq: any) => {
+        if (!ws.hasOwnProperty('id')) {
+            ws.id = ++clientIdCounter;
+            clientsList.addClient(ws.id, gameUUID);
+        }
+
         count++;
         connectedUsers.set(gameUUID, count);
+        const requestGameUUID = upgradeReq.url.split('/')[3];
+        console.log(requestGameUUID);
+        const clientsOfGameUUID = clientsList.getClientsByUrl(requestGameUUID);
+
         ws.send(`Connected to the WebSocket server with ID: ${gameUUID}. Total connected users: ${count}`);
-        wss.clients.forEach((client: { readyState: any; send: (arg0: string) => void; }) => {
+        wss.clients.forEach((client: { id: string; readyState: any; _socket: { url: string | URL; }; send: (arg0: string) => void; upgradeReq: any }) => {
             if (client.readyState === WebSocket.OPEN) {
-              client.send(`New user connected to the WebSocket server with ID: ${gameUUID}. Total connected users: ${count}`);
+                // TODO: check if client connected to gameUUID and only send message to them if they are
+                if (clientsOfGameUUID.includes(client.id)) {
+                    client.send(`New user connected to the WebSocket server with ID: ${gameUUID}. Total connected users: ${count}`);
+                }
             }
           });
         ws.send(`Connected to the WebSocket server with ID: ${gameUUID}`);
@@ -36,6 +51,10 @@ server.listen(8001, () => {
     console.log('Listening on port 8001');
 });
 
+
+function writeToFile() {
+
+}
 
 //   REST API
 

@@ -49,7 +49,7 @@ function GameDisplay(): JSX.Element {
     }, [])
 
     useEffect(() => {
-        setSocket(new WebSocket(`ws://localhost:8001/${gameUUID}`));
+        setSocket(new WebSocket(`ws://localhost:8001/api/game/${gameUUID}`));
     
         return () => {
           if (socket) {
