@@ -1,12 +1,9 @@
 import React, { Component } from "react";
 import FormButton from "../common/FormButton";
 import ChatInput from "./ChatInput";
-import io from "socket.io-client";
 import ChatWindow from "./ChatWindow";
 import { ChatMessage } from './ChatMessageType';
 
-
-// const socket = io("http://localhost:4000");
 
 type Props = {
   playerName: string
