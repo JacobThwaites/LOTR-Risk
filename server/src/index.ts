@@ -13,13 +13,11 @@ const WebSocket = require('ws');
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-const connectedUsers = new Map<string, number>();
 const clientsList = new WSClientList();
 let clientIdCounter = 1;
 
 app.use('/api/game/:gameUUID', (req: any, res, next) => {
     const { gameUUID } = req.params;
-    let count = connectedUsers.get(gameUUID) || 0;
 
     wss.on('connection', (ws: any, upgradeReq: any) => {
         if (!ws.hasOwnProperty('id')) {
@@ -27,18 +25,13 @@ app.use('/api/game/:gameUUID', (req: any, res, next) => {
             clientsList.addClient(ws.id, gameUUID);
         }
 
-        count++;
-        connectedUsers.set(gameUUID, count);
         const requestGameUUID = upgradeReq.url.split('/')[3];
-        console.log(requestGameUUID);
         const clientsOfGameUUID = clientsList.getClientsByUrl(requestGameUUID);
 
-        ws.send(`Connected to the WebSocket server with ID: ${gameUUID}. Total connected users: ${count}`);
         wss.clients.forEach((client: { id: string; readyState: any; _socket: { url: string | URL; }; send: (arg0: string) => void; upgradeReq: any }) => {
             if (client.readyState === WebSocket.OPEN) {
-                // TODO: check if client connected to gameUUID and only send message to them if they are
                 if (clientsOfGameUUID.includes(client.id)) {
-                    client.send(`New user connected to the WebSocket server with ID: ${gameUUID}. Total connected users: ${count}`);
+                    client.send(`New user connected to the WebSocket server with ID: ${gameUUID}. Total users on url: ${clientsOfGameUUID}`);
                 }
             }
           });
@@ -52,9 +45,6 @@ server.listen(8001, () => {
 });
 
 
-function writeToFile() {
-
-}
 
 //   REST API
 
