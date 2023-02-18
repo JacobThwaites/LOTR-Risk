@@ -58,7 +58,7 @@ export default function Risk() {
 }
 
 function GameRedirect(props: { numberOfPlayers: number, playerName: string }) {
-    const [uuid, setUuid] = useState('');
+    const [gameID, setGameID] = useState('');
 
     const getData = async () => {
         try {
@@ -66,8 +66,8 @@ function GameRedirect(props: { numberOfPlayers: number, playerName: string }) {
             const areaStrings = convertPlayerAreasToString(areas);
             const res = await saveGame(props.numberOfPlayers, areaStrings, props.playerName);
             const json = await res!.json()
-            const { uuid } = json.data;
-            setUuid(uuid);
+            const { id } = json.data;
+            setGameID(id);
         } catch (err) {
             console.error(err);
         }
@@ -77,15 +77,15 @@ function GameRedirect(props: { numberOfPlayers: number, playerName: string }) {
         getData();
     }, []);
 
-    if (!uuid) {
+    if (!gameID) {
         return <h1>Loading...</h1>
     }
 
     return (
         <Redirect
             to={{
-                pathname: uuid,
-                state: { numberOfPlayers: props.numberOfPlayers, playerName: props.playerName, gameUuid: uuid },
+                pathname: gameID,
+                state: { numberOfPlayers: props.numberOfPlayers, playerName: props.playerName, gameID: gameID },
             }}
         />
     );

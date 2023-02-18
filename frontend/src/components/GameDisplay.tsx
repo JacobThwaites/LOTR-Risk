@@ -24,7 +24,7 @@ type PlayerResponseType = {
     "id": string,
     "name": string,
     "areas": string,
-    "gameUUID": string
+    "gameID": string
 }
 
 function GameDisplay(): JSX.Element {
@@ -41,7 +41,7 @@ function GameDisplay(): JSX.Element {
     const [unitsToMove, setUnitsToMove] = useState<number>(0);
     const [isGameOver, setIsGameOver] = useState<boolean>(false);
     const [rerender, setRerender] = useState(false);
-    const { gameUUID } = useParams<{ gameUUID: string }>();
+    const { gameID } = useParams<{ gameID: string }>();
     const [socket, setSocket] = useState<WebSocket | null>(null);
 
     useEffect(() => {
@@ -49,14 +49,14 @@ function GameDisplay(): JSX.Element {
     }, [])
 
     useEffect(() => {
-        setSocket(new WebSocket(`ws://localhost:8001/api/game/${gameUUID}`));
+        setSocket(new WebSocket(`ws://localhost:8001/api/game/${gameID}`));
     
         return () => {
           if (socket) {
             socket.close();
           }
         };
-      }, [gameUUID]);
+      }, [gameID]);
 
       useEffect(() => {
         if (!socket) {
@@ -73,7 +73,7 @@ function GameDisplay(): JSX.Element {
       }, [socket]);
 
     async function setupGame() {
-        const res = await getGame(gameUUID);
+        const res = await getGame(gameID);
         const json = await res!.json(); 
         const areaNames = formatPlayerAreas(json.data.players);
         const areas = getAreas(areaNames);

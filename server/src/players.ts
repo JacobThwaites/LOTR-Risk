@@ -1,52 +1,35 @@
-import { db } from './database';
-import { v4 as uuidv4 } from 'uuid';
 import { Request, Response } from 'express';
+import makePlayer from './models/player';
+const playerQueries = require("./database/playerQueries");
 
 
-export const allPlayers = function(req: Request, res: Response) {
-    const sql = "select * from player"
-    const params: any[] = []
-    db.all(sql, params, (err: Error, rows: any[]) => {
-        if (err) {
-            res.status(400).json({ "error": err.message });
-            return;
-        }
-
-        res.json({
-            "message": "success",
-            "data": rows
-        })
+export const allPlayers = function (req: Request, res: Response) {
+    const players = playerQueries.getAll();
+    res.json({
+        "message": "success",
+        "data": players
     });
 };
 
-export const getPlayerById = function(req: Request, res: Response) {
-    const sql = "select * from player where id = ?"
-    const params = [req.params.id];
+export const getPlayerById = async function (req: Request, res: Response) {
+    const player = await playerQueries.getPlayerById(req.params.id);
 
-    db.get(sql, params, (err: Error, row: any) => {
-        if (err) {
-            res.status(400).json({ "error": err.message });
-            return;
-        }
+    if (!player) {
+        res.status(404).json({ "error": "No player found with ID" });
+    }
 
-        if (!row) {
-            res.status(404).json({ "error": "No player found with ID" });
-            return;
-        }
-
-        res.json({
-            "message": "success",
-            "data": row
-        })
-    });
+    res.json({
+        "message": "success",
+        "data": player
+    })
 }
 
-export const createPlayer = function(req: Request, res: Response) {
+export const createPlayer = function (req: Request, res: Response) {
     const errors = []
     if (!req.body.name) {
         errors.push("Name not specified");
     }
-    if (!req.body.gameUUID) {
+    if (!req.body.gameID) {
         errors.push("Game ID not specified");
     }
     if (!req.body.areas) {
@@ -58,26 +41,16 @@ export const createPlayer = function(req: Request, res: Response) {
         return;
     }
 
-    let uuid = uuidv4();
-    uuid = uuid.substring(0, 8);
+    const player = makePlayer(req.body.name, req.body.areas, req.body.gameID);
+    const dbRes = playerQueries.createPlayer(player);
 
-    const data = {
-        name: req.body.name,
-        areas: req.body.areas,
-        gameId: req.body.gameId
+    if (!dbRes) {
+        res.status(400).json({ "error": "There was an error creating the Player" });
+        return;
     }
 
-    const sql = 'INSERT INTO player (name, areas, game_id) VALUES (?,?,?)'
-    const params = [data.name, data.areas, data.gameId];
-    db.run(sql, params,  (err: Error, response: Response) => {
-        if (err) {
-            res.status(400).json({ "error": err.message })
-            return;
-        }
-
-        res.status(201).json({
-            "message": "success",
-            "data": data
-        })
+    res.status(201).json({
+        "message": "success",
+        "data": dbRes
     });
 }

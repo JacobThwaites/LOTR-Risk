@@ -2,41 +2,23 @@ import express from 'express';
 import cors from 'cors';
 import * as games from './games';
 import * as players from './players';
-import { WSClientList } from './WSClientList';
+import * as webSockets from './webSockets';
+import setupDatabase from './database/dbSetup';
 
-// Web Sockets
+setupDatabase();
+
 const http = require('http');
 const app = express()
-
-const WebSocket = require('ws');
-
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
 
-const clientsList = new WSClientList();
-let clientIdCounter = 1;
 
-app.use('/api/game/:gameUUID', (req: any, res, next) => {
-    const { gameUUID } = req.params;
+// Web Sockets
+const WebSocket = require('ws');
+export const wss = new WebSocket.Server({ server });
 
-    wss.on('connection', (ws: any, upgradeReq: any) => {
-        if (!ws.hasOwnProperty('id')) {
-            ws.id = ++clientIdCounter;
-            clientsList.addClient(ws.id, gameUUID);
-        }
-
-        const requestGameUUID = upgradeReq.url.split('/')[3];
-        const clientsOfGameUUID = clientsList.getClientsByUrl(requestGameUUID);
-
-        wss.clients.forEach((client: { id: string; readyState: any; _socket: { url: string | URL; }; send: (arg0: string) => void; upgradeReq: any }) => {
-            if (client.readyState === WebSocket.OPEN) {
-                if (clientsOfGameUUID.includes(client.id)) {
-                    client.send(`New user connected to the WebSocket server with ID: ${gameUUID}. Total users on url: ${clientsOfGameUUID}`);
-                }
-            }
-          });
-        ws.send(`Connected to the WebSocket server with ID: ${gameUUID}`);
-    });
+app.use('/api/game/:gameID', (req: any, res, next) => {
+    const { gameID } = req.params;
+    wss.on('connection', webSockets.onConnection(gameID))
     next();
 });
 
@@ -47,7 +29,6 @@ server.listen(8001, () => {
 
 
 //   REST API
-
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -72,12 +53,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 
-
-
-// Root endpoint
-app.get("/", (req: express.Request, res: express.Response) => {
-    res.json({ "message": "Ok" })
-});
+// API Routes
 
 
 // Game 
