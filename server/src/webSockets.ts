@@ -6,6 +6,13 @@ let clientIdCounter = 1;
 
 export const onConnection = (gameID: string) => {
     return (ws: any, upgradeReq: any) => {
+        ws.on('message', function(data: Buffer) {
+            const str = data.toString();
+            const messageData = JSON.parse(str);
+            wss.emit(messageData);
+        });
+
+
         if (!ws.hasOwnProperty('id')) {
             ws.id = ++clientIdCounter;
             clientsList.addClient(ws.id, gameID);

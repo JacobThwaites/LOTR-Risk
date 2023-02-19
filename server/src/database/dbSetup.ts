@@ -27,7 +27,7 @@ export default function setupDatabase() {
 
         connection.query(createDatabase, function (err, result) {
                 if (err) {
-                    console.log('couldnt create database')
+                    console.log("couldn't create database");
                     throw err;
                 }
               });
@@ -35,18 +35,21 @@ export default function setupDatabase() {
         connection.query(createGame, function (err: Error, results: any, fields: any) {
             if (err) {
                 console.log(err.message);
+                throw err;
             }
         });
 
         connection.query(createPlayers, function (err: Error, results: any, fields: any) {
             if (err) {
                 console.log(err.message);
+                throw err;
             }
         });
 
         connection.end(function (err: Error) {
             if (err) {
-                return console.log(err.message);
+                console.log(err.message);
+                throw err;
             }
         });
     });

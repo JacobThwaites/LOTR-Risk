@@ -7,8 +7,8 @@ import setupDatabase from './database/dbSetup';
 
 setupDatabase();
 
+const app = express();
 const http = require('http');
-const app = express()
 const server = http.createServer(app);
 
 
@@ -18,14 +18,9 @@ export const wss = new WebSocket.Server({ server });
 
 app.use('/api/game/:gameID', (req: any, res, next) => {
     const { gameID } = req.params;
-    wss.on('connection', webSockets.onConnection(gameID))
+    wss.on('connection', webSockets.onConnection(gameID));
     next();
 });
-
-server.listen(8001, () => {
-    console.log('Listening on port 8001');
-});
-
 
 
 //   REST API
@@ -45,16 +40,20 @@ app.use(cors(corsOpt)); // cors for all the routes of the application
 app.options('*', cors(corsOpt)); // automatic cors gen for HTTP verbs in all routes, This can be redundant but I kept to be sure that will always work.
 
 const HTTP_PORT = 8000;
+const WEBSOCKETS_PORT = 8001;
 
 if (process.env.NODE_ENV !== 'test') {
     app.listen(HTTP_PORT, () => {
-        console.log("Server running on port %PORT%".replace("%PORT%", HTTP_PORT.toString()));
+        console.log(`Server running on port ${HTTP_PORT}`);
+    });
+
+    server.listen(WEBSOCKETS_PORT, () => {
+        console.log(`Websockets listening on port ${WEBSOCKETS_PORT}`);
     });
 }
 
 
 // API Routes
-
 
 // Game 
 app.get('/api/game', games.allGames);

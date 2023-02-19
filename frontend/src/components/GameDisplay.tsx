@@ -101,6 +101,12 @@ function GameDisplay(): JSX.Element {
     }
 
     function onAreaSelect(area: Area): void {
+        const testMessage = {
+            type: 'combat',
+            attackingArea: attackingArea,
+            defendingArea: defendingArea
+        }
+        socket?.send(JSON.stringify(testMessage));
         if (shouldHandleStartingReinforcements) {
             handleStartingReinforcements(area);
         } else if (shouldDisplayReinforcementsModal) {
