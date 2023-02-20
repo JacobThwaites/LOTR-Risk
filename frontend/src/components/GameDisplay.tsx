@@ -91,6 +91,8 @@ function GameDisplay(): JSX.Element {
                 handleStartingReinforcements(area);
             } else if (messageData.type === GameEventType.COMBAT_RESULTS) {
                 updateAreasAfterCombat(messageData.attackingArea, messageData.defendingArea, messageData.results);
+            } else if (messageData.type === GameEventType.END_TURN) {
+                handleEndTurn();
             }
         };
       }, [socket, game]);
@@ -239,6 +241,10 @@ function GameDisplay(): JSX.Element {
     }
 
     function onEndTurnClick(): void {
+        socketHandler!.sendEndTurn();
+    }
+    
+    function handleEndTurn(): void {
         game!.handleNewTurn();
         setShouldDisplayReinforcementsModal(true);
         resetCombatState();

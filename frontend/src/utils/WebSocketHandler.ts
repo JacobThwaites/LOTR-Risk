@@ -6,6 +6,7 @@ export enum GameEventType {
     COMBAT = "COMBAT",
     COMBAT_RESULTS = "COMBAT RESULTS",
     STARTING_REINFORCEMENT = "STARTING REINFORCEMENT",
+    END_TURN = "END TURN",
 }
 
 export default class WebSocketHandler {
@@ -61,6 +62,14 @@ export default class WebSocketHandler {
         const messageBody = {
             type: GameEventType.STARTING_REINFORCEMENT,
             areaName
+        }
+
+        this.sendMessage(messageBody);
+    }
+
+    sendEndTurn() {
+        const messageBody = {
+            type: GameEventType.END_TURN
         }
 
         this.sendMessage(messageBody);
