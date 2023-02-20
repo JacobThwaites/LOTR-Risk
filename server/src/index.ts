@@ -1,9 +1,10 @@
 import express from 'express';
-import cors from 'cors';
 import * as games from './games';
 import * as players from './players';
 import * as webSockets from './webSockets';
 import setupDatabase from './database/dbSetup';
+import { enableCORS } from './cors';
+import { parse } from 'url';
 
 setupDatabase();
 
@@ -12,13 +13,32 @@ const http = require('http');
 const server = http.createServer(app);
 
 
+const HTTP_PORT = 8000;
+const WEBSOCKETS_PORT = 8001;
+
 // Web Sockets
-const WebSocket = require('ws');
-export const wss = new WebSocket.Server({ server });
+
+const webSocketServerManager = new webSockets.WebSocketServerManager();
+
+server.on('upgrade', function (request: any, socket: any, head: any) {
+    const { pathname } = parse(request.url);
+
+    if (!pathname) {
+        return;
+    }
+
+    const gameID = pathname.substring(pathname.length - 8);
+    const wss = webSocketServerManager.getServerByGameID(gameID);
+
+    wss.handleUpgrade(request, socket, head, function (ws: any) {
+        wss.emit('connection', ws, request);
+    });
+});
 
 app.use('/api/game/:gameID', (req: any, res, next) => {
     const { gameID } = req.params;
-    wss.on('connection', webSockets.onConnection(gameID));
+    const wss = webSocketServerManager.getServerByGameID(gameID);
+    wss.on('connection', webSockets.onConnection(gameID, wss));
     next();
 });
 
@@ -29,18 +49,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-
-// enable cors to the server
-const corsOpt = {
-    origin: process.env.CORS_ALLOW_ORIGIN || '*', // this work well to configure origin url in the server
-    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'], // to works well with web app, OPTIONS is required
-    allowedHeaders: ['Content-Type', 'Authorization'] // allow json and token in the headers
-};
-app.use(cors(corsOpt)); // cors for all the routes of the application
-app.options('*', cors(corsOpt)); // automatic cors gen for HTTP verbs in all routes, This can be redundant but I kept to be sure that will always work.
-
-const HTTP_PORT = 8000;
-const WEBSOCKETS_PORT = 8001;
+enableCORS(app);
 
 if (process.env.NODE_ENV !== 'test') {
     app.listen(HTTP_PORT, () => {

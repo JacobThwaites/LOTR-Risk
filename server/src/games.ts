@@ -75,7 +75,8 @@ export const createGame = async function (req: Request, res: Response) {
     const game = await gameQueries.getByUUID(uuid);
 
     if (!game) {
-        res.status(500).json({ 'error': 'There was an error retrieving the game data' })
+        res.status(500).json({ 'error': 'There was an error retrieving the game data' });
+        return;
     }
 
     res.status(201).json({

@@ -14,7 +14,7 @@ type Coordinates = {
   y: number
 }
 
-class CircleGenerator extends Component {
+export default class CircleGenerator extends Component {
   addCircleToMap(elementId: string, area: AreaType) {
     const svgElement = document.getElementById(elementId)! as unknown as SVGGraphicsElement;
     const domElement = svgElement.getBBox();
@@ -40,5 +40,3 @@ class CircleGenerator extends Component {
     );
   }
 }
-
-export default CircleGenerator;

@@ -1,56 +1,37 @@
-import { WSClientList } from './WSClientList';
-import { wss } from "./index";
 const WebSocket = require('ws');
-const clientsList = new WSClientList();
-let clientIdCounter = 1;
 
-export const onConnection = (gameID: string) => {
-    return (ws: any, upgradeReq: any) => {
-        ws.on('message', function(data: Buffer) {
-            const str = data.toString();
-            const messageData = JSON.parse(str);
-            wss.emit(messageData);
-        });
+export class WebSocketServerManager {
+    servers: any;
+    constructor() {
+        this.servers = {};
+    }
 
-
-        if (!ws.hasOwnProperty('id')) {
-            ws.id = ++clientIdCounter;
-            clientsList.addClient(ws.id, gameID);
+    getServerByGameID(gameID: string) {
+        if (this.servers[gameID]) {
+            return this.servers[gameID];
         }
 
-        const message = `New user connected to the WebSocket server with ID: ${gameID}.`;
-        sendMessageOnURL(message, upgradeReq.url);
-        ws.send(`Connected to the WebSocket server with ID: ${gameID}`);
+        this.servers[gameID] = new WebSocket.Server({ noServer: true });
+        return this.servers[gameID];
+    }
+}
+
+
+export const onConnection = (gameID: string, wss: any) => {
+    console.log('onConnection called');
+    return (ws: any, upgradeReq: any) => {
+        ws.on('message', function (data: Buffer) {
+            const str = data.toString();
+            const messageData = JSON.parse(str);
+            emitMessage(JSON.stringify(messageData), wss);
+        });
     }
 };
 
-function sendMessageOnURL(message: string, url: string) {
-    const clientIDs = getGameClientIDs(url);
-    const gameClients = filterClientsByID(wss.clients, clientIDs);
-
-    gameClients.forEach((client: any) => {
+function emitMessage(message: string, wss: any) {
+    wss.clients.forEach((client: any) => {
         if (client.readyState === WebSocket.OPEN) {
             client.send(message);
         }
     });
 }
-
-function getGameClientIDs(upgradeReqURL: string) {
-    const requestgameID = upgradeReqURL.split('/')[3];
-    const clientsOfGameID = clientsList.getClientsByUrl(requestgameID);
-
-    return clientsOfGameID;
-}
-
-function filterClientsByID(clients: Array<any>, clientIDs: Array<any>): Array<any> {
-    const filtered: Array<any> = [];
-
-    clients.forEach((client) => {
-        if (clientIDs.includes(client.id)) {
-            filtered.push(client);
-        }
-    });
-
-    return filtered;
-}
-

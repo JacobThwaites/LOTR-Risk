@@ -68,7 +68,7 @@ function GameDisplay(): JSX.Element {
         };
     
         socket.onmessage = (event) => {
-          console.log(event.data);
+            console.log(event.data);
         };
       }, [socket]);
 
@@ -103,9 +103,10 @@ function GameDisplay(): JSX.Element {
     function onAreaSelect(area: Area): void {
         const testMessage = {
             type: 'combat',
-            attackingArea: attackingArea,
-            defendingArea: defendingArea
+            attackingArea: attackingArea?.getName(),
+            defendingArea: defendingArea?.getName()
         }
+
         socket?.send(JSON.stringify(testMessage));
         if (shouldHandleStartingReinforcements) {
             handleStartingReinforcements(area);

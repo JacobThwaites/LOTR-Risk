@@ -45,7 +45,7 @@ export const createPlayer = function (req: Request, res: Response) {
     const dbRes = playerQueries.createPlayer(player);
 
     if (!dbRes) {
-        res.status(400).json({ "error": "There was an error creating the Player" });
+        res.status(500).json({ "error": "There was an error creating the Player" });
         return;
     }
 
