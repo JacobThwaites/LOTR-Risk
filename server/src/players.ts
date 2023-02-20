@@ -24,7 +24,7 @@ export const getPlayerById = async function (req: Request, res: Response) {
     })
 }
 
-export const createPlayer = function (req: Request, res: Response) {
+export const createPlayer = async function (req: Request, res: Response) {
     const errors = []
     if (!req.body.name) {
         errors.push("Name not specified");
@@ -41,8 +41,8 @@ export const createPlayer = function (req: Request, res: Response) {
         return;
     }
 
-    const player = makePlayer(req.body.name, req.body.areas, req.body.gameID);
-    const dbRes = playerQueries.createPlayer(player);
+    const player = makePlayer(req.body.name, req.body.areas, req.body.gameID, req.body.userID);
+    const dbRes = await playerQueries.createPlayer(player);
 
     if (!dbRes) {
         res.status(500).json({ "error": "There was an error creating the Player" });

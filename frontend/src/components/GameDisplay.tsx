@@ -75,9 +75,10 @@ function GameDisplay(): JSX.Element {
 
             if (socketHandler!.isMessageAlreadyProcessed(messageData.id)) {
                 return;
+            } else {
+                socketHandler!.previousMessageUUID = messageData.id;
             }
 
-            socketHandler!.previousMessageUUID = messageData.id;
 
             if (messageData.type === GameEventType.COMBAT) {
                 const attackingArea = Areas[messageData.attackingArea];

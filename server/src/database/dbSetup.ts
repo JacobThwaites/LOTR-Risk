@@ -21,6 +21,7 @@ export default function setupDatabase() {
             game_id CHAR(36) NOT NULL,
             areas TEXT NOT NULL,
             name TEXT NOT NULL,
+            user_id CHAR(36),
             PRIMARY KEY (id),
             FOREIGN KEY(game_id) REFERENCES game(id)
             )`;

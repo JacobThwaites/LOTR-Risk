@@ -58,8 +58,10 @@ export const createGame = async function (req: Request, res: Response) {
         const player: Player = {
             name: req.body.players[i].name,
             areas: req.body.players[i].areas,
-            gameID: uuid
+            gameID: uuid,
+            userID: req.body.players[i].userID,
         }
+
         players.push(player);
     }
 
