@@ -12,7 +12,6 @@ import GameOverModal from "./GameOverModal";
 import TurnInformation from "./TurnInformation";
 import { Combat } from '../gameLogic/Enums/Combat';
 import { CombatValidator } from "../gameLogic/Controllers/CombatValidator";
-import Chat from "./chat/Chat";
 import { Game } from "../gameLogic/Models/Game";
 import { Area } from "../gameLogic/Models/Area";
 import { useParams } from "react-router";
@@ -325,10 +324,6 @@ function GameDisplay(): JSX.Element {
             <TurnInformation
                 turnsRemaining={game!.getTurnsRemaining()}
                 playerName={currentPlayer!.getName()}
-            />
-            <Chat
-            // TODO: get player name 
-                playerName={''}
             />
             {attackingArea && defendingArea && (
                 <CombatHandler
