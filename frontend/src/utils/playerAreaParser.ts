@@ -1,6 +1,6 @@
-import { Areas } from "../logic/Enums/Areas";
-import { Area } from "../logic/Models/Area";
-import { AreaType } from "../logic/Models/AreaType";
+import { Areas } from "../gameLogic/Enums/Areas";
+import { Area } from "../gameLogic/Models/Area";
+import { AreaType } from "../gameLogic/Models/AreaType";
 
 
 export function convertPlayerAreasToString(areas: Array<AreaType[]>): Array<string> {

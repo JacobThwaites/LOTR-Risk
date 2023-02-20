@@ -17,8 +17,7 @@ export class WebSocketServerManager {
 }
 
 
-export const onConnection = (gameID: string, wss: any) => {
-    console.log('onConnection called');
+export const onConnection = (wss: any) => {
     return (ws: any, upgradeReq: any) => {
         ws.on('message', function (data: Buffer) {
             const str = data.toString();

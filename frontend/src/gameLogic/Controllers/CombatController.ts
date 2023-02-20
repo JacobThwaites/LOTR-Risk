@@ -1,5 +1,5 @@
 import { AreaType } from '../Models/AreaType';
-import { CombatValidator } from '../Controllers/CombatValidator';
+import { CombatValidator } from './CombatValidator';
 
 export class CombatController {
     private attackingArea: AreaType;

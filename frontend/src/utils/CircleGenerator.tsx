@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Circle from '../components/svgPaths/Circle';
-import { AreaType } from "../logic/Models/AreaType";
+import { AreaType } from "../gameLogic/Models/AreaType";
 
 type Element = {
   x: number,

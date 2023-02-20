@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { GameGenerator } from "../logic/Controllers/GameGenerator";
-import { CombatController } from "../logic/Controllers/CombatController";
-import { ReinforcementController } from "../logic/Controllers/ReinforcementController";
-import { UnitManeuverController } from "../logic/Controllers/UnitManeuverController";
+import { GameGenerator } from "../gameLogic/Controllers/GameGenerator";
+import { CombatController } from "../gameLogic/Controllers/CombatController";
+import { ReinforcementController } from "../gameLogic/Controllers/ReinforcementController";
+import { UnitManeuverController } from "../gameLogic/Controllers/UnitManeuverController";
 import CombatHandler from "./CombatHandler";
 import UnitManeuverHandler from "./UnitManeuverHandler";
 import Map from "./Map";
@@ -10,14 +10,14 @@ import EndTurnButton from "./buttons/EndTurnButton";
 import ReinforcementsModal from "./ReinforcementsModal";
 import GameOverModal from "./GameOverModal";
 import TurnInformation from "./TurnInformation";
-import { Combat } from '../logic/Enums/Combat';
-import { CombatValidator } from "../logic/Controllers/CombatValidator";
+import { Combat } from '../gameLogic/Enums/Combat';
+import { CombatValidator } from "../gameLogic/Controllers/CombatValidator";
 import Chat from "./chat/Chat";
-import { Game } from "../logic/Models/Game";
-import { Area } from "../logic/Models/Area";
+import { Game } from "../gameLogic/Models/Game";
+import { Area } from "../gameLogic/Models/Area";
 import { useParams } from "react-router";
-import { Player } from "../logic/Models/Player";
-import { getGame } from "../logic/Controllers/requests";
+import { Player } from "../gameLogic/Models/Player";
+import { getGame } from "../gameLogic/Controllers/requests";
 import { getAreas } from "../utils/playerAreaParser";
 
 type PlayerResponseType = {

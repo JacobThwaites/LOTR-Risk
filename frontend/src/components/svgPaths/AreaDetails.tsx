@@ -1,4 +1,4 @@
-import { Areas } from '../../logic/Enums/Areas';
+import { Areas } from '../../gameLogic/Enums/Areas';
 
 const areaDetails = [
     {
