@@ -9,24 +9,59 @@ export class CombatController {
         this.defendingArea = defendingArea;
     }
 
-    handleCombat(attackingDiceUsed: number, defendingDiceUsed: number) {
-        if (!this.isCombatValid(attackingDiceUsed, defendingDiceUsed)) {
-            return;
+    getCombatResults(numAttackingDice: number, numDefendingDice: number) {
+        const results = [];
+        const attackingDice = this.rollDice(numAttackingDice);
+        const defendingDice = this.rollDice(numDefendingDice);
+        
+        const firstResult = this.firstDiceCombat(attackingDice[0], defendingDice[0]);
+        results.push(firstResult);
+
+        if (numDefendingDice > 1) {
+            const secondResult = this.secondDiceCombat(attackingDice[0], defendingDice[0]);
+            results.push(secondResult);
         }
-        
-        // TODO: change these variable names
-        const attackingDice = this.rollDice(attackingDiceUsed);
-        const defendingDice = this.rollDice(defendingDiceUsed);
-        
-        for (let i = 0; i < defendingDice.length; i++) {
-            if (i === 0) {
-                this.firstDiceCombat(attackingDice[0], defendingDice[0]);
+
+        return results;
+    }
+
+    firstDiceCombat(attackingDice: number, defendingDice: number) {
+        const defenderBonus = this.getDefenderDiceBonus(this.defendingArea);
+        const attackerBonus = this.getAttackerDiceBonus(this.attackingArea);
+        // TODO: remove + 6
+        const attackerScore = attackingDice + attackerBonus + 6;
+        const defenderScore = defendingDice + defenderBonus - 6;
+        if (attackerScore > defenderScore) {
+            return 'attacker';
+        } else {
+            return 'defender';
+        }
+    }
+
+    secondDiceCombat(attackerScore: number, defenderScore: number) {
+        if (attackerScore > defenderScore) {
+            return 'attacker';
+        } else {
+            return 'defender';
+        }
+    }
+
+    handleResults(results: string[]) {
+        for (let i = 0; i < results.length; i++) {
+            if (results[i] === 'attacker') {
+                this.removeUnitsFromLoser(this.defendingArea);
             } else {
-                this.removeUnitsFromLoser(attackingDice[1], defendingDice[1]);
-            }
+                this.removeUnitsFromLoser(this.attackingArea);
+            }  
         }
-        
+
         this.checkDefendingUnitsRemaining();
+    }
+
+    removeUnitsFromLoser(losingArea: AreaType) {
+        const losingPlayer = losingArea.getPlayer();
+        losingPlayer!.removeUnits(1);
+        losingArea.removeUnits(1);
     }
 
     isCombatValid(attackingDice: number, defendingDice: number): boolean {
@@ -49,15 +84,6 @@ export class CombatController {
         return numberRolled;
     }
 
-    firstDiceCombat(attackingDice: number, defendingDice: number) {
-        const defenderBonus = this.getDefenderDiceBonus(this.defendingArea);
-        const attackerBonus = this.getAttackerDiceBonus(this.attackingArea);
-        // TODO: remove + 6
-        const attackerScore = attackingDice + attackerBonus + 6;
-        const defenderScore = defendingDice + defenderBonus - 6;
-        this.removeUnitsFromLoser(attackerScore, defenderScore);
-    }
-
     getDefenderDiceBonus(defendingArea: AreaType): number {
         let bonus = 0;
         bonus += defendingArea.getDefendingBonus();
@@ -74,26 +100,6 @@ export class CombatController {
             bonus += 1;
         }
         return bonus;
-    }
-
-    removeUnitsFromLoser(attackingRoll: number, defendingRoll: number) {  
-        if (defendingRoll >= attackingRoll) {
-            const attackingPlayer = this.attackingArea.getPlayer();
-            if (attackingPlayer !== null) {
-                attackingPlayer.removeUnits(1);
-                this.attackingArea.removeUnits(1);
-            }
-        } else {
-            const defendingPlayer = this.defendingArea.getPlayer();
-            if (defendingPlayer !== null) {
-                defendingPlayer.removeUnits(1);
-                this.defendingArea.removeUnits(1);
-            }
-        }
-    }
-
-    secondDiceCombat(attackingDice: number, defendingDice: number) {
-        this.removeUnitsFromLoser(attackingDice, defendingDice);
     }
 
     checkDefendingUnitsRemaining() {

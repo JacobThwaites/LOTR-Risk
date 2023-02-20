@@ -46,16 +46,12 @@ describe('Combat', () => {
         assert.equal(result, 0);
     });
     it('should remove units from the defender if the attacker rolls higher', () => {
-        const attackingRoll = 6;
-        const defendingRoll = 5;
-        combatController.removeUnitsFromLoser(attackingRoll, defendingRoll);
+        combatController.handleResults(['attacker']);
         const result = defender.getUnits();
         assert.equal(result, 9);
     });
     it('should remove units from the attacker if the defender rolls higher or equal to them', () => {
-        const attackingRoll = 5;
-        const defendingRoll = 5;
-        combatController.removeUnitsFromLoser(attackingRoll, defendingRoll);
+        combatController.handleResults(['defender']);
         const result = attacker.getUnits();
         assert.equal(result, 9);
     });
