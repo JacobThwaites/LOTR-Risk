@@ -10,7 +10,7 @@ function MoveUnitsButtons(props: Props) {
   return (
     <FormButton 
       id='unit-maneuver-button'
-      label='move units'
+      label='Move Units'
       onClick={props.onMoveUnits}
       disabled={props.isDisabled}
     />

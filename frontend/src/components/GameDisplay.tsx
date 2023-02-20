@@ -93,6 +93,10 @@ function GameDisplay(): JSX.Element {
                 updateAreasAfterCombat(messageData.attackingArea, messageData.defendingArea, messageData.results);
             } else if (messageData.type === GameEventType.END_TURN) {
                 handleEndTurn();
+            } else if (messageData.type === GameEventType.UNIT_MANEURVRE) {
+                const areaToMoveUnits = Areas[messageData.areaToMoveUnits];
+                const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
+                onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
             }
         };
       }, [socket, game]);
@@ -259,22 +263,20 @@ function GameDisplay(): JSX.Element {
         }
     }
 
-    function onMoveUnits(): void {
-        const unitManeuverController = createUnitManeuverController();
-        const areUnitsMoved = unitManeuverController.handleManeuver(unitsToMove);
-
-        if (areUnitsMoved) {
-            resetManeuverState();
+    function onMoveUnitButtonClick(): void {
+        if (UnitManeuverController.isManeuverValid(areaToMoveUnits!, unitsToMove)) {
+            socketHandler!.sendUnitManeuvre(areaToMoveUnits!.getName(), areaToReceiveUnits!.getName(), unitsToMove);
         }
     }
 
-    function createUnitManeuverController(): UnitManeuverController {
+    function onMoveUnits(areaToMoveUnits: AreaType, areaToReceiveUnits: AreaType, numUnits: number): void {
         const unitManeuverController = new UnitManeuverController(
             areaToMoveUnits!,
             areaToReceiveUnits!
         );
 
-        return unitManeuverController;
+        unitManeuverController.moveUnits(numUnits);
+        resetManeuverState();
     }
 
     function resetManeuverState(): void {
@@ -347,7 +349,7 @@ function GameDisplay(): JSX.Element {
                 <UnitManeuverHandler
                     max={areaToMoveUnits!.getUnits() - 1}
                     unitsToMove={unitsToMove}
-                    onMoveUnits={onMoveUnits}
+                    onMoveUnits={onMoveUnitButtonClick}
                     setUnitsToMove={setUnitsToMove}
                     isButtonDisabled={isMoveUnitsButtonDisabled()}
                 />
