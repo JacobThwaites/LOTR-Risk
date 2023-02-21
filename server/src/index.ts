@@ -1,7 +1,7 @@
 import express from 'express';
 import * as games from './games';
 import * as players from './players';
-import * as webSockets from './webSockets';
+import { WebSocketManager, onConnection } from './webSockets';
 import setupDatabase from './database/dbSetup';
 import { enableCORS } from './cors';
 import { parse } from 'url';
@@ -18,7 +18,7 @@ const WEBSOCKETS_PORT = 8001;
 
 // Web Sockets
 
-const webSocketServerManager = new webSockets.WebSocketServerManager();
+const webSocketManager = new WebSocketManager();
 
 server.on('upgrade', function (request: any, socket: any, head: any) {
     const { pathname } = parse(request.url);
@@ -28,7 +28,7 @@ server.on('upgrade', function (request: any, socket: any, head: any) {
     }
 
     const gameID = pathname.substring(pathname.length - 8);
-    const wss = webSocketServerManager.getServerByGameID(gameID);
+    const wss = webSocketManager.getServerByGameID(gameID);
 
     wss.handleUpgrade(request, socket, head, function (ws: any) {
         wss.emit('connection', ws, request);
@@ -37,8 +37,8 @@ server.on('upgrade', function (request: any, socket: any, head: any) {
 
 app.use('/api/game/:gameID', (req: any, res, next) => {
     const { gameID } = req.params;
-    const wss = webSocketServerManager.getServerByGameID(gameID);
-    wss.on('connection', webSockets.onConnection(wss));
+    const wss = webSocketManager.getServerByGameID(gameID);
+    wss.on('connection', onConnection(wss, webSocketManager));
     next();
 });
 

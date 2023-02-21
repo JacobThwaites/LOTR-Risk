@@ -1,9 +1,11 @@
-const WebSocket = require('ws');
+const ws = require('ws');
 
-export class WebSocketServerManager {
-    servers: any;
+export class WebSocketManager {
+    private servers: any;
+    private clients: any;
     constructor() {
         this.servers = {};
+        this.clients = [];
     }
 
     getServerByGameID(gameID: string) {
@@ -11,25 +13,40 @@ export class WebSocketServerManager {
             return this.servers[gameID];
         }
 
-        this.servers[gameID] = new WebSocket.Server({ noServer: true });
+        this.servers[gameID] = new ws.Server({ noServer: true });
         return this.servers[gameID];
+    }
+
+    addClient(ws: any) {
+        this.clients.push(ws);
+    }
+
+    removeClient(ws: any) {
+        this.clients.splice(this.clients.indexOf(ws), 1);
     }
 }
 
 
-export const onConnection = (wss: any) => {
-    return (ws: any, upgradeReq: any) => {
+export const onConnection = (wss: any, webSocketManager: WebSocketManager) => {
+    return (ws: any) => {
+        webSocketManager.addClient(ws);
+
         ws.on('message', function (data: Buffer) {
             const str = data.toString();
             const messageData = JSON.parse(str);
             emitMessage(JSON.stringify(messageData), wss);
         });
+
+        ws.on('close', function() {
+            webSocketManager.removeClient(ws);
+            ws.close();
+        })
     }
 };
 
 function emitMessage(message: string, wss: any) {
     wss.clients.forEach((client: any) => {
-        if (client.readyState === WebSocket.OPEN) {
+        if (client.readyState === ws.OPEN) {
             client.send(message);
         }
     });
