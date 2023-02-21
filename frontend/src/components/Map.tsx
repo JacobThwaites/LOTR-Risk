@@ -4,8 +4,8 @@ import Mountains from "./svgPaths/Mountains";
 import Bridges from "./svgPaths/Bridges";
 import Islands from "./svgPaths/Islands";
 import Strongholds from "./svgPaths/Strongholds";
-import { AreaType } from "../logic/Models/AreaType"; 
-import { Player } from "../logic/Models/Player";
+import { AreaType } from "../gameLogic/Models/AreaType"; 
+import { Player } from "../gameLogic/Models/Player";
 import { areAreasConnected } from "../utils/areAreasConnected";
 
 type Props = {

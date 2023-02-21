@@ -2,11 +2,11 @@ import { Areas } from './Areas';
 import { AreaName } from './AreaNames';
 import { AreaType } from '../Models/AreaType';
 
-interface Adjacencies {
+interface IAdjacencies {
     [key: string]: Array<AreaType>
 }
 
-export const Adjacencies: Adjacencies = {
+export const Adjacencies: IAdjacencies = {
 }
 
 Adjacencies[AreaName.FORLINDON] = [Areas.MITHLOND];

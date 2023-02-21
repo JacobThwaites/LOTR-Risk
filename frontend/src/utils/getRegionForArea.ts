@@ -1,6 +1,6 @@
-import { Region } from "../logic/Models/Region";
-import { Regions } from "../logic/Enums/Regions";
-import { Area } from "../logic/Models/Area";
+import { Region } from "../gameLogic/Models/Region";
+import { Regions } from "../gameLogic/Enums/Regions";
+import { Area } from "../gameLogic/Models/Area";
 
 export function getRegionForArea(area: Area): Region {
     const regions = Object.values(Regions);

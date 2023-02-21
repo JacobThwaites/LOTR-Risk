@@ -3,14 +3,10 @@ import Risk from './components/Risk';
 import './sass/main.scss';
 
 function App() {
+  // TODO: probably can be removed
   useEffect(() => {
     // Create WebSocket connection.
     const socket = new WebSocket('ws://localhost:8001');
-
-    // Connection opened
-    socket.addEventListener('open', (event) => {
-      socket.send('Hello Server!');
-    });
 
     // Listen for messages
     socket.addEventListener('message', (event) => {

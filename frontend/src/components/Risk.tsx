@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import GameSetup from "./GameSetup";
 import { Redirect } from "react-router";
-import { saveGame } from "../logic/Controllers/requests";
+import { saveGame } from "../gameLogic/Controllers/requests";
 import { convertPlayerAreasToString } from "../utils/playerAreaParser";
-import { setupAreaAssignments } from "../logic/Controllers/AreaAssigner";
+import { setupAreaAssignments } from "../gameLogic/Controllers/AreaAssigner";
 
 export default function Risk() {
     const [numberOfPlayers, setNumberOfPlayers] = useState(0);
@@ -58,7 +58,7 @@ export default function Risk() {
 }
 
 function GameRedirect(props: { numberOfPlayers: number, playerName: string }) {
-    const [uuid, setUuid] = useState('');
+    const [gameID, setGameID] = useState('');
 
     const getData = async () => {
         try {
@@ -66,8 +66,8 @@ function GameRedirect(props: { numberOfPlayers: number, playerName: string }) {
             const areaStrings = convertPlayerAreasToString(areas);
             const res = await saveGame(props.numberOfPlayers, areaStrings, props.playerName);
             const json = await res!.json()
-            const { uuid } = json.data;
-            setUuid(uuid);
+            const { id } = json.data;
+            setGameID(id);
         } catch (err) {
             console.error(err);
         }
@@ -77,15 +77,15 @@ function GameRedirect(props: { numberOfPlayers: number, playerName: string }) {
         getData();
     }, []);
 
-    if (!uuid) {
+    if (!gameID) {
         return <h1>Loading...</h1>
     }
 
     return (
         <Redirect
             to={{
-                pathname: uuid,
-                state: { numberOfPlayers: props.numberOfPlayers, playerName: props.playerName, gameUuid: uuid },
+                pathname: gameID,
+                state: { numberOfPlayers: props.numberOfPlayers, playerName: props.playerName, gameID: gameID },
             }}
         />
     );

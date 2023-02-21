@@ -8,17 +8,8 @@ export class UnitManeuverController {
         this.destination = destination;
     }
 
-    handleManeuver(units: number): boolean {
-        if (this.isManeuverValid(units)) {
-            this.moveUnits(units);
-            return true;
-        }
-
-        return false;
-    }
-
-    isManeuverValid(units: number) {
-        return units < this.origin.getUnits() && units > 0;
+    static isManeuverValid(origin: AreaType, units: number) {
+        return units < origin.getUnits() && units > 0;
     }
 
     moveUnits(units: number) {

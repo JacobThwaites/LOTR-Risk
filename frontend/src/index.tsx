@@ -11,7 +11,7 @@ const routing = (
   <Router>
     <Switch>
       <Route exact path="/" component={App} />
-      <Route path="/:gameUUID" component={GameDisplay} />
+      <Route path="/:gameID" component={GameDisplay} />
       <Route component={NotFound} />
     </Switch>
   </Router>

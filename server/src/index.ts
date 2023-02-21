@@ -1,84 +1,68 @@
 import express from 'express';
-import cors from 'cors';
 import * as games from './games';
 import * as players from './players';
-import { WSClientList } from './WSClientList';
+import * as webSockets from './webSockets';
+import setupDatabase from './database/dbSetup';
+import { enableCORS } from './cors';
+import { parse } from 'url';
+
+setupDatabase();
+
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+
+
+const HTTP_PORT = 8000;
+const WEBSOCKETS_PORT = 8001;
 
 // Web Sockets
-const http = require('http');
-const app = express()
 
-const WebSocket = require('ws');
+const webSocketServerManager = new webSockets.WebSocketServerManager();
 
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+server.on('upgrade', function (request: any, socket: any, head: any) {
+    const { pathname } = parse(request.url);
 
-const clientsList = new WSClientList();
-let clientIdCounter = 1;
+    if (!pathname) {
+        return;
+    }
 
-app.use('/api/game/:gameUUID', (req: any, res, next) => {
-    const { gameUUID } = req.params;
+    const gameID = pathname.substring(pathname.length - 8);
+    const wss = webSocketServerManager.getServerByGameID(gameID);
 
-    wss.on('connection', (ws: any, upgradeReq: any) => {
-        if (!ws.hasOwnProperty('id')) {
-            ws.id = ++clientIdCounter;
-            clientsList.addClient(ws.id, gameUUID);
-        }
-
-        const requestGameUUID = upgradeReq.url.split('/')[3];
-        const clientsOfGameUUID = clientsList.getClientsByUrl(requestGameUUID);
-
-        wss.clients.forEach((client: { id: string; readyState: any; _socket: { url: string | URL; }; send: (arg0: string) => void; upgradeReq: any }) => {
-            if (client.readyState === WebSocket.OPEN) {
-                if (clientsOfGameUUID.includes(client.id)) {
-                    client.send(`New user connected to the WebSocket server with ID: ${gameUUID}. Total users on url: ${clientsOfGameUUID}`);
-                }
-            }
-          });
-        ws.send(`Connected to the WebSocket server with ID: ${gameUUID}`);
+    wss.handleUpgrade(request, socket, head, function (ws: any) {
+        wss.emit('connection', ws, request);
     });
+});
+
+app.use('/api/game/:gameID', (req: any, res, next) => {
+    const { gameID } = req.params;
+    const wss = webSocketServerManager.getServerByGameID(gameID);
+    wss.on('connection', webSockets.onConnection(wss));
     next();
 });
 
-server.listen(8001, () => {
-    console.log('Listening on port 8001');
-});
-
-
 
 //   REST API
-
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-
-// enable cors to the server
-const corsOpt = {
-    origin: process.env.CORS_ALLOW_ORIGIN || '*', // this work well to configure origin url in the server
-    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'], // to works well with web app, OPTIONS is required
-    allowedHeaders: ['Content-Type', 'Authorization'] // allow json and token in the headers
-};
-app.use(cors(corsOpt)); // cors for all the routes of the application
-app.options('*', cors(corsOpt)); // automatic cors gen for HTTP verbs in all routes, This can be redundant but I kept to be sure that will always work.
-
-const HTTP_PORT = 8000;
+enableCORS(app);
 
 if (process.env.NODE_ENV !== 'test') {
     app.listen(HTTP_PORT, () => {
-        console.log("Server running on port %PORT%".replace("%PORT%", HTTP_PORT.toString()));
+        console.log(`Server running on port ${HTTP_PORT}`);
+    });
+
+    server.listen(WEBSOCKETS_PORT, () => {
+        console.log(`Websockets listening on port ${WEBSOCKETS_PORT}`);
     });
 }
 
 
-
-
-// Root endpoint
-app.get("/", (req: express.Request, res: express.Response) => {
-    res.json({ "message": "Ok" })
-});
-
+// API Routes
 
 // Game 
 app.get('/api/game', games.allGames);
@@ -88,6 +72,7 @@ app.post("/api/game/", games.createGame);
 // Player
 app.get('/api/player', players.allPlayers);
 app.get('/api/player/:id', players.getPlayerById);
+app.patch('/api/player/:id', players.updatePlayer);
 app.post("/api/player/", players.createPlayer);
 
 // Default response for any other request

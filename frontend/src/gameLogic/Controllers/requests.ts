@@ -38,9 +38,9 @@ function formatPlayerData(playerAreas: Array<string>, playerName: string): Array
     return players;
 }
 
-export async function getGame(gameUuid: string) {
+export async function getGame(gameID: string) {
     try {
-        return fetch(`http://localhost:8000/api/game/${gameUuid}`, {
+        return fetch(`http://localhost:8000/api/game/${gameID}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',

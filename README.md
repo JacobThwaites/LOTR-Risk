@@ -1,6 +1,6 @@
 # Lord of the Rings Risk 
 
-A web based implementation of the board game 'Lord of the Rings Risk', built in TypeScript and React.js. 
+A web based implementation of the board game 'Lord of the Rings Risk', built using TypeScript and React.js. 
 
 <img src='./public/gameplay-example.png' alt='gameplay image' width='375' height='450'>
 
@@ -13,10 +13,6 @@ npm start
 ```
 The app will then be viewable at [http://localhost:3000](http://localhost:3000) 
 
-The game will eventually use websockets using socket.io to allow online play (still a work in progress). To run this, open a second terminal window and run:
-```
-nodemon index
-```
 
 ### Running Tests
 The project uses mocha and chai for unit testing. To run these locally, amend the tsconfig.json file 'module' parameter from "esnext" to "commonjs". Then inside the

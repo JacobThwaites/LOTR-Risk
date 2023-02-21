@@ -1,6 +1,6 @@
 import { Area } from '../Models/Area';
 import { Areas } from '../Enums/Areas'; 
-import { CombatValidator } from '../../logic/Controllers/CombatValidator';
+import { CombatValidator } from '../Controllers/CombatValidator';
 import { assert } from 'chai';
 import 'mocha';
 

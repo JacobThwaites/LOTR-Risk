@@ -1,5 +1,5 @@
 import { Region } from '../Models/Region';
-import { Areas } from '../Enums/Areas';
+import { Areas } from './Areas';
 
 const eriadorAreas = [Areas.FORLINDON, Areas.MITHLOND, Areas.HARLINDON, Areas.TOWER_HILLS, Areas.EVENDIM_HILLS, Areas.LUNE_VALLEY, Areas.THE_SHIRE];
 const arnorAreas = [Areas.FORODWAITH, Areas.ANGMAR, Areas.EASTERN_ANGMAR, Areas.BORDERLANDS, Areas.NORTH_DOWNS, Areas.RHUDAUR, Areas.FORNOST, Areas.WEATHER_HILLS, Areas.BUCKLAND, Areas.OLD_FOREST, Areas.SOUTH_DOWNS];

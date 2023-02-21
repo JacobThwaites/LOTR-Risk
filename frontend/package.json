@@ -14,7 +14,6 @@
     "@types/mocha": "^5.2.7",
     "@types/react-numeric-input": "^2.2.3",
     "@types/react-router": "^5.1.8",
-    "@types/socket.io-client": "^1.4.36",
     "acorn": "^7.4.0",
     "chai": "^4.2.0",
     "font-awesome": "^4.7.0",
@@ -26,11 +25,10 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.1",
     "react-test-renderer": "^18.2.0",
-    "socket.io": "^2.4.0",
-    "socket.io-client": "^2.5.0",
     "styled-components": "^5.3.6",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.9.4",
+    "uuid": "^9.0.0",
     "ws": "^8.12.0"
   },
   "scripts": {
@@ -74,15 +72,15 @@
     "@types/react-dom": "^18.0.10",
     "@types/react-router-dom": "^5.3.3",
     "@types/react-test-renderer": "^18.0.0",
+    "@types/uuid": "^9.0.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-react": "^1.1.7",
     "eslint-plugin-prettier": "^3.1.4",
-    "nodemon": "^2.0.4",
     "prettier": "^1.19.1",
     "react-is": "^17.0.1",
     "sass": "^1.57.1",
     "ts-mocha": "^10.0.0",
-    "ts-node": "^8.10.2"
+    "ts-node": "^10.9.1"
   },
   "author": "",
   "license": "ISC"
