@@ -54,3 +54,24 @@ export const createPlayer = async function (req: Request, res: Response) {
         "data": dbRes
     });
 }
+
+export const updatePlayer = async function (req: Request, res: Response) {
+    const { id } = req.params;
+    const { userID } = req.body;
+    
+    if (!userID) {
+        res.status(400).json({ "error": "User ID not specified" });
+        return;
+    }
+
+    const dbRes = await playerQueries.updatePlayer(id, userID);
+
+    if (!dbRes) {
+        res.status(500).json({ "error": "There was an error updating the Player" });
+        return;
+    }
+
+    res.status(200).json({
+        "message": "success"
+    });
+}

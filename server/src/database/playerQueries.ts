@@ -48,9 +48,18 @@ function convertPlayersToRows(players: Player[]): Array<Array<string | undefined
     return rows;
 }
 
+async function updatePlayer(playerID: number, userID: number) {
+    const query = 'UPDATE player SET user_id = ? WHERE id = ?';
+    const params = [userID, playerID];
+    const res = await db.query(query, params);
+
+    return res;
+}
+
 module.exports = {
     getAll,
     createPlayer,
     createMultiplePlayers,
-    getPlayerById
+    getPlayerById,
+    updatePlayer
 };

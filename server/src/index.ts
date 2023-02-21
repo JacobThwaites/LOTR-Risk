@@ -72,6 +72,7 @@ app.post("/api/game/", games.createGame);
 // Player
 app.get('/api/player', players.allPlayers);
 app.get('/api/player/:id', players.getPlayerById);
+app.patch('/api/player/:id', players.updatePlayer);
 app.post("/api/player/", players.createPlayer);
 
 // Default response for any other request
