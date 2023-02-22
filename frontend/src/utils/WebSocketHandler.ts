@@ -8,6 +8,7 @@ export enum GameEventType {
     STARTING_REINFORCEMENT = "STARTING REINFORCEMENT",
     END_TURN = "END TURN",
     UNIT_MANEURVRE = "UNIT MANEUVRE",
+    PLAYER_JOINED = "PLAYER JOINED",
 }
 
 export default class WebSocketHandler {
@@ -82,6 +83,14 @@ export default class WebSocketHandler {
             areaToMoveUnits,
             areaToReceiveUnits,
             numUnits 
+        }
+
+        this.sendMessage(messageBody);
+    }
+
+    sendPlayerJoinedNotification() {
+        const messageBody = {
+            type: GameEventType.PLAYER_JOINED
         }
 
         this.sendMessage(messageBody);

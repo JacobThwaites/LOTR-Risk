@@ -52,3 +52,26 @@ export async function getGame(gameID: string) {
         return;
     }
 }
+
+export async function addUserIdToPlayer(playerID: string, userID: string) {
+    try {
+        const res = await fetch(`http://localhost:8000/api/player/${playerID}`, {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userID })
+        });
+
+        if (!res.ok) {
+            throw new Error("Faiedl to update player userID");
+        }
+
+        return true;
+
+    } catch (err: any) {
+        console.error(err.message);
+        return false;
+    }
+}
