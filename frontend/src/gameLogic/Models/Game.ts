@@ -79,13 +79,13 @@ export class Game {
         return this.maxTurns <= this.currentTurn;
     }
 
-    getNextUnusedPlayer(): Player | boolean {
+    getNextUnusedPlayer(): Player | null {
         for (let i = 0; i < this.players.length; i++) {
             if (!this.players[i].getUserID()) {
                 return this.players[i];
             }
         }
 
-        return false;
+        return null;
     }
 }

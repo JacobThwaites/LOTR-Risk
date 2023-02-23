@@ -55,12 +55,10 @@ function GameDisplay() {
         async function setupGame() {
             const res = await getGame(gameID);
             const json = await res!.json();
-            setTotalPlayersConnected(countConnectedPlayers(json.data.players));
             const areaNames = getPlayerAreaNames(json.data.players);
             const areas = getAreas(areaNames);
             const playerIDs = json.data.players.map((p: any) => {return p.id});
-            const gameGenerator = createGameGenerator(playerIDs);
-            const game = gameGenerator.generateGame(areas);
+            const game = GameGenerator.generateGame(areas, playerIDs);
             setGame(game);
             setShouldDisplayReinforcementsModal(true);
             return game;
@@ -88,7 +86,6 @@ function GameDisplay() {
         }
 
         setupGame().then(game => {
-            console.log(game);
             connectSockets(game);
         });
 
@@ -97,43 +94,6 @@ function GameDisplay() {
             webSocketHandler.current!.closeSocket();
         }
     }, [gameID])
-
-    // useEffect(() => {
-    //     const socketHandler = new WebSocketHandler(gameID);
-    //     webSocketHandler.current = socketHandler;
-    //     const socket = new WebSocket(`ws://localhost:8001/api/game/${gameID}`);
-
-    //     socket.onopen = () => {
-    //         console.log('Connected to the WebSocket server');
-    //         onJoin();
-    //     };
-
-    //     socket.onmessage = (event) => {
-    //         processWebSocketMessage(event);
-    //     };
-
-    //     socket.onclose = () => {
-    //         console.log('Closed socket connection');
-    //     }
-
-    //     ws.current = socket;
-
-    //     return () => {
-    //         socket.close();
-    //         webSocketHandler.current!.closeSocket();
-    //     }
-    // }, []);
-
-    function countConnectedPlayers(players: Array<any>): number {
-        let total = 0;
-        for (let i = 0; i < players.length; i++) {
-            if (players[i].userID) {
-                total++;
-            }
-        }
-
-        return total;
-    }
 
     function processWebSocketMessage(event: any): void {
         const messageData = JSON.parse(event.data);
@@ -169,34 +129,20 @@ function GameDisplay() {
     }
 
     async function onJoin(game: Game) {
-        const gameInfo = await getGame(gameID);
-        const json = await gameInfo!.json();
-        const nextAvailablePlayerID = getNextAvailablePlayerID(json.data.players);
-        const nextAvailablePlayer = game.getNextUnusedPlayer();
-        console.log(nextAvailablePlayer);
+        const nextAvailablePlayer = game.getNextUnusedPlayer();;
 
-        if (!nextAvailablePlayerID) {
+        if (!nextAvailablePlayer) {
             setIsGameAlreadyFull(true);
             return;
         }
 
-        const playerResponse = await addUserIdToPlayer(nextAvailablePlayerID, userID);
+        const playerResponse = await addUserIdToPlayer(nextAvailablePlayer, userID);
 
         if (!playerResponse) {
             console.log("Unable to join game");
         }
 
         webSocketHandler.current!.sendPlayerJoinedNotification();
-    }
-
-    function getNextAvailablePlayerID(players: any) {
-        for (let i = 0; i < players.length; i++) {
-            if (!players[i].userID) {
-                return players[i].id;
-            }
-        }
-
-        return false;
     }
 
     function getPlayerAreaNames(playerData: Array<PlayerResponseType>): Array<string> {
@@ -207,13 +153,6 @@ function GameDisplay() {
         }
 
         return playerAreas;
-    }
-
-    function createGameGenerator(playerIDs: number[]): GameGenerator {
-        const maxTurns = 30;
-        const gameGenerator = new GameGenerator(playerIDs, maxTurns);
-
-        return gameGenerator;
     }
 
     function onAreaSelect(area: Area): void {

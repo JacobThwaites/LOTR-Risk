@@ -31,7 +31,7 @@ export function getAreas(areaNames: Array<string>) {
     return playerAreas;
 }
 
-export function getAreasByNames(areaNames: Array<string>): Array<Area> {
+function getAreasByNames(areaNames: Array<string>): Array<Area> {
     const areas: Array<Area> = [];
     for (let i = 0; i < areaNames.length; i++) {
         const area: AreaType = Areas[areaNames[i]];

@@ -6,23 +6,19 @@ import 'mocha';
 
 describe('Game Generator', () => {
     let playerIDs: number[];
-    let maxTurns: number;
-    let gameGenerator: GameGenerator;
     let areaLists: Array<AreaType[]>;
     beforeEach(function () {
         playerIDs = [1,2];
-        maxTurns = 5;
-        gameGenerator = new GameGenerator(playerIDs, maxTurns);
         areaLists = [[Areas.FANGORN], [Areas.FORLINDON]];
     })
 
-    it('should be able to generate a game with the number of player IDs provided', () => {
-        const game = gameGenerator.generateGame(areaLists);
-        assert.equal(playerIDs.length, game.getPlayers().length);
-    });
+    it('should be able to generate a game with the player IDs provided', () => {
+        const game = GameGenerator.generateGame(areaLists, playerIDs);
+        const players = game.getPlayers();
+        assert.equal(playerIDs.length, players.length);
 
-    it('should generate a game with a given number of max turns', () => {
-        const game = gameGenerator.generateGame(areaLists);
-        assert.equal(maxTurns, game.getTurnsRemaining());
+        for (let i = 0; i < players.length; i++) {
+            assert.equal(playerIDs[i], players[i].getID());
+        }
     });
 });
