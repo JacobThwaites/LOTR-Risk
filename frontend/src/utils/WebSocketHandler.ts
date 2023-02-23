@@ -16,10 +16,9 @@ export default class WebSocketHandler {
     socket: any;
     previousMessageUUID: string;
 
-    constructor(gameID: string) {
+    constructor(gameID: string, socket: WebSocket) {
         this.gameID = gameID;
-        // TODO: potentially pass in websocket from GameDisplay instead of creating a new one here
-        this.socket = new WebSocket(`ws://localhost:8001/api/game/${gameID}`);
+        this.socket = socket;
         this.previousMessageUUID = '';
     }
 
@@ -93,9 +92,10 @@ export default class WebSocketHandler {
         this.sendMessage(messageBody);
     }
 
-    sendPlayerJoinedNotification() {
+    sendPlayerJoinedNotification(userID: string) {
         const messageBody = {
-            type: GameEventType.PLAYER_JOINED
+            type: GameEventType.PLAYER_JOINED,
+            userID
         }
 
         this.sendMessage(messageBody);

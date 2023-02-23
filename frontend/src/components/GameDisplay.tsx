@@ -33,6 +33,7 @@ type PlayerResponseType = {
 function GameDisplay() {
     const { gameID } = useParams<{ gameID: string }>();
     const [game, setGame] = useState<Game | null>(null);
+    const [isGameLoaded, setIsGameLoaded] = useState(false);
     const [attackingArea, setAttackingArea] = useState<Area | null>(null);
     const [defendingArea, setDefendingArea] = useState<Area | null>(null);
     const [attackingDice, setAttackingDice] = useState<number>(1);
@@ -45,9 +46,7 @@ function GameDisplay() {
     const [unitsToMove, setUnitsToMove] = useState<number>(0);
     const [isGameOver, setIsGameOver] = useState<boolean>(false);
     const [rerender, setRerender] = useState(false);
-    const [isGameAlreadyFull, setIsGameAlreadyFull] = useState(false);
     const [userID] = useState(uuidv4());
-    const [totalPlayersConnected, setTotalPlayersConnected] = useState<number>(0);
     const ws = useRef<WebSocket>();
     const webSocketHandler = useRef<WebSocketHandler>();
 
@@ -61,17 +60,21 @@ function GameDisplay() {
             const game = GameGenerator.generateGame(areas, playerIDs);
             setGame(game);
             setShouldDisplayReinforcementsModal(true);
-            return game;
+            setIsGameLoaded(true);
         }
 
-        async function connectSockets(game: Game) {
-            const socketHandler = new WebSocketHandler(gameID);
-            webSocketHandler.current = socketHandler;
+        setupGame();
+    }, [gameID])
+
+    useEffect(() => {
+        async function connectSockets() {
             const socket = new WebSocket(`ws://localhost:8001/api/game/${gameID}`);
+            const socketHandler = new WebSocketHandler(gameID, socket);
+            webSocketHandler.current = socketHandler;
     
             socket.onopen = () => {
                 console.log('Connected to the WebSocket server');
-                onJoin(game);
+                onJoin();
             };
     
             socket.onmessage = (event) => {
@@ -82,18 +85,18 @@ function GameDisplay() {
                 console.log('Closed socket connection');
             }
     
-            ws.current = socket;
+            ws.current = socket;      
         }
 
-        setupGame().then(game => {
-            connectSockets(game);
-        });
+        if (isGameLoaded) {
+            connectSockets();
+        }
 
         return () => {
-            ws.current!.close();
-            webSocketHandler.current!.closeSocket();
+            ws.current?.close();
+            webSocketHandler.current?.closeSocket();
         }
-    }, [gameID])
+    }, [isGameLoaded])
 
     function processWebSocketMessage(event: any): void {
         const messageData = JSON.parse(event.data);
@@ -123,16 +126,17 @@ function GameDisplay() {
             const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
             onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
         } else if (messageData.type === GameEventType.PLAYER_JOINED) {
-            setTotalPlayersConnected(totalPlayersConnected + 1);
-            console.log('updated total players connected');
+            game!.addUserIDToNextAvailablePlayer(messageData.userID);
+            const newGame = new Game([], 30);
+            Object.assign(newGame, game);
+            setGame(newGame);
         }
     }
 
-    async function onJoin(game: Game) {
-        const nextAvailablePlayer = game.getNextUnusedPlayer();;
+    async function onJoin() {
+        const nextAvailablePlayer = game!.getNextUnusedPlayer();
 
         if (!nextAvailablePlayer) {
-            setIsGameAlreadyFull(true);
             return;
         }
 
@@ -142,7 +146,7 @@ function GameDisplay() {
             console.log("Unable to join game");
         }
 
-        webSocketHandler.current!.sendPlayerJoinedNotification();
+        webSocketHandler.current!.sendPlayerJoinedNotification(userID);
     }
 
     function getPlayerAreaNames(playerData: Array<PlayerResponseType>): Array<string> {
@@ -343,18 +347,13 @@ function GameDisplay() {
         return (<></>);
     }
 
-    if (isGameAlreadyFull) {
-        return <h1>There are no more spaces left to join the game :(</h1>;
-    }
-
-    const playersLeftToJoin = game!.getPlayers().length - totalPlayersConnected;
-
-    if (playersLeftToJoin) {
-        return <WaitingForPlayers playersLeftToJoin={playersLeftToJoin} />
+    if (game.waitingForUsersToJoin()) {
+        const totalPlayersConnected = game!.getPlayers().reduce((acc, cur) => cur.getUserID()? ++acc : acc, 0);
+        const playersLeftToJoin = game!.getPlayers().length - totalPlayersConnected;
+        return <WaitingForPlayers playersLeftToJoin={playersLeftToJoin}/>
     }
 
     const currentPlayer = game!.getCurrentPlayer();
-
     return (
         <div id='game-display'>
             <Map
