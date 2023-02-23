@@ -78,4 +78,14 @@ export class Game {
     checkMaxTurnsReached(): boolean {
         return this.maxTurns <= this.currentTurn;
     }
+
+    getNextUnusedPlayer(): Player | boolean {
+        for (let i = 0; i < this.players.length; i++) {
+            if (!this.players[i].getUserID()) {
+                return this.players[i];
+            }
+        }
+
+        return false;
+    }
 }

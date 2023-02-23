@@ -18,8 +18,13 @@ export default class WebSocketHandler {
 
     constructor(gameID: string) {
         this.gameID = gameID;
+        // TODO: potentially pass in websocket from GameDisplay instead of creating a new one here
         this.socket = new WebSocket(`ws://localhost:8001/api/game/${gameID}`);
         this.previousMessageUUID = '';
+    }
+
+    closeSocket() {
+        this.socket.close();
     }
 
     isMessageAlreadyProcessed(messageUUID: string): boolean {

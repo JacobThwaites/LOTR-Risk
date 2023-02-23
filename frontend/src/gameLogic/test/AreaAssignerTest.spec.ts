@@ -12,8 +12,8 @@ describe("AreaAssigner", () => {
   let player2: Player;
   let areaLists: Array<AreaType[]>;
   beforeEach(function() {
-    player1 = new Player("player 1", Colour.GREEN);
-    player2 = new Player("player 2", Colour.GREEN);
+    player1 = new Player(1, Colour.GREEN);
+    player2 = new Player(2, Colour.GREEN);
     areaLists = [[Areas.FANGORN], [Areas.FORLINDON]];
 
     const players = [player1, player2];

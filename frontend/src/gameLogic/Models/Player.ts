@@ -5,7 +5,8 @@ import { getRegionForArea } from '../../utils/getRegionForArea';
 import { AreaType } from './AreaType';
 
 export class Player {
-    private name: string;
+    private id: number;
+    private userID: string;
     private isGood: boolean;
     private units: number;
     private reinforcements: number;
@@ -14,10 +15,11 @@ export class Player {
     private regions: Array<Region>;
     private colour: Colour;
     constructor(
-        name: string, 
+        id: number,
         colour: Colour
         ) {
-        this.name = name;
+        this.id = id;
+        this.userID = '';
         this.isGood = colour === (Colour.GREEN || Colour.YELLOW);
         this.units = 0;
         this.reinforcements = 0;
@@ -27,8 +29,16 @@ export class Player {
         this.colour = colour;
     }
 
-    getName(): string {
-        return this.name;
+    getID(): number {
+        return this.id;
+    }
+
+    getUserID(): string {
+        return this.userID;
+    }
+
+    setUserID(userID: string) {
+        this.userID = userID;
     }
     
     getUnits(): number {

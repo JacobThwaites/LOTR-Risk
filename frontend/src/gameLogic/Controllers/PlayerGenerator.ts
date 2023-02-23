@@ -2,27 +2,25 @@ import { Player } from "../Models/Player";
 import { Colour } from "../Enums/Colours";
 
 export class PlayerGenerator {
-  private numberOfPlayers: number;
-  private playerNames: string[];
-  constructor(numberOfPlayers: number) {
-    this.numberOfPlayers = numberOfPlayers;
-    this.playerNames = ["Black player", "Green player", "Red player", "Yellow player"];
+  private playerIDs: number[];
+  constructor(playerIDs: number[]) {
+    this.playerIDs = playerIDs;
   }
 
   generatePlayers(): Player[] {
     const players = [];
-    for (let i = 0; i < this.numberOfPlayers; i++) {
-      const player = this.createPlayer(i);
+    for (let i = 0; i < this.playerIDs.length; i++) {
+      const playerID = this.playerIDs[i];
+      const player = this.createPlayer(i, playerID);
       players.push(player);
     }
 
     return players;
   }
 
-  createPlayer(index: number): Player {
-    const playerName = this.playerNames[index];
+  createPlayer(index: number, id: number): Player {
     const colour = this.generateColour(index);
-    const player = new Player(playerName, colour);
+    const player = new Player(id, colour);
     return player;
   }
 

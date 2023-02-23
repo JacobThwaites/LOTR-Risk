@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { GameGenerator } from "../gameLogic/Controllers/GameGenerator";
 import { CombatController } from "../gameLogic/Controllers/CombatController";
 import { ReinforcementController } from "../gameLogic/Controllers/ReinforcementController";
@@ -30,7 +30,7 @@ type PlayerResponseType = {
     "gameID": string
 }
 
-function GameDisplay(): JSX.Element {
+function GameDisplay() {
     const { gameID } = useParams<{ gameID: string }>();
     const [game, setGame] = useState<Game | null>(null);
     const [attackingArea, setAttackingArea] = useState<Area | null>(null);
@@ -47,72 +47,82 @@ function GameDisplay(): JSX.Element {
     const [rerender, setRerender] = useState(false);
     const [isGameAlreadyFull, setIsGameAlreadyFull] = useState(false);
     const [userID] = useState(uuidv4());
-    const [socket] = useState<WebSocket>(new WebSocket(`ws://localhost:8001/api/game/${gameID}`));
-    const [socketHandler] = useState<WebSocketHandler>(new WebSocketHandler(gameID));
     const [totalPlayersConnected, setTotalPlayersConnected] = useState<number>(0);
+    const ws = useRef<WebSocket>();
+    const webSocketHandler = useRef<WebSocketHandler>();
 
     useEffect(() => {
-        setupGame();
-    }, [])
-
-    useEffect(() => {
-        if (!socket) {
-            return;
+        async function setupGame() {
+            const res = await getGame(gameID);
+            const json = await res!.json();
+            setTotalPlayersConnected(countConnectedPlayers(json.data.players));
+            const areaNames = getPlayerAreaNames(json.data.players);
+            const areas = getAreas(areaNames);
+            const playerIDs = json.data.players.map((p: any) => {return p.id});
+            const gameGenerator = createGameGenerator(playerIDs);
+            const game = gameGenerator.generateGame(areas);
+            setGame(game);
+            setShouldDisplayReinforcementsModal(true);
+            return game;
         }
 
-        socket.onopen = () => {
-            console.log('Connected to the WebSocket server');
-            onJoin();
-        };
-
-        socket.onmessage = (event) => {
-            const messageData = JSON.parse(event.data);
-
-            if (socketHandler.isMessageAlreadyProcessed(messageData.id)) {
-                return;
-            } else {
-                socketHandler.previousMessageUUID = messageData.id;
+        async function connectSockets(game: Game) {
+            const socketHandler = new WebSocketHandler(gameID);
+            webSocketHandler.current = socketHandler;
+            const socket = new WebSocket(`ws://localhost:8001/api/game/${gameID}`);
+    
+            socket.onopen = () => {
+                console.log('Connected to the WebSocket server');
+                onJoin(game);
+            };
+    
+            socket.onmessage = (event) => {
+                processWebSocketMessage(event);
+            };
+    
+            socket.onclose = () => {
+                console.log('Closed socket connection');
             }
-
-            if (messageData.type === GameEventType.COMBAT) {
-                const attackingArea = Areas[messageData.attackingArea];
-                const defendingArea = Areas[messageData.defendingArea];
-                setAttackingArea(attackingArea);
-                setDefendingArea(defendingArea);
-            } else if (messageData.type === GameEventType.CLEAR_SELECTED_AREAS) {
-                clearSelectedAreas();
-            } else if (messageData.type === GameEventType.STARTING_REINFORCEMENT) {
-                const area = Areas[messageData.areaName];
-                handleStartingReinforcements(area);
-            } else if (messageData.type === GameEventType.COMBAT_RESULTS) {
-                updateAreasAfterCombat(messageData.attackingArea, messageData.defendingArea, messageData.results);
-            } else if (messageData.type === GameEventType.END_TURN) {
-                handleEndTurn();
-            } else if (messageData.type === GameEventType.UNIT_MANEURVRE) {
-                const areaToMoveUnits = Areas[messageData.areaToMoveUnits];
-                const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
-                onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
-            } else if (messageData.type === GameEventType.PLAYER_JOINED) {
-                setTotalPlayersConnected(totalPlayersConnected + 1);
-            }
-        };
-
-        socket.onclose = () => {
-            console.log('Closed socket connection');
+    
+            ws.current = socket;
         }
-    }, [socket, game, totalPlayersConnected]);
 
-    async function setupGame() {
-        const res = await getGame(gameID);
-        const json = await res!.json();
-        setTotalPlayersConnected(countConnectedPlayers(json.data.players));
-        const areaNames = getPlayerAreaNames(json.data.players);
-        const areas = getAreas(areaNames);
-        const gameGenerator = createGameGenerator(json.data.num_players);
-        const game = gameGenerator.generateGame(areas);
-        setGame(game);
-        setShouldDisplayReinforcementsModal(true);
-    }
+        setupGame().then(game => {
+            console.log(game);
+            connectSockets(game);
+        });
+
+        return () => {
+            ws.current!.close();
+            webSocketHandler.current!.closeSocket();
+        }
+    }, [gameID])
+
+    // useEffect(() => {
+    //     const socketHandler = new WebSocketHandler(gameID);
+    //     webSocketHandler.current = socketHandler;
+    //     const socket = new WebSocket(`ws://localhost:8001/api/game/${gameID}`);
+
+    //     socket.onopen = () => {
+    //         console.log('Connected to the WebSocket server');
+    //         onJoin();
+    //     };
+
+    //     socket.onmessage = (event) => {
+    //         processWebSocketMessage(event);
+    //     };
+
+    //     socket.onclose = () => {
+    //         console.log('Closed socket connection');
+    //     }
+
+    //     ws.current = socket;
+
+    //     return () => {
+    //         socket.close();
+    //         webSocketHandler.current!.closeSocket();
+    //     }
+    // }, []);
 
     function countConnectedPlayers(players: Array<any>): number {
         let total = 0;
@@ -125,10 +135,45 @@ function GameDisplay(): JSX.Element {
         return total;
     }
 
-    async function onJoin() {
+    function processWebSocketMessage(event: any): void {
+        const messageData = JSON.parse(event.data);
+
+        if (webSocketHandler.current!.isMessageAlreadyProcessed(messageData.id)) {
+            return;
+        } else {
+            webSocketHandler.current!.previousMessageUUID = messageData.id;
+        }
+
+        if (messageData.type === GameEventType.COMBAT) {
+            const attackingArea = Areas[messageData.attackingArea];
+            const defendingArea = Areas[messageData.defendingArea];
+            setAttackingArea(attackingArea);
+            setDefendingArea(defendingArea);
+        } else if (messageData.type === GameEventType.CLEAR_SELECTED_AREAS) {
+            clearSelectedAreas();
+        } else if (messageData.type === GameEventType.STARTING_REINFORCEMENT) {
+            const area = Areas[messageData.areaName];
+            handleStartingReinforcements(area);
+        } else if (messageData.type === GameEventType.COMBAT_RESULTS) {
+            updateAreasAfterCombat(messageData.attackingArea, messageData.defendingArea, messageData.results);
+        } else if (messageData.type === GameEventType.END_TURN) {
+            handleEndTurn();
+        } else if (messageData.type === GameEventType.UNIT_MANEURVRE) {
+            const areaToMoveUnits = Areas[messageData.areaToMoveUnits];
+            const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
+            onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
+        } else if (messageData.type === GameEventType.PLAYER_JOINED) {
+            setTotalPlayersConnected(totalPlayersConnected + 1);
+            console.log('updated total players connected');
+        }
+    }
+
+    async function onJoin(game: Game) {
         const gameInfo = await getGame(gameID);
         const json = await gameInfo!.json();
         const nextAvailablePlayerID = getNextAvailablePlayerID(json.data.players);
+        const nextAvailablePlayer = game.getNextUnusedPlayer();
+        console.log(nextAvailablePlayer);
 
         if (!nextAvailablePlayerID) {
             setIsGameAlreadyFull(true);
@@ -141,7 +186,7 @@ function GameDisplay(): JSX.Element {
             console.log("Unable to join game");
         }
 
-        socketHandler!.sendPlayerJoinedNotification();
+        webSocketHandler.current!.sendPlayerJoinedNotification();
     }
 
     function getNextAvailablePlayerID(players: any) {
@@ -164,16 +209,16 @@ function GameDisplay(): JSX.Element {
         return playerAreas;
     }
 
-    function createGameGenerator(numberOfPlayers: number): GameGenerator {
+    function createGameGenerator(playerIDs: number[]): GameGenerator {
         const maxTurns = 30;
-        const gameGenerator = new GameGenerator(numberOfPlayers, maxTurns);
+        const gameGenerator = new GameGenerator(playerIDs, maxTurns);
 
         return gameGenerator;
     }
 
     function onAreaSelect(area: Area): void {
         if (shouldHandleStartingReinforcements) {
-            socketHandler.sendStartingReinforcement(area.getName());
+            webSocketHandler.current!.sendStartingReinforcement(area.getName());
         } else if (shouldDisplayReinforcementsModal) {
             addReinforcements(area);
         } else {
@@ -201,7 +246,6 @@ function GameDisplay(): JSX.Element {
         setShouldHandleStartingReinforcements(false)
     }
 
-
     function addReinforcements(area: Area): void {
         const reinforcementController = createReinforcementController();
         reinforcementController.addReinforcements(area);
@@ -226,12 +270,12 @@ function GameDisplay(): JSX.Element {
 
     function setAreaForCombat(area: Area): void {
         if (attackingArea === area) {
-            socketHandler.sendClearAreaSelection();
+            webSocketHandler.current!.sendClearAreaSelection();
         } else if (defendingArea === area) {
             setDefendingArea(null);
         } else if (attackingArea !== null) {
             setDefendingArea(area);
-            socketHandler.sendCombatInfo(attackingArea.getName(), area.getName());
+            webSocketHandler.current!.sendCombatInfo(attackingArea.getName(), area.getName());
         } else {
             setAttackingArea(area);
         }
@@ -253,7 +297,7 @@ function GameDisplay(): JSX.Element {
         );
 
         const results = combatController!.getCombatResults(attackingDice, defendingDice);
-        socketHandler.sendCombatResults(attackingArea.getName(), defendingArea.getName(), results);
+        webSocketHandler.current!.sendCombatResults(attackingArea.getName(), defendingArea.getName(), results);
     }
 
     async function updateAreasAfterCombat(attackingAreaName: string, defendingAreaName: string, results: string[]) {
@@ -287,7 +331,7 @@ function GameDisplay(): JSX.Element {
     }
 
     function onEndTurnClick(): void {
-        socketHandler.sendEndTurn();
+        webSocketHandler.current!.sendEndTurn();
     }
 
     function handleEndTurn(): void {
@@ -307,7 +351,7 @@ function GameDisplay(): JSX.Element {
 
     function onMoveUnitButtonClick(): void {
         if (UnitManeuverController.isManeuverValid(areaToMoveUnits!, unitsToMove)) {
-            socketHandler.sendUnitManeuvre(areaToMoveUnits!.getName(), areaToReceiveUnits!.getName(), unitsToMove);
+            webSocketHandler.current!.sendUnitManeuvre(areaToMoveUnits!.getName(), areaToReceiveUnits!.getName(), unitsToMove);
         }
     }
 
@@ -383,7 +427,7 @@ function GameDisplay(): JSX.Element {
             />
             <TurnInformation
                 turnsRemaining={game!.getTurnsRemaining()}
-                playerName={currentPlayer!.getName()}
+                playerName={`${currentPlayer!.getColour()} Player`}
             />
             {attackingArea && defendingArea && (
                 <CombatHandler
