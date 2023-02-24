@@ -1,3 +1,5 @@
+import { Player } from "../Models/Player";
+
 export async function saveGame(numPlayers: number, playerAreas: Array<string>, playerName: string) {
     const players = formatPlayerData(playerAreas, playerName);
 
@@ -50,5 +52,29 @@ export async function getGame(gameID: string) {
     } catch (err) {
         console.error(err);
         return;
+    }
+}
+
+export async function addUserIdToPlayer(player: Player, userID: string): Promise<boolean> {
+    try {
+        const playerID = player.getID();
+        const res = await fetch(`http://localhost:8000/api/player/${playerID}`, {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userID })
+        });
+
+        if (!res.ok) {
+            throw new Error("Faiedl to update player userID");
+        }
+
+        return true;
+
+    } catch (err: any) {
+        console.error(err.message);
+        return false;
     }
 }

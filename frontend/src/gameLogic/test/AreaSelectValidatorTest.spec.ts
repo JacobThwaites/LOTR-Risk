@@ -13,7 +13,7 @@ describe('AreaSelectValidator', () => {
     let area3: Area;
     let area4: Area;
     beforeEach(function () {
-        player = new Player('Biff', Colour.GREEN);
+        player = new Player(1, Colour.GREEN, 'userID');
         area1 = Areas.HARLINDON;
         area2 = Areas.LUNE_VALLEY;
         area3 = Areas.MITHLOND;

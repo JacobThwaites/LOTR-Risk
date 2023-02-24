@@ -27,14 +27,18 @@ describe('Player', () => {
         const areas = [area1, area2, area3, area4, area5, area6];
         region = new Region('haradwaith', areas, 2);
         card1 = new AdventureCard('Do something');
-        player = new Player('Jake', Colour.GREEN);
+        player = new Player(1, Colour.GREEN, 'userID');
         player.addUnits(10);
         player.addReinforcements(5);
     })
 
-    it('should have a name', () => {
-        const name = player.getName();
-        assert.equal(name, 'Jake');
+    it('should be able to set userID', () => {
+        let userID = player.getUserID();
+        assert.equal(userID, '');
+
+        player.setUserID('new userID');
+        userID = player.getUserID();
+        assert.equal(userID, 'new userID');
     });
 
     it('should be able to take a card', () => {

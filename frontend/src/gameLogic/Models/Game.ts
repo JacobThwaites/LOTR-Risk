@@ -78,4 +78,33 @@ export class Game {
     checkMaxTurnsReached(): boolean {
         return this.maxTurns <= this.currentTurn;
     }
+
+    addUserIDToNextAvailablePlayer(userID: string) {
+        for (let i = 0; i < this.players.length; i++) {
+            if (!this.players[i].getUserID()) {
+                this.players[i].setUserID(userID);
+                return;
+            }
+        }
+    }
+
+    getNextUnusedPlayer(): Player | null {
+        for (let i = 0; i < this.players.length; i++) {
+            if (!this.players[i].getUserID()) {
+                return this.players[i];
+            }
+        }
+
+        return null;
+    }
+
+    waitingForUsersToJoin(): boolean {
+        for (let i = 0; i < this.players.length; i++) {
+            if (!this.players[i].getUserID()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

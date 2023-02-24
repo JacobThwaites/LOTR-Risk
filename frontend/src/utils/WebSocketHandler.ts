@@ -8,6 +8,7 @@ export enum GameEventType {
     STARTING_REINFORCEMENT = "STARTING REINFORCEMENT",
     END_TURN = "END TURN",
     UNIT_MANEURVRE = "UNIT MANEUVRE",
+    PLAYER_JOINED = "PLAYER JOINED",
 }
 
 export default class WebSocketHandler {
@@ -15,10 +16,14 @@ export default class WebSocketHandler {
     socket: any;
     previousMessageUUID: string;
 
-    constructor(gameID: string) {
+    constructor(gameID: string, socket: WebSocket) {
         this.gameID = gameID;
-        this.socket = new WebSocket(`ws://localhost:8001/api/game/${gameID}`);
+        this.socket = socket;
         this.previousMessageUUID = '';
+    }
+
+    closeSocket() {
+        this.socket.close();
     }
 
     isMessageAlreadyProcessed(messageUUID: string): boolean {
@@ -82,6 +87,15 @@ export default class WebSocketHandler {
             areaToMoveUnits,
             areaToReceiveUnits,
             numUnits 
+        }
+
+        this.sendMessage(messageBody);
+    }
+
+    sendPlayerJoinedNotification(userID: string) {
+        const messageBody = {
+            type: GameEventType.PLAYER_JOINED,
+            userID
         }
 
         this.sendMessage(messageBody);

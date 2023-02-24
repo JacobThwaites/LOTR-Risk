@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import MapAreas from "./MapAreas";
 import Mountains from "./svgPaths/Mountains";
 import Bridges from "./svgPaths/Bridges";
@@ -13,114 +13,96 @@ type Props = {
   defendingArea: any,
   attackingDice: number,
   currentPlayer: Player,
-  onAreaSelect: any
+  onAreaSelect: any,
+  isUsersTurn: boolean
 }
 
-type State = {
-  isRendered: boolean
-}
+export default function Map(props: Props) {
+  const [isRendered, setIsRendered] = useState(false);
 
-export default class Map extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      isRendered: false,
-    };
-    this.isAreaClickable = this.isAreaClickable.bind(this);
-    this.onAreaSelect = this.onAreaSelect.bind(this);
-    this.generateAreaClassName = this.generateAreaClassName.bind(this);
-  }
+  useEffect(() => {
+    setIsRendered(true);
+  }, []);
 
-  componentDidMount() {
-    this.setState({ isRendered: true });
-  }
-
-  onAreaSelect(area: AreaType) {
-    if (this.isAreaClickable(area)) {
-      this.props.onAreaSelect(area);
+  function onAreaSelect(area: AreaType) {
+    if (isAreaClickable(area)) {
+      props.onAreaSelect(area);
     }
   }
 
-  generateAreaClassName(a: any) {
-    const { attackingArea, defendingArea } = this.props;
+  function isAreaClickable(area: AreaType) {
+    if (!props.isUsersTurn) {
+      return false;
+    } else if (isAttackingAreaSelected(area)) {
+      return isAttackingAreaClickable(area);
+    } else {
+      return isDefendingAreaClickable(area);
+    }
+  }
+
+  function isAttackingAreaSelected(area: AreaType) {
+    return (
+      props.attackingArea === null || props.attackingArea === area
+    );
+  }
+
+  function isAttackingAreaClickable(area: AreaType) {
+    if (!isRendered) {
+      return false;
+    }
+
+    return props.currentPlayer.ownsArea(area);
+  }
+
+  function isDefendingAreaClickable(area: AreaType) {
+    if (!isRendered || !props.attackingArea) {
+      return false;
+    }
+
+    const defendingPlayer = area.getPlayer();
+    return (
+      (areAreasConnected(props.attackingArea, area) && props.currentPlayer !== defendingPlayer) ||
+      props.attackingArea.area === area
+    );
+  }
+
+  function generateAreaClassName(a: any) {
     let className;
-    if (a.area === attackingArea) {
+    if (a.area === props.attackingArea) {
       className = "attacker";
-    } else if (a.area === defendingArea) {
+    } else if (a.area === props.defendingArea) {
       className = "defender";
     } else {
       className = a.region;
     }
 
-    if (this.isAreaClickable(a.area)) {
+    if (isAreaClickable(a.area)) {
       className = `${className} clickable`;
     }
 
     return className;
   }
 
-  isAreaClickable(area: any) {
-    if (this.isAttackingAreaSelected(area)) {
-      return this.isAttackingAreaClickable(area);
-    } else {
-      return this.isDefendingAreaClickable(area);
-    }
-  }
-
-  isAttackingAreaSelected(area: any) {
-    return (
-      this.props.attackingArea === null || this.props.attackingArea === area
-    );
-  }
-
-  isAttackingAreaClickable(area: AreaType) {
-    const { isRendered } = this.state;
-    const { currentPlayer } = this.props;
-
-    if (!isRendered) {
-      return false;
-    }
-
-    return currentPlayer.ownsArea(area);
-  }
-
-  isDefendingAreaClickable(area: AreaType) {
-    const { isRendered } = this.state;
-    const { currentPlayer, attackingArea } = this.props;
-
-    if (!isRendered || !attackingArea) {
-      return false;
-    }
-
-    const defendingPlayer = area.getPlayer();
-    return (
-      (areAreasConnected(attackingArea, area) && currentPlayer !== defendingPlayer) ||
-      attackingArea.area === area
-    );
-  }
-
-  render() {
-    return (
-      <svg
-        id="map"
-        version="1.1"
-        viewBox="0 0 1360 2000"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="blue"
-      >
-        <g stroke="#000" strokeWidth="1px">
-          <Mountains />
-          <MapAreas
-            onClick={this.onAreaSelect}
-            isRendered={this.state.isRendered}
-            isAreaClickable={this.isAreaClickable}
-            generateAreaClassName={this.generateAreaClassName}
-          />
-          <Islands />
-          <Strongholds />
-          <Bridges />
-        </g>
-      </svg>
-    );
-  }
+  return (
+    <svg
+      id="map"
+      version="1.1"
+      viewBox="0 0 1360 2000"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="blue"
+    >
+      <g stroke="#000" strokeWidth="1px">
+        <Mountains />
+        <MapAreas
+          onClick={onAreaSelect}
+          isRendered={isRendered}
+          isAreaClickable={isAreaClickable}
+          generateAreaClassName={generateAreaClassName}
+        />
+        <Islands />
+        <Strongholds />
+        <Bridges />
+      </g>
+    </svg>
+  );
 }

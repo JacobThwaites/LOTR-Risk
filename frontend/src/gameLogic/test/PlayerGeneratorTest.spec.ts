@@ -3,11 +3,14 @@ import { assert } from 'chai';
 import 'mocha';
 
 describe('Player Generator', () => {
-    let numberOfPlayers: number;
     let playerGenerator: PlayerGenerator;
+    let playerIDs: number[];
+    let userIDs: string[];
     beforeEach(function () {
-        numberOfPlayers = 5;
-        playerGenerator = new PlayerGenerator(numberOfPlayers);
+        playerIDs = [1,2,3];
+        userIDs = ['user1', 'user2', ''];
+        
+        playerGenerator = new PlayerGenerator(playerIDs, userIDs);
     })
 
     it('should be able to generate an array of players', () => {
@@ -16,9 +19,23 @@ describe('Player Generator', () => {
         assert.typeOf(players[0], 'Object');
     });
 
-    it('should generate the number of players specified in the constructor', () => {
+    it('should generate a player for each playerID provided', () => {
         const players = playerGenerator.generatePlayers();
         const totalPlayers = players.length;
-        assert.equal(totalPlayers, numberOfPlayers);
+        assert.equal(totalPlayers, playerIDs.length);
+
+        for (let i = 0; i < players.length; i++) {
+            assert.equal(players[i].getID(), playerIDs[i]);
+        }
+    });
+
+    it('should generate a player for each userID provided', () => {
+        const players = playerGenerator.generatePlayers();
+        const totalPlayers = players.length;
+        assert.equal(totalPlayers, userIDs.length);
+
+        for (let i = 0; i < players.length; i++) {
+            assert.equal(players[i].getUserID(), userIDs[i]);
+        }
     });
 });

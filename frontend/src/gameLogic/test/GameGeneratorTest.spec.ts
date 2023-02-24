@@ -5,24 +5,26 @@ import { assert } from 'chai';
 import 'mocha';
 
 describe('Game Generator', () => {
-    let numberOfPlayers: number;
-    let maxTurns: number;
-    let gameGenerator: GameGenerator;
+    let playerIDs: number[];
     let areaLists: Array<AreaType[]>;
+    let userIDs: string[];
     beforeEach(function () {
-        numberOfPlayers = 2;
-        maxTurns = 5;
-        gameGenerator = new GameGenerator(numberOfPlayers, maxTurns);
+        playerIDs = [1,2];
+        userIDs = ['user1', 'user2'];
         areaLists = [[Areas.FANGORN], [Areas.FORLINDON]];
     })
 
-    it('should be able to generate a game with a given number of players', () => {
-        const game = gameGenerator.generateGame(areaLists);
-        assert.equal(numberOfPlayers, game.getPlayers().length);
-    });
+    it('should be able to generate a game with the player IDs provided', () => {
+        const game = GameGenerator.generateGame(areaLists, playerIDs, userIDs);
+        const players = game.getPlayers();
+        assert.equal(playerIDs.length, players.length);
 
-    it('should generate a game with a given number of max turns', () => {
-        const game = gameGenerator.generateGame(areaLists);
-        assert.equal(maxTurns, game.getTurnsRemaining());
+        for (let i = 0; i < players.length; i++) {
+            assert.equal(playerIDs[i], players[i].getID());
+        }
+
+        for (let i = 0; i < players.length; i++) {
+            assert.equal(userIDs[i], players[i].getUserID());
+        }
     });
 });
