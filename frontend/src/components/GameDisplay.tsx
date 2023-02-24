@@ -177,21 +177,18 @@ function GameDisplay() {
     function handleStartingReinforcements(area: Area): void {
         const currentPlayer = game!.getCurrentPlayer();
 
-        if (game!.playersHaveReinforcements()) {
-            addReinforcements(area);
-
-            if (currentPlayer!.getReinforcements() < 1) {
-                game!.changeCurrentPlayer();
-                updateGameState(game!);
-            }
-
-            return;
+        addReinforcements(area);
+        
+        if (currentPlayer!.getReinforcements() < 1) {
+            game!.changeCurrentPlayer();
         }
 
-        game!.changeCurrentPlayer();
         updateGameState(game!);
-        setShouldDisplayReinforcementsModal(false);
-        setShouldHandleStartingReinforcements(false)
+
+        if (!game!.playersHaveReinforcements()) {
+            setShouldDisplayReinforcementsModal(false);
+            setShouldHandleStartingReinforcements(false)
+        }
     }
 
     function addReinforcements(area: Area): void {
