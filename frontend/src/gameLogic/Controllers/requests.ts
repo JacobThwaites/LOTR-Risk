@@ -1,7 +1,7 @@
 import { Player } from "../Models/Player";
 
-export async function saveGame(numPlayers: number, playerAreas: Array<string>, playerName: string) {
-    const players = formatPlayerData(playerAreas, playerName);
+export async function saveGame(numPlayers: number, playerAreas: Array<string>) {
+    const players = formatPlayerData(playerAreas);
 
     try {
         const body = {
@@ -23,17 +23,16 @@ export async function saveGame(numPlayers: number, playerAreas: Array<string>, p
     }
 }
 
-function formatPlayerData(playerAreas: Array<string>, playerName: string): Array<{ name: string, areas: string }> {
+function formatPlayerData(playerAreas: Array<string>): Array<{ areas: string }> {
     const players = [];
 
     const firstPlayer = {
-        name: playerName,
         areas: playerAreas[0]
     }
     players.push(firstPlayer);
 
     for (let i = 1; i < playerAreas.length; i++) {
-        const player = { name: '', areas: playerAreas[i] };
+        const player = { areas: playerAreas[i] };
         players.push(player)
     }
 

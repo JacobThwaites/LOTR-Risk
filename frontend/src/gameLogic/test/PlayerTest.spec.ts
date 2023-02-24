@@ -27,7 +27,7 @@ describe('Player', () => {
         const areas = [area1, area2, area3, area4, area5, area6];
         region = new Region('haradwaith', areas, 2);
         card1 = new AdventureCard('Do something');
-        player = new Player(1, Colour.GREEN, 'userID');
+        player = new Player(1, Colour.GREEN, '');
         player.addUnits(10);
         player.addReinforcements(5);
     })

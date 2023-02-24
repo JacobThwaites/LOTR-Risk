@@ -1,5 +1,4 @@
 import { AreaType } from '../Models/AreaType';
-import { CombatValidator } from './CombatValidator';
 
 export class CombatController {
     private attackingArea: AreaType;
@@ -63,11 +62,6 @@ export class CombatController {
         losingPlayer!.removeUnits(1);
         losingArea.removeUnits(1);
     }
-
-    isCombatValid(attackingDice: number, defendingDice: number): boolean {
-        const combatValidator = new CombatValidator(this.attackingArea, this.defendingArea);
-        return combatValidator.isCombatValid(attackingDice, defendingDice);
-    } 
 
     rollDice(numberOfDice: number): Array<number> {
         let numbersRolled = [];

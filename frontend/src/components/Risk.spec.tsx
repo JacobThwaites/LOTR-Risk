@@ -24,10 +24,4 @@ it('handles game setup', () => {
 
     const numPlayersButton = getByText('Submit');
     fireEvent.click(numPlayersButton);
-
-    const playerNameHeader = getByText('Choose Name:');
-    expect(playerNameHeader).toBeInTheDocument();
-
-    const playerNameButton = getByText('Submit');
-    fireEvent.click(playerNameButton);
 });
