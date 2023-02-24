@@ -7,7 +7,8 @@ type Props = {
   unitsToMove: number,
   onMoveUnits: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
   isButtonDisabled: boolean,
-  setUnitsToMove: Dispatch<SetStateAction<number>>
+  setUnitsToMove: Dispatch<SetStateAction<number>>,
+  isDisabled: boolean
 }
 
 export default function UnitManeuverHandler(props: Props) {
@@ -20,6 +21,7 @@ export default function UnitManeuverHandler(props: Props) {
           max={props.max}
           onChange={(num: number) => props.setUnitsToMove(num)}
           value={props.unitsToMove}
+          disabled={props.isDisabled}
         />
       </div>
       <MoveUnitsButton 

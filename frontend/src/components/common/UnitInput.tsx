@@ -6,7 +6,8 @@ type Props = {
   name: string,
   max: number,
   onChange: Function,
-  value: number
+  value: number,
+  disabled?: boolean
 }
 
 function UnitInput(props: Props) {
@@ -18,6 +19,7 @@ function UnitInput(props: Props) {
         max={props.max}
         onChange={props.onChange}
         value={props.value}
+        disabled={props.disabled}
       />
     </>
   );

@@ -13,7 +13,8 @@ type Props = {
   defendingArea: any,
   attackingDice: number,
   currentPlayer: Player,
-  onAreaSelect: any
+  onAreaSelect: any,
+  isUsersTurn: boolean
 }
 
 export default function Map(props: Props) {
@@ -30,7 +31,9 @@ export default function Map(props: Props) {
   }
 
   function isAreaClickable(area: AreaType) {
-    if (isAttackingAreaSelected(area)) {
+    if (!props.isUsersTurn) {
+      return false;
+    } else if (isAttackingAreaSelected(area)) {
       return isAttackingAreaClickable(area);
     } else {
       return isDefendingAreaClickable(area);

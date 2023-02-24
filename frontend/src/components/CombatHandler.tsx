@@ -10,7 +10,8 @@ type Props = {
   setAttackingDice: Dispatch<SetStateAction<number>>,
   setDefendingDice: Dispatch<SetStateAction<number>>,
   onCombatButtonClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
-  isCombatButtonClickable: boolean
+  isCombatButtonClickable: boolean,
+  isUsersTurn: boolean
 }
 
 export default function CombatHandler(props: Props) {
@@ -23,6 +24,7 @@ export default function CombatHandler(props: Props) {
         defendingDice={props.defendingDice}
         setAttackingDice={props.setAttackingDice}
         setDefendingDice={props.setDefendingDice}
+        areInputsDisabled={props.isUsersTurn}
       />
       <CombatButton 
         onCombatButtonClick={props.onCombatButtonClick} 

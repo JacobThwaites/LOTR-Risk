@@ -333,21 +333,39 @@ function GameDisplay() {
     }
 
     function isCombatButtonClickable(): boolean {
+        if (!isUsersTurn()) {
+            return false;
+        }
+
         const combatValidator = new CombatValidator(attackingArea!, defendingArea!);
         const isValid = combatValidator.isCombatValid(attackingDice, defendingDice);
         return isValid;
     }
 
     function isMoveUnitsButtonDisabled(): boolean {
-        return unitsToMove < 1;
+        return unitsToMove < 1 && !isUsersTurn();
     }
 
     function isEndTurnButtonDisabled(): boolean {
         return (
             shouldDisplayUnitManeuverButton ||
             shouldDisplayReinforcementsModal ||
-            shouldHandleStartingReinforcements
+            shouldHandleStartingReinforcements ||
+            !isUsersTurn()
         );
+    }
+
+    function isUsersTurn(): boolean {
+        if (!game) {
+            return false;
+        }
+
+        // TODO: always return true if game type is "local"
+        if (false) {
+            return true;
+        }
+
+        return currentPlayer.getUserID() === userID;
     }
 
     if (!game) {
@@ -361,7 +379,6 @@ function GameDisplay() {
     }
 
     const currentPlayer = game!.getCurrentPlayer();
-    const isUsersTurn = currentPlayer.getUserID() === userID;
     return (
         <div id='game-display'>
             <Map
@@ -370,6 +387,7 @@ function GameDisplay() {
                 attackingDice={attackingDice}
                 currentPlayer={currentPlayer!}
                 onAreaSelect={onAreaSelect}
+                isUsersTurn={isUsersTurn()}
             />
             <TurnInformation
                 turnsRemaining={game!.getTurnsRemaining()}
@@ -385,6 +403,7 @@ function GameDisplay() {
                     setAttackingDice={setAttackingDice}
                     setDefendingDice={setDefendingDice}
                     isCombatButtonClickable={isCombatButtonClickable()}
+                    isUsersTurn={isUsersTurn()}
                 />
             )}
             {shouldDisplayUnitManeuverButton && (
@@ -394,6 +413,7 @@ function GameDisplay() {
                     onMoveUnits={onMoveUnitButtonClick}
                     setUnitsToMove={setUnitsToMove}
                     isButtonDisabled={isMoveUnitsButtonDisabled()}
+                    isDisabled={!isUsersTurn()}
                 />
             )}
             {shouldDisplayReinforcementsModal && (

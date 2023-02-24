@@ -8,6 +8,7 @@ type Props = {
   defendingDice: number
   setAttackingDice: Dispatch<SetStateAction<number>>,
   setDefendingDice: Dispatch<SetStateAction<number>>,
+  areInputsDisabled: boolean
 }
 
 export default function CombatInputs(props: Props) {
@@ -20,6 +21,7 @@ export default function CombatInputs(props: Props) {
           max={props.maxAttackingDice}
           value={props.attackingDice}
           onChange={(num: number) => props.setAttackingDice(num)}
+          disabled={!props.areInputsDisabled}
         />
       </div>
       <div className="combat-handler__dice-input--defending">
@@ -29,6 +31,7 @@ export default function CombatInputs(props: Props) {
           max={props.maxDefendingDice}
           value={props.defendingDice}
           onChange={(num: number) => props.setDefendingDice(num)}
+          disabled={!props.areInputsDisabled}
         />
       </div>
     </div>

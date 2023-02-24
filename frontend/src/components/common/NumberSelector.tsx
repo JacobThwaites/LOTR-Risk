@@ -9,6 +9,7 @@ type Props = {
   value: number,
   onChange: any,
   autoFocus?: boolean,
+  disabled?: boolean
 }
 
 export default function NumberSelector(props: Props) {
@@ -22,6 +23,7 @@ export default function NumberSelector(props: Props) {
       value={props.value}
       onChange={props.onChange}
       autoFocus={props.autoFocus}
+      disabled={props.disabled}
       strict
     />
   );
