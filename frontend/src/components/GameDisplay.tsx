@@ -285,6 +285,7 @@ function GameDisplay() {
 
     function handleEndTurn(): void {
         game!.handleNewTurn();
+        updateGameState(game!);
         setShouldDisplayReinforcementsModal(true);
         resetCombatState();
         checkIfGameOver();
@@ -360,6 +361,7 @@ function GameDisplay() {
     }
 
     const currentPlayer = game!.getCurrentPlayer();
+    const isUsersTurn = currentPlayer.getUserID() === userID;
     return (
         <div id='game-display'>
             <Map
