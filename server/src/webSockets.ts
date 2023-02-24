@@ -22,6 +22,7 @@ export class WebSocketManager {
     }
 
     removeClient(ws: any) {
+        ws.close();
         this.clients.splice(this.clients.indexOf(ws), 1);
     }
 }

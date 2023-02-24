@@ -15,8 +15,8 @@ describe('Combat', () => {
     beforeEach(function () {
         attackingArea = new Area(AreaName.TOWER_HILLS);
         defendingArea = new Stronghold(AreaName.EVENDIM_HILLS);
-        attacker = new Player(1, Colour.GREEN);
-        defender = new Player(2, Colour.RED);
+        attacker = new Player(1, Colour.GREEN, 'userID');
+        defender = new Player(2, Colour.RED, 'userID');
         attacker.addUnits(10);
         defender.addUnits(10);
         attackingArea.setPlayer(attacker);

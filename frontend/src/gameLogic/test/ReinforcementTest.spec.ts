@@ -7,7 +7,7 @@ import { Area } from '../Models/Area';
 import { AreaName } from '../Enums/AreaNames';
 
 describe('Reinforcements', () => {
-    const player = new Player(1, Colour.GREEN);
+    const player = new Player(1, Colour.GREEN, 'userID');
     player.addReinforcements(1);
     const area = new Area(AreaName.ANDRAST);
     const rc = new ReinforcementController(player);

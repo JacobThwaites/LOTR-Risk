@@ -57,7 +57,8 @@ function GameDisplay() {
             const areaNames = getPlayerAreaNames(json.data.players);
             const areas = getAreas(areaNames);
             const playerIDs = json.data.players.map((p: any) => {return p.id});
-            const game = GameGenerator.generateGame(areas, playerIDs);
+            const userIDs = json.data.players.map((p: any) => {return p.userID});
+            const game = GameGenerator.generateGame(areas, playerIDs, userIDs);
             setGame(game);
             setShouldDisplayReinforcementsModal(true);
             setIsGameLoaded(true);

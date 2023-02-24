@@ -16,10 +16,11 @@ export class Player {
     private colour: Colour;
     constructor(
         id: number,
-        colour: Colour
+        colour: Colour,
+        userID: string
         ) {
         this.id = id;
-        this.userID = '';
+        this.userID = userID;
         this.isGood = colour === (Colour.GREEN || Colour.YELLOW);
         this.units = 0;
         this.reinforcements = 0;

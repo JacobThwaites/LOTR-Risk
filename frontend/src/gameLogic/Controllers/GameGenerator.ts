@@ -5,9 +5,9 @@ import { PlayerGenerator } from './PlayerGenerator';
 import { AreaType } from '../Models/AreaType';
 
 export class GameGenerator {
-    public static generateGame(areaLists: Array<AreaType[]>, playerIDs: Array<number>): Game {
+    public static generateGame(areaLists: Array<AreaType[]>, playerIDs: Array<number>, userIDs: Array<string>): Game {
         const MAX_TURNS = 30;
-        const players = this.generatePlayers(playerIDs);
+        const players = this.generatePlayers(playerIDs, userIDs);
         const areaAssigner = new AreaAssigner(players);
         areaAssigner.assignAreas(areaLists);
         const game = new Game(players, MAX_TURNS)
@@ -16,8 +16,8 @@ export class GameGenerator {
         return game;
     }
 
-    private static generatePlayers(playerIDs: Array<number>): Player[] {
-        const playerGenerator = new PlayerGenerator(playerIDs);
+    private static generatePlayers(playerIDs: Array<number>, userIDs: Array<string>): Player[] {
+        const playerGenerator = new PlayerGenerator(playerIDs, userIDs);
         const players = playerGenerator.generatePlayers();
         return players;
     } 
