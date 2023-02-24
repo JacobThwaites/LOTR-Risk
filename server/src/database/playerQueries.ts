@@ -20,9 +20,9 @@ async function getPlayerById(id: number) {
 
 async function createPlayer(player: Player) {
     try {
-        const query = `INSERT INTO player (name, areas, game_id, user_id) VALUES (?,?,?,?)`;
+        const query = `INSERT INTO player (areas, game_id, user_id) VALUES (?,?,?,?)`;
     
-        const params = [player.name, player.areas, player.gameID, player.userID ? player.userID : null];
+        const params = [player.areas, player.gameID, player.userID ? player.userID : null];
         const res = await db.execute(query, params);
         return res;
     } catch(e: any) {
@@ -31,7 +31,7 @@ async function createPlayer(player: Player) {
 }
 
 async function createMultiplePlayers(players: Player[]) {
-    const query = 'INSERT INTO player (name, areas, game_id, user_id) VALUES ?';
+    const query = 'INSERT INTO player (areas, game_id, user_id) VALUES ?';
     const rows = convertPlayersToRows(players);
     const res = await db.query(query, [rows]);
 
@@ -42,7 +42,7 @@ function convertPlayersToRows(players: Player[]): Array<Array<string | undefined
     const rows: Array<Array<string | undefined>> = [];
 
     players.forEach(player => {
-        rows.push([player.name, player.areas, player.gameID, player.userID]);
+        rows.push([player.areas, player.gameID, player.userID]);
     });
     
     return rows;

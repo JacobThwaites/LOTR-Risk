@@ -10,23 +10,13 @@ export default function Risk() {
     const [shouldDisplayChooseGameType, setShouldDisplayChooseGameType] = useState(true);
     const [shouldDisplayNumberOfPlayersSelector, setShouldDisplayNumberOfPlayersSelector] = useState(false);
     const [shouldDisplayGameSetup, setShouldDisplayGameSetup] = useState(true);
-    const [playerName, setPlayerName] = useState('');
     const [gameType, setGameType] = useState('online');
 
     function onNumberSelect(number: number, b: any, a: { name: string }) {
         setNumberOfPlayers(number);
     }
 
-    function onChangeName(event: any) {
-        const playerName = event.target.value;
-        setPlayerName(playerName);
-    }
-
     function onSubmitNumberOfPlayers() {
-        setShouldDisplayNumberOfPlayersSelector(false);
-    }
-
-    async function onSubmitName() {
         setShouldDisplayGameSetup(false);
     }
 
@@ -40,31 +30,28 @@ export default function Risk() {
         return (
             <GameSetup
                 numberOfPlayers={numberOfPlayers}
-                playerName={playerName}
                 shouldDisplayChooseGameType={shouldDisplayChooseGameType}
                 shouldDisplayNumberOfPlayersSelector={
                     shouldDisplayNumberOfPlayersSelector
                 }
                 onChangeNumberOfPlayers={onNumberSelect}
                 onSubmitNumberOfPlayers={onSubmitNumberOfPlayers}
-                onChangeName={onChangeName}
-                onSubmitPlayerName={onSubmitName}
                 onSubmitGameType={onSubmitGameType}
             />
         );
     }
 
-    return <GameRedirect numberOfPlayers={numberOfPlayers} playerName={playerName} />
+    return <GameRedirect numberOfPlayers={numberOfPlayers} />
 }
 
-function GameRedirect(props: { numberOfPlayers: number, playerName: string }) {
+function GameRedirect(props: { numberOfPlayers: number}) {
     const [gameID, setGameID] = useState('');
 
     const getData = async () => {
         try {
             const areas = setupAreaAssignments(props.numberOfPlayers);
             const areaStrings = convertPlayerAreasToString(areas);
-            const res = await saveGame(props.numberOfPlayers, areaStrings, props.playerName);
+            const res = await saveGame(props.numberOfPlayers, areaStrings);
             const json = await res!.json()
             const { id } = json.data;
             setGameID(id);
@@ -85,7 +72,7 @@ function GameRedirect(props: { numberOfPlayers: number, playerName: string }) {
         <Redirect
             to={{
                 pathname: gameID,
-                state: { numberOfPlayers: props.numberOfPlayers, playerName: props.playerName, gameID: gameID },
+                state: { numberOfPlayers: props.numberOfPlayers, gameID: gameID },
             }}
         />
     );

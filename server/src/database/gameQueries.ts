@@ -13,7 +13,7 @@ async function getAll() {
 }
 
 async function getByUUID(uuid: string) {
-    const query = `SELECT g.*, JSON_ARRAYAGG(JSON_OBJECT('id', p.id, 'name', p.name, 'areas', p.areas, 'gameID', p.game_id, 'userID', p.user_id)) AS players FROM game g LEFT JOIN player p ON g.id = p.game_id WHERE g.id = ? GROUP BY g.id;`;
+    const query = `SELECT g.*, JSON_ARRAYAGG(JSON_OBJECT('id', p.id, 'areas', p.areas, 'gameID', p.game_id, 'userID', p.user_id)) AS players FROM game g LEFT JOIN player p ON g.id = p.game_id WHERE g.id = ? GROUP BY g.id;`;
     const rows = await db.query(query, [uuid]);
 
     if (!rows) {

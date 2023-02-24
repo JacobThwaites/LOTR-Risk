@@ -11,12 +11,10 @@ describe('POST /api/game', function () {
       numPlayers: 2,
       players: [
           {
-              name: "name1",
               areas: "area1",
               userID: "userID"
           },
           {
-              name: "name2",
               areas: "area2"
           }
       ]
@@ -31,7 +29,6 @@ describe('POST /api/game', function () {
       .end(function(err: Error, res: request.Response) {
         expect(res.body.data.num_players).toEqual(payload.numPlayers);
         expect(res.body.data.players).toHaveLength(2);
-        expect(res.body.data.players[0].name).toEqual('name1');
         expect(res.body.data.players[0].areas).toEqual('area1');
         expect(res.body.data.players[0].userID).toEqual('userID');
         expect(res.body.data.id).toBeDefined();
