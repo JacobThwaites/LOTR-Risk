@@ -15,8 +15,7 @@ The app will then be viewable at [http://localhost:3000](http://localhost:3000)
 
 
 ### Running Tests
-The project uses mocha and chai for unit testing. To run these locally, amend the tsconfig.json file 'module' parameter from "esnext" to "commonjs". Then inside the
-terminal run:
+The project uses mocha and chai for unit testing, Jest for React testing, and Supertest for API testing. To run tests inside the terminal, use the command:
 ```
-npm run testts
+npm run test
 ```
