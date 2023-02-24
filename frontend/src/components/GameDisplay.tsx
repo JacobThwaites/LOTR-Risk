@@ -37,7 +37,6 @@ function GameDisplay() {
     const [attackingArea, setAttackingArea] = useState<Area | null>(null);
     const [defendingArea, setDefendingArea] = useState<Area | null>(null);
     const [attackingDice, setAttackingDice] = useState<number>(1);
-    const [defendingDice, setDefendingDice] = useState<number>(1);
     const [shouldDisplayUnitManeuverButton, setShouldDisplayUnitManeuverButton] = useState<boolean>(false);
     const [shouldDisplayReinforcementsModal, setShouldDisplayReinforcementsModal] = useState<boolean>(false);
     const [shouldHandleStartingReinforcements, setShouldHandleStartingReinforcements] = useState<boolean>(true);
@@ -235,18 +234,15 @@ function GameDisplay() {
         setDefendingArea(null);
     }
 
-    async function onCombatButtonClick() {
-        handleCombat(attackingArea!, defendingArea!);
-    }
-
-    function handleCombat(attackingArea: AreaType, defendingArea: AreaType): void {
+    function handleCombat(): void {
         const combatController = new CombatController(
             attackingArea!,
             defendingArea!
         );
-
-        const results = combatController!.getCombatResults(attackingDice, defendingDice);
-        webSocketHandler.current!.sendCombatResults(attackingArea.getName(), defendingArea.getName(), results);
+        
+        const defendingDice = getMaxDefendingDice();
+        const results = combatController.getCombatResults(attackingDice, defendingDice);
+        webSocketHandler.current!.sendCombatResults(attackingArea!.getName(), defendingArea!.getName(), results);
     }
 
     async function updateAreasAfterCombat(attackingAreaName: string, defendingAreaName: string, results: string[]) {
@@ -276,7 +272,6 @@ function GameDisplay() {
         setAttackingArea(null);
         setDefendingArea(null);
         setAttackingDice(1);
-        setDefendingDice(1);
     }
 
     function onEndTurnClick(): void {
@@ -337,9 +332,7 @@ function GameDisplay() {
             return false;
         }
 
-        const combatValidator = new CombatValidator(attackingArea!, defendingArea!);
-        const isValid = combatValidator.isCombatValid(attackingDice, defendingDice);
-        return isValid;
+        return CombatValidator.isCombatValid(attackingArea!, attackingDice);
     }
 
     function isMoveUnitsButtonDisabled(): boolean {
@@ -396,12 +389,9 @@ function GameDisplay() {
             {attackingArea && defendingArea && (
                 <CombatHandler
                     attackingDice={attackingDice}
-                    defendingDice={defendingDice}
                     maxAttackingDice={getMaxAttackingDice()}
-                    maxDefendingDice={getMaxDefendingDice()}
-                    onCombatButtonClick={onCombatButtonClick}
+                    onCombatButtonClick={handleCombat}
                     setAttackingDice={setAttackingDice}
-                    setDefendingDice={setDefendingDice}
                     isCombatButtonClickable={isCombatButtonClickable()}
                     isUsersTurn={isUsersTurn()}
                 />
