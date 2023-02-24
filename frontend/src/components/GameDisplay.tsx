@@ -128,10 +128,15 @@ function GameDisplay() {
             onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
         } else if (messageData.type === GameEventType.PLAYER_JOINED) {
             game!.addUserIDToNextAvailablePlayer(messageData.userID);
-            const newGame = new Game([], 30);
-            Object.assign(newGame, game);
-            setGame(newGame);
+            updateGameState(game!);
         }
+    }
+
+    // Required as React doesn't see changes in useState if it's an Object.
+    function updateGameState(game: Game) {
+        const newGame = new Game([], 30);
+        Object.assign(newGame, game);
+        setGame(newGame);
     }
 
     async function onJoin() {
@@ -178,14 +183,14 @@ function GameDisplay() {
 
             if (currentPlayer!.getReinforcements() < 1) {
                 game!.changeCurrentPlayer();
-                setGame(game);
-                setRerender(!rerender);
+                updateGameState(game!);
             }
 
             return;
         }
 
         game!.changeCurrentPlayer();
+        updateGameState(game!);
         setShouldDisplayReinforcementsModal(false);
         setShouldHandleStartingReinforcements(false)
     }
@@ -193,7 +198,7 @@ function GameDisplay() {
     function addReinforcements(area: Area): void {
         const reinforcementController = createReinforcementController();
         reinforcementController.addReinforcements(area);
-        setRerender(!rerender);
+        updateGameState(game!);
 
         if (shouldHideReinforcementsModal()) {
             setShouldDisplayReinforcementsModal(false);
