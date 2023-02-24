@@ -20,10 +20,3 @@ terminal run:
 ```
 npm run testts
 ```
-
-
-### TODO
-This project is still a work in progress. The main tasks still to do are:
-- [ ] Add websockets to allow online play
-- [ ] Add responsive design
-- [ ] Implement 'leader' and 'adventure card' logic into frontend
