@@ -14,7 +14,7 @@ import { Combat } from '../gameLogic/Enums/Combat';
 import { CombatValidator } from "../gameLogic/Controllers/CombatValidator";
 import { Game } from "../gameLogic/Models/Game";
 import { Area } from "../gameLogic/Models/Area";
-import { useParams } from "react-router";
+import { useParams, useLocation } from "react-router";
 import { addUserIdToPlayer, getGame } from "../gameLogic/Controllers/requests";
 import { getAreas } from "../utils/playerAreaParser";
 import WebSocketHandler, { GameEventType } from "../utils/WebSocketHandler";
@@ -47,6 +47,9 @@ function GameDisplay() {
     const [userID] = useState(uuidv4());
     const ws = useRef<WebSocket>();
     const webSocketHandler = useRef<WebSocketHandler>();
+    const location: {state: {gameType?: string}} = useLocation();
+    const gameType = location.state?.gameType;
+    console.log(gameType);
 
     useEffect(() => {
         async function setupGame() {
@@ -346,8 +349,7 @@ function GameDisplay() {
             return false;
         }
 
-        // TODO: always return true if game type is "local"
-        if (false) {
+        if (gameType === 'local') {
             return true;
         }
 
@@ -358,7 +360,7 @@ function GameDisplay() {
         return (<></>);
     }
 
-    if (game.waitingForUsersToJoin()) {
+    if (game.waitingForUsersToJoin() && gameType === 'online') {
         const totalPlayersConnected = game!.getPlayers().reduce((acc, cur) => cur.getUserID()? ++acc : acc, 0);
         const playersLeftToJoin = game!.getPlayers().length - totalPlayersConnected;
         return <WaitingForPlayers playersLeftToJoin={playersLeftToJoin}/>

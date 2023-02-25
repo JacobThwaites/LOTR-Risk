@@ -41,10 +41,10 @@ export default function Risk() {
         );
     }
 
-    return <GameRedirect numberOfPlayers={numberOfPlayers} />
+    return <GameRedirect numberOfPlayers={numberOfPlayers} gameType={gameType}/>
 }
 
-function GameRedirect(props: { numberOfPlayers: number}) {
+function GameRedirect(props: { numberOfPlayers: number, gameType: string }) {
     const [gameID, setGameID] = useState('');
 
     const getData = async () => {
@@ -72,7 +72,7 @@ function GameRedirect(props: { numberOfPlayers: number}) {
         <Redirect
             to={{
                 pathname: gameID,
-                state: { numberOfPlayers: props.numberOfPlayers, gameID: gameID },
+                state: { numberOfPlayers: props.numberOfPlayers, gameID: gameID, gameType: props.gameType },
             }}
         />
     );
