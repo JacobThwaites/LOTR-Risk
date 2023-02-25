@@ -6,6 +6,7 @@ export enum GameEventType {
     COMBAT = "COMBAT",
     COMBAT_RESULTS = "COMBAT RESULTS",
     STARTING_REINFORCEMENT = "STARTING REINFORCEMENT",
+    REINFORCEMENT = "REINFORCEMENT",
     END_TURN = "END TURN",
     UNIT_MANEURVRE = "UNIT MANEUVRE",
     PLAYER_JOINED = "PLAYER JOINED",
@@ -67,6 +68,15 @@ export default class WebSocketHandler {
     sendStartingReinforcement(areaName: string) {
         const messageBody = {
             type: GameEventType.STARTING_REINFORCEMENT,
+            areaName
+        }
+
+        this.sendMessage(messageBody);
+    }
+
+    sendReinforcement(areaName: string) {
+        const messageBody = {
+            type: GameEventType.REINFORCEMENT,
             areaName
         }
 

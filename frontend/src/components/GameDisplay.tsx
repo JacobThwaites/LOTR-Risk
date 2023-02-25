@@ -44,7 +44,6 @@ function GameDisplay() {
     const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<Area | null>(null);
     const [unitsToMove, setUnitsToMove] = useState<number>(0);
     const [isGameOver, setIsGameOver] = useState<boolean>(false);
-    const [rerender, setRerender] = useState(false);
     const [userID] = useState(uuidv4());
     const ws = useRef<WebSocket>();
     const webSocketHandler = useRef<WebSocketHandler>();
@@ -117,6 +116,9 @@ function GameDisplay() {
         } else if (messageData.type === GameEventType.STARTING_REINFORCEMENT) {
             const area = Areas[messageData.areaName];
             handleStartingReinforcements(area);
+        } else if (messageData.type === GameEventType.REINFORCEMENT) {
+            const area = Areas[messageData.areaName];
+            addReinforcements(area);
         } else if (messageData.type === GameEventType.COMBAT_RESULTS) {
             updateAreasAfterCombat(messageData.attackingArea, messageData.defendingArea, messageData.results);
         } else if (messageData.type === GameEventType.END_TURN) {
@@ -168,7 +170,7 @@ function GameDisplay() {
         if (shouldHandleStartingReinforcements) {
             webSocketHandler.current!.sendStartingReinforcement(area.getName());
         } else if (shouldDisplayReinforcementsModal) {
-            addReinforcements(area);
+            webSocketHandler.current!.sendReinforcement(area.getName());
         } else {
             setAreaForCombat(area);
         }
@@ -196,7 +198,7 @@ function GameDisplay() {
         reinforcementController.addReinforcements(area);
         updateGameState(game!);
 
-        if (shouldHideReinforcementsModal()) {
+        if (!game!.playersHaveReinforcements()) {
             setShouldDisplayReinforcementsModal(false);
         }
     }
@@ -205,12 +207,6 @@ function GameDisplay() {
         const currentPlayer = game!.getCurrentPlayer();
         const reinforcementController = new ReinforcementController(currentPlayer!);
         return reinforcementController;
-    }
-
-    function shouldHideReinforcementsModal(): boolean {
-        const currentPlayer = game!.getCurrentPlayer();
-        const reinforcementsAvailable = currentPlayer!.getReinforcements();
-        return reinforcementsAvailable < 1 && !shouldHandleStartingReinforcements
     }
 
     function setAreaForCombat(area: Area): void {
