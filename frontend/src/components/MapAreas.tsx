@@ -17,6 +17,7 @@ const MapAreas: Function = (props: Props): JSX.Element[] => {
         id={a.area.getName()}
         key={a.area.getName()}
         path={a.path}
+        centroid={a.centroid}
         onClick={() => props.onClick(a.area)}
         clickable={props.isAreaClickable(a.area)}
         areaLogic={a.area}

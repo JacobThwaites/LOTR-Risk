@@ -15,19 +15,9 @@ type Coordinates = {
 }
 
 export default class CircleGenerator extends Component {
-  addCircleToMap(elementId: string, area: AreaType) {
-    const svgElement = document.getElementById(elementId)! as unknown as SVGGraphicsElement;
-    const domElement = svgElement.getBBox();
-    const coordinates = this.calculateCentre(domElement);
-    const circle = this.drawCircle(coordinates, area);
+  addCircleToMap(centroid: {x: number, y: number}, area: AreaType) {
+    const circle = this.drawCircle(centroid, area);
     return circle;
-  }
-
-  calculateCentre(element: Element) {
-    const centreX = element.x + element.width / 2;
-    const centreY = element.y + element.height / 2;
-    const centreCoordinates = { x: centreX, y: centreY };
-    return centreCoordinates;
   }
 
   drawCircle(coordinates: Coordinates, area: AreaType) {

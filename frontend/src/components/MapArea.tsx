@@ -6,6 +6,7 @@ type Props = {
   className: string,
   id: string,
   path: string,
+  centroid: {x: number, y: number}
   onClick: any,
   areaLogic: any,
   isRendered: boolean,
@@ -14,6 +15,7 @@ type Props = {
 
 export default function MapArea(props: Props) {
   const circleGenerator = new CircleGenerator(props);  
+
   return (
     <>
       <path
@@ -24,7 +26,7 @@ export default function MapArea(props: Props) {
         onClick={props.onClick}
         />
       {props.isRendered &&
-        circleGenerator.addCircleToMap(props.id, props.areaLogic)
+        circleGenerator.addCircleToMap(props.centroid, props.areaLogic)
       }
     </>
   );
