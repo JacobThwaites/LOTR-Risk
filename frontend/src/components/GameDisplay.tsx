@@ -44,7 +44,7 @@ function GameDisplay() {
     const [areaToMoveUnits, setAreaToMoveUnits] = useState<Area | null>(null);
     const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<Area | null>(null);
     const [unitsToMove, setUnitsToMove] = useState<number>(0);
-    const [isGameOver, setIsGameOver] = useState<boolean>(false);
+    const [isGameOver, setIsGameOver] = useState<boolean>(true);
     const [userID] = useState(uuidv4());
     const ws = useRef<WebSocket>();
     const webSocketHandler = useRef<WebSocketHandler>();
@@ -412,7 +412,7 @@ function GameDisplay() {
             />
             <Leaderboard game={game}/>
             {isGameOver && (
-                <GameOverModal />
+                <GameOverModal game={game} />
             )}
         </div>
     );

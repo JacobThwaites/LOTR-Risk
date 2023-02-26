@@ -1,0 +1,28 @@
+.game-over {
+    display: flex;
+    flex-direction: column;
+
+    &--title {
+        text-align: center;
+    }
+
+    &--winner {
+        text-align: center;
+    }
+
+    &--leaderboard {
+        width: 80%;
+        align-self: center;
+    }
+
+    &--button {
+        align-self: center;
+        height: 5rem;
+        background-color: $color-medium-blue;
+        color: white;
+        border-radius: 5px;
+        margin-top: 2rem;
+        margin-bottom: 3rem;
+        width: 15rem;
+    }
+}
