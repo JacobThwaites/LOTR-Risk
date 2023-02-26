@@ -63,11 +63,11 @@ describe('Player', () => {
     it('should be able to get more units', () => {
         player.addUnits(10);
         const result = player.getUnits();
-        assert.equal(result, 20);
+        assert.equal(result, 25);
     });
 
     it('should be able to remove units', () => {
-        player.removeUnits(10);
+        player.removeUnits(15);
         const result = player.getUnits();
         assert.equal(result, 0);
     });
