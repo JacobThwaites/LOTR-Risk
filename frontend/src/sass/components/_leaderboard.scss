@@ -2,6 +2,9 @@
     border: 1px solid grey;
     border-radius: 3px;
 
+    grid-column: 2 / 1;
+    grid-row: 2 / 3;
+
     &--title {
         text-align: center;
     }
