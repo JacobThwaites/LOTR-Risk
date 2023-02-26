@@ -22,6 +22,7 @@ import { Areas } from "../gameLogic/Enums/Areas";
 import { AreaType } from "../gameLogic/Models/AreaType";
 import WaitingForPlayers from "./WaitingForPlayers";
 import { v4 as uuidv4 } from 'uuid';
+import Leaderboard from "./Leaderboard";
 
 type PlayerResponseType = {
     "id": string,
@@ -49,7 +50,6 @@ function GameDisplay() {
     const webSocketHandler = useRef<WebSocketHandler>();
     const location: {state: {gameType?: string}} = useLocation();
     const gameType = location.state?.gameType;
-    console.log(gameType);
 
     useEffect(() => {
         async function setupGame() {
@@ -410,6 +410,7 @@ function GameDisplay() {
                 onEndTurnClick={onEndTurnClick}
                 isDisabled={isEndTurnButtonDisabled()}
             />
+            <Leaderboard game={game}/>
             {isGameOver && (
                 <GameOverModal />
             )}
