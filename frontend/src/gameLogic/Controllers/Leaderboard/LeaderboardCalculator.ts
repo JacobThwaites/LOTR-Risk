@@ -1,7 +1,7 @@
 import { Game } from "../../Models/Game";
 
 export interface LeaderboardEntry {
-    playerName: string,
+    colour: string,
     areasControlled: number,
     totalUnits: number,
 }
@@ -13,7 +13,7 @@ export default class LeaderboardCalculator {
 
         for (let i = 0; i < players.length; i++) {
             const entry = {
-                playerName: players[i].getColour(),
+                colour: players[i].getColour(),
                 areasControlled: players[i].getAreas().length,
                 totalUnits: players[i].getUnits()
             }

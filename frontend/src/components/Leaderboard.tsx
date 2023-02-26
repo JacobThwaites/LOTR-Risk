@@ -11,35 +11,35 @@ export default function Leaderboard(props: Props): JSX.Element {
     const entries = leaderboardInfo.map((entry: LeaderboardEntryData) => {
         return <LeaderboardRows entry={entry} />
     })
-// TODO: change from table to regular div for styling purposes
+
     return (
         <div className='leaderboard'>
-            <h3 className='leaderboard--header'>Leaderboard</h3>
-            <table className='leaderboard--table'>
+            <h3 className='leaderboard--title'>Leaderboard</h3>
+            <div className='leaderboard--table'>
                 <LeaderboardHeaders />
                 {entries}
-            </table>
+            </div>
         </div>
     )
 }
 
 function LeaderboardHeaders(): JSX.Element {
     return (
-        <>
-            <th>Player</th>
-            <th>Areas</th>
-            <th>Units</th>
-        </>
+        <div className='leaderboard--headers'>
+            <p>Player</p>
+            <p>Areas</p>
+            <p>Units</p>
+        </div>
     )
 }
 
 
 function LeaderboardRows(props: { entry: LeaderboardEntryData }): JSX.Element {
     return (
-        <tr className="leaderboard--row">
-            <td>{props.entry.playerName} Player</td>
-            <td>{props.entry.areasControlled}</td>
-            <td>{props.entry.totalUnits}</td>
-        </tr>
+        <div className="leaderboard--row">
+            <p>{props.entry.colour} Player</p>
+            <p>{props.entry.areasControlled}</p>
+            <p>{props.entry.totalUnits}</p>
+        </div>
     )
 }
