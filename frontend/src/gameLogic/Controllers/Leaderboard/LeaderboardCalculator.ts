@@ -1,6 +1,6 @@
 import { Game } from "../../Models/Game";
 
-interface LeaderboardEntry {
+export interface LeaderboardEntry {
     playerName: string,
     areasControlled: number,
     totalUnits: number,

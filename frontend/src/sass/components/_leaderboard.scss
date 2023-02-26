@@ -1,0 +1,25 @@
+.leaderboard {
+    border: 1px solid grey;
+
+    &--header {
+        text-align: center;
+    }
+
+    &--table {
+        width: 100%;
+    }
+
+    &--row {
+        border: 1px solid black;
+        border-radius: 3px;
+    }
+
+    tr {
+        height: 30px;
+        border-radius: 5px;
+    }
+}
+
+table {
+    border-collapse: collapse;
+}

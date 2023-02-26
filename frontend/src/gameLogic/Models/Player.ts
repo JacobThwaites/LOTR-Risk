@@ -141,6 +141,7 @@ export class Player {
 
     addReinforcements(reinforcements: number) {
         this.reinforcements += reinforcements;
+        this.units += reinforcements;
     }
 
     addReinforcementsToArea(area: AreaType) {
