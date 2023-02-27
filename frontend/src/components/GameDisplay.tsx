@@ -23,6 +23,7 @@ import { AreaType } from "../gameLogic/Models/AreaType";
 import WaitingForPlayers from "./WaitingForPlayers";
 import { v4 as uuidv4 } from 'uuid';
 import Leaderboard from "./Leaderboard";
+import RegionBonusInfo from "./RegionBonusInfo";
 
 type PlayerResponseType = {
     "id": string,
@@ -381,6 +382,7 @@ function GameDisplay() {
                 turnsRemaining={game!.getTurnsRemaining()}
                 playerName={`${currentPlayer!.getColour()} Player`}
             />
+            <RegionBonusInfo />
             {attackingArea && defendingArea && (
                 <CombatHandler
                     attackingDice={attackingDice}

@@ -1,0 +1,53 @@
+.region-bonus-info {
+    border: 1px solid black;
+    border-radius: 3px;
+    width: 25rem;
+    justify-self: center;
+
+    &--header {
+        text-align: center;
+    }
+
+    &--region {
+        font-size: medium;
+        margin-left: 2rem;
+        margin-bottom: 5px;
+        margin-top: 5px;
+
+        &.eriador {
+            color: $color-eriador-green;
+        }
+    
+        &.arnor {
+            color: $color-arnor-red;
+        }
+    
+        &.rhun {
+            color: $color-rhun-grey;
+        }
+    
+        &.mirkwood {
+            color: $color-mirkwood-green;
+        }
+    
+        &.rohan {
+            color: $color-rohan-blue;
+        }
+    
+        &.rhovanion {
+            color: $color-rhovanion-yellow;
+        }
+    
+        &.gondor {
+            color: $color-gondor-red;
+        }
+    
+        &.mordor {
+            color: $color-mordor-dark;
+        }
+    
+        &.haradwaith {
+            color: $color-haradwaith-yellow;
+        }
+    }
+}
