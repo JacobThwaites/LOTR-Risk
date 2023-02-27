@@ -11,6 +11,7 @@
 @import './components/gameOver';
 @import './components/gameTypeSelector';
 @import './components/island';
+@import './components/leaderboard';
 @import './components/map';
 @import './components/nameSelector';
 @import './components/numberOfPlayersSelector';
@@ -21,7 +22,7 @@
 @import './components/stronghold';
 @import './components/turnsRemaining';
 @import './components/unitManeuverHandler';
-@import './components/leaderboard';
+@import './components/waitingForPlayers';
 
 @import './base/base';
 @import './base/animations';
