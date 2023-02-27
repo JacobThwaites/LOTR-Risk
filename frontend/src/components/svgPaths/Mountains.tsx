@@ -1,5 +1,5 @@
 import React from "react";
-import MountainImages from '../../images/MountainImages';
+import MountainImages from '../../assets/MountainImages';
 
 export default function Mountains() {
   return (

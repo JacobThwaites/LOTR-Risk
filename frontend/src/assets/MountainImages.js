@@ -15,7 +15,7 @@ function MountainImages() {
         <image
           width="1024"
           height="576"
-          href={require("../images/mountains2.png")}
+          href={require("../assets/mountains2.png")}
           alt="some mountains"
         />
       </pattern>
@@ -32,7 +32,7 @@ function MountainImages() {
         <image
           width="1024"
           height="576"
-          href={require("../images/mountains.png")}
+          href={require("../assets/mountains.png")}
           alt="some mountains"
         />
       </pattern>
@@ -49,7 +49,7 @@ function MountainImages() {
         <image
           width="1024"
           height="576"
-          href={require("../images/mountains2.png")}
+          href={require("../assets/mountains2.png")}
           alt="some mountains"
         />
       </pattern>

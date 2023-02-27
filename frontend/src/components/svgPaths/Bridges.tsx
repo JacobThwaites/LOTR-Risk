@@ -16,7 +16,7 @@ export default function Bridges() {
           <image
             width="1024"
             height="576"
-            href={require("../../images/testbridge.png")}
+            href={require("../../assets/testbridge.png")}
           />
         </pattern>
         <pattern
@@ -31,7 +31,7 @@ export default function Bridges() {
           <image
             width="1024"
             height="576"
-            href={require("../../images/diagonal-bridge-2.png")}
+            href={require("../../assets/diagonal-bridge-2.png")}
           />
         </pattern>
         <pattern
@@ -46,7 +46,7 @@ export default function Bridges() {
           <image
             width="1024"
             height="576"
-            href={require("../../images/horizontal-bridge.png")}
+            href={require("../../assets/horizontal-bridge.png")}
           />
         </pattern>
         <pattern
@@ -61,7 +61,7 @@ export default function Bridges() {
           <image
             width="1024"
             height="576"
-            href={require("../../images/horizontal-bridge-2.png")}
+            href={require("../../assets/horizontal-bridge-2.png")}
           />
         </pattern>
         <pattern
@@ -76,7 +76,7 @@ export default function Bridges() {
           <image
             width="1024"
             height="576"
-            href={require("../../images/vertical-bridge.png")}
+            href={require("../../assets/vertical-bridge.png")}
           />
         </pattern>
       </defs>

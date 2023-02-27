@@ -1,8 +1,5 @@
 const db = require("./db");
 import { Game } from "../models/game";
-import makeDbHelper from "./helper";
-
-const dbHelper = makeDbHelper();
 
 async function getAll() {
     const rows = await db.query(

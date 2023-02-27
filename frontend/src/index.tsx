@@ -5,7 +5,6 @@ import App from "./App";
 import GameDisplay from "./components/GameDisplay";
 import NotFound from './components/NotFound';
 import * as serviceWorker from "./serviceWorker";
-import "./index.css";
 
 const routing = (
   <Router>
