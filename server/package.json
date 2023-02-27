@@ -4,16 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./dist/index.js",
-    "dev": "nodemon ./dist/index.js",
+    "start": "npm run build && node ./dist/index.js",
+    "dev": "npm run build && nodemon ./dist/index.js",
     "postinstall": "npm run tsc",
-    "tsc": "tsc",
+    "build": "tsc",
     "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "mysql2": "^3.1.0",
     "ts-jest": "^29.0.5",

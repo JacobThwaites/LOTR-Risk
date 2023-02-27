@@ -1,9 +1,12 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
 const config = {
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'risk',
-    socketPath: '/tmp/mysql.sock'
+    host: process.env.DATABASE_HOST,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_NAME,
+    socketPath: process.env.DATABASE_SOCKET_PATH,
 };
 
 module.exports = config;
