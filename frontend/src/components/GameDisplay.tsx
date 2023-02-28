@@ -39,8 +39,11 @@ function GameDisplay() {
     const [attackingArea, setAttackingArea] = useState<Area | null>(null);
     const [defendingArea, setDefendingArea] = useState<Area | null>(null);
     const [attackingDice, setAttackingDice] = useState<number>(1);
+    const [troopTransferStart, setTroopTransferStart] = useState<Area | null>(null);
+    const [troopTransferEnd, setTroopTransferEnd] = useState<Area | null>(null);
     const [shouldDisplayUnitManeuverButton, setShouldDisplayUnitManeuverButton] = useState<boolean>(false);
     const [shouldDisplayReinforcementsModal, setShouldDisplayReinforcementsModal] = useState<boolean>(false);
+    const [shouldDisplayTroopTransferButton, setShouldDisplayTroopTransferButton] = useState<boolean>(false);
     const [shouldHandleStartingReinforcements, setShouldHandleStartingReinforcements] = useState<boolean>(true);
     const [areaToMoveUnits, setAreaToMoveUnits] = useState<Area | null>(null);
     const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<Area | null>(null);
@@ -175,6 +178,8 @@ function GameDisplay() {
             webSocketHandler.current!.sendStartingReinforcement(area.getName());
         } else if (shouldDisplayReinforcementsModal) {
             webSocketHandler.current!.sendReinforcement(area.getName());
+        } else if (shouldDisplayTroopTransferButton) {
+            setAreaForTroopTransfer(area);
         } else {
             setAreaForCombat(area);
         }
@@ -211,6 +216,20 @@ function GameDisplay() {
         const currentPlayer = game!.getCurrentPlayer();
         const reinforcementController = new ReinforcementController(currentPlayer!);
         return reinforcementController;
+    }
+
+    function setAreaForTroopTransfer(area: Area): void {
+        if (troopTransferStart === area) {
+            setTroopTransferStart(null);
+            // webSocketHandler.current!.sendClearAreaSelection();
+        } else if (troopTransferEnd === area) {
+            setTroopTransferEnd(null);
+        } else if (troopTransferStart !== null) {
+            setTroopTransferEnd(area);
+            // webSocketHandler.current!.sendCombatInfo(attackingArea.getName(), area.getName());
+        } else {
+            setTroopTransferStart(area)
+        }
     }
 
     function setAreaForCombat(area: Area): void {
@@ -272,7 +291,8 @@ function GameDisplay() {
     }
 
     function onEndTurnClick(): void {
-        webSocketHandler.current!.sendEndTurn();
+        setShouldDisplayTroopTransferButton(true);
+        // webSocketHandler.current!.sendEndTurn();
     }
 
     function handleEndTurn(): void {
@@ -374,9 +394,12 @@ function GameDisplay() {
                 attackingArea={attackingArea}
                 defendingArea={defendingArea}
                 attackingDice={attackingDice}
+                troopTransferStart={troopTransferStart}
+                troopTransferEnd={troopTransferEnd}
                 currentPlayer={currentPlayer!}
                 onAreaSelect={onAreaSelect}
                 isUsersTurn={isUsersTurn()}
+                isCombatPhase={!shouldDisplayTroopTransferButton}
             />
             <TurnInformation
                 turnsRemaining={game!.getTurnsRemaining()}
@@ -402,6 +425,9 @@ function GameDisplay() {
                     isButtonDisabled={isMoveUnitsButtonDisabled()}
                     isDisabled={!isUsersTurn()}
                 />
+            )}
+            {shouldDisplayTroopTransferButton && (
+                <h1>troop transfer</h1>
             )}
             {shouldDisplayReinforcementsModal && (
                 <ReinforcementsModal

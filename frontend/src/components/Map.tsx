@@ -4,73 +4,50 @@ import Mountains from "./svgPaths/Mountains";
 import Bridges from "./svgPaths/Bridges";
 import Islands from "./svgPaths/Islands";
 import Strongholds from "./svgPaths/Strongholds";
-import { AreaType } from "../gameLogic/Models/AreaType"; 
+import { AreaType } from "../gameLogic/Models/AreaType";
 import { Player } from "../gameLogic/Models/Player";
-import { areAreasConnected } from "../utils/areAreasConnected";
+import AreaSelectValidator from "../utils/AreaSelectValidator";
 
 type Props = {
   attackingArea: any,
   defendingArea: any,
+  troopTransferStart: AreaType | null,
+  troopTransferEnd: AreaType | null,
   attackingDice: number,
   currentPlayer: Player,
   onAreaSelect: any,
-  isUsersTurn: boolean
+  isUsersTurn: boolean,
+  isCombatPhase: boolean
 }
 
-export default function Map(props: Props) {
+export default function Map(props: Props): JSX.Element {
   const [isRendered, setIsRendered] = useState(false);
+  // TODO: useRef?
+  const areaSelectValidator = new AreaSelectValidator(props.isUsersTurn, props.isCombatPhase, props.attackingArea, props.troopTransferStart, props.currentPlayer);
 
   useEffect(() => {
     setIsRendered(true);
   }, []);
 
-  function onAreaSelect(area: AreaType) {
+  function onAreaSelect(area: AreaType): void {
     if (isAreaClickable(area)) {
       props.onAreaSelect(area);
     }
   }
 
-  function isAreaClickable(area: AreaType) {
-    if (!props.isUsersTurn) {
+  function isAreaClickable(area: AreaType): boolean {
+    if (!props.isUsersTurn || !isRendered) {
       return false;
-    } else if (isAttackingAreaSelected(area)) {
-      return isAttackingAreaClickable(area);
     } else {
-      return isDefendingAreaClickable(area);
+      return areaSelectValidator.isAreaClickable(area);
     }
   }
 
-  function isAttackingAreaSelected(area: AreaType) {
-    return (
-      props.attackingArea === null || props.attackingArea === area
-    );
-  }
-
-  function isAttackingAreaClickable(area: AreaType) {
-    if (!isRendered) {
-      return false;
-    }
-
-    return props.currentPlayer.ownsArea(area);
-  }
-
-  function isDefendingAreaClickable(area: AreaType) {
-    if (!isRendered || !props.attackingArea) {
-      return false;
-    }
-
-    const defendingPlayer = area.getPlayer();
-    return (
-      (areAreasConnected(props.attackingArea, area) && props.currentPlayer !== defendingPlayer) ||
-      props.attackingArea.area === area
-    );
-  }
-
-  function generateAreaClassName(a: any) {
+  function generateAreaClassName(a: any): string {
     let className;
-    if (a.area === props.attackingArea) {
+    if (a.area === props.attackingArea || a.area === props.troopTransferStart) {
       className = "attacker";
-    } else if (a.area === props.defendingArea) {
+    } else if (a.area === props.defendingArea || a.area === props.troopTransferEnd) {
       className = "defender";
     } else {
       className = a.region;
