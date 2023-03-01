@@ -4,9 +4,9 @@ import { Player } from '../Models/Player';
 import { Area } from '../Models/Area';
 import { Areas } from '../Enums/Areas';
 import { Colour } from '../Enums/Colours';
-import { getAreasForUnitManeuvre } from '../Controllers/AreaSelectValidator';
+import { getConnectedAreasForTroopTransfer } from '../Controllers/TroopTransferConnections';
 
-describe('AreaSelectValidator', () => {
+describe('Troop Transfer Area select', () => {
     let player: Player;
     let area1: Area;
     let area2: Area;
@@ -24,14 +24,14 @@ describe('AreaSelectValidator', () => {
     })
 
     it('should get a list of connected areas belonging to the player', () => {
-        const result = getAreasForUnitManeuvre(area1, player);
+        const result = getConnectedAreasForTroopTransfer(area1, player);
         const expected = [area1, area3, area2];
 
         assert.includeMembers(result, expected)
     });
 
     it('should not include adjacent areas if they don\'t belong to the player', () => {
-        const result = getAreasForUnitManeuvre(area1, player);
+        const result = getConnectedAreasForTroopTransfer(area1, player);
         assert.notInclude(result, area4)
     });
 });

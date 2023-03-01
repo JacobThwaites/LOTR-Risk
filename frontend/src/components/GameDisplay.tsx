@@ -32,7 +32,7 @@ type PlayerResponseType = {
     "gameID": string
 }
 
-function GameDisplay() {
+export default function GameDisplay() {
     const { gameID } = useParams<{ gameID: string }>();
     const [game, setGame] = useState<Game | null>(null);
     const [isGameLoaded, setIsGameLoaded] = useState(false);
@@ -41,6 +41,7 @@ function GameDisplay() {
     const [attackingDice, setAttackingDice] = useState<number>(1);
     const [shouldDisplayUnitManeuverButton, setShouldDisplayUnitManeuverButton] = useState<boolean>(false);
     const [shouldDisplayReinforcementsModal, setShouldDisplayReinforcementsModal] = useState<boolean>(false);
+    const [shouldDisplayTroopTransferButton, setShouldDisplayTroopTransferButton] = useState<boolean>(false);
     const [shouldHandleStartingReinforcements, setShouldHandleStartingReinforcements] = useState<boolean>(true);
     const [areaToMoveUnits, setAreaToMoveUnits] = useState<Area | null>(null);
     const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<Area | null>(null);
@@ -49,7 +50,7 @@ function GameDisplay() {
     const [userID] = useState(uuidv4());
     const ws = useRef<WebSocket>();
     const webSocketHandler = useRef<WebSocketHandler>();
-    const location: {state: {gameType?: string}} = useLocation();
+    const location: { state: { gameType?: string } } = useLocation();
     const gameType = location.state?.gameType;
 
     useEffect(() => {
@@ -58,8 +59,8 @@ function GameDisplay() {
             const json = await res!.json();
             const areaNames = getPlayerAreaNames(json.data.players);
             const areas = getAreas(areaNames);
-            const playerIDs = json.data.players.map((p: any) => {return p.id});
-            const userIDs = json.data.players.map((p: any) => {return p.userID});
+            const playerIDs = json.data.players.map((p: any) => { return p.id });
+            const userIDs = json.data.players.map((p: any) => { return p.userID });
             const game = GameGenerator.generateGame(areas, playerIDs, userIDs);
             setGame(game);
             setShouldDisplayReinforcementsModal(true);
@@ -71,24 +72,24 @@ function GameDisplay() {
 
     useEffect(() => {
         async function connectSockets() {
-            const socket = new WebSocket(`ws://localhost:8001/api/game/${gameID}`);
+            const socket = new WebSocket(`ws://${process.env.REACT_APP_BASE_URL}/api/game/${gameID}`);
             const socketHandler = new WebSocketHandler(gameID, socket);
             webSocketHandler.current = socketHandler;
-    
+
             socket.onopen = () => {
                 console.log('Connected to the WebSocket server');
                 onJoin();
             };
-    
+
             socket.onmessage = (event) => {
                 processWebSocketMessage(event);
             };
-    
+
             socket.onclose = () => {
                 console.log('Closed socket connection');
             }
-    
-            ws.current = socket;      
+
+            ws.current = socket;
         }
 
         if (isGameLoaded) {
@@ -101,7 +102,7 @@ function GameDisplay() {
         }
     }, [isGameLoaded])
 
-    function processWebSocketMessage(event: any): void {
+    function processWebSocketMessage(event: MessageEvent): void {
         const messageData = JSON.parse(event.data);
 
         if (webSocketHandler.current!.isMessageAlreadyProcessed(messageData.id)) {
@@ -115,7 +116,11 @@ function GameDisplay() {
             const defendingArea = Areas[messageData.defendingArea];
             setAttackingArea(attackingArea);
             setDefendingArea(defendingArea);
+        } else if (messageData.type === GameEventType.PLAYER_JOINED) {
+            game!.addUserIDToNextAvailablePlayer(messageData.userID);
+            updateGameState(game!);
         } else if (messageData.type === GameEventType.CLEAR_SELECTED_AREAS) {
+            setShouldDisplayUnitManeuverButton(false);
             clearSelectedAreas();
         } else if (messageData.type === GameEventType.STARTING_REINFORCEMENT) {
             const area = Areas[messageData.areaName];
@@ -125,15 +130,18 @@ function GameDisplay() {
             addReinforcements(area);
         } else if (messageData.type === GameEventType.COMBAT_RESULTS) {
             updateAreasAfterCombat(messageData.attackingArea, messageData.defendingArea, messageData.results);
-        } else if (messageData.type === GameEventType.END_TURN) {
-            handleEndTurn();
         } else if (messageData.type === GameEventType.UNIT_MANEURVRE) {
             const areaToMoveUnits = Areas[messageData.areaToMoveUnits];
             const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
             onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
-        } else if (messageData.type === GameEventType.PLAYER_JOINED) {
-            game!.addUserIDToNextAvailablePlayer(messageData.userID);
-            updateGameState(game!);
+        } else if (messageData.type === GameEventType.TROOP_TRANSFER_SETUP) {
+            setShouldDisplayTroopTransferButton(true);
+        } else if (messageData.type === GameEventType.TROOP_TRANSFER) {
+            const areaToMoveUnits = Areas[messageData.areaToMoveUnits];
+            const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
+            onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
+        } else if (messageData.type === GameEventType.END_TURN) {
+            handleEndTurn();
         }
     }
 
@@ -175,6 +183,8 @@ function GameDisplay() {
             webSocketHandler.current!.sendStartingReinforcement(area.getName());
         } else if (shouldDisplayReinforcementsModal) {
             webSocketHandler.current!.sendReinforcement(area.getName());
+        } else if (shouldDisplayTroopTransferButton) {
+            setAreaForTroopTransfer(area);
         } else {
             setAreaForCombat(area);
         }
@@ -184,7 +194,7 @@ function GameDisplay() {
         const currentPlayer = game!.getCurrentPlayer();
 
         addReinforcements(area);
-        
+
         if (currentPlayer!.getReinforcements() < 1) {
             game!.changeCurrentPlayer();
         }
@@ -213,6 +223,20 @@ function GameDisplay() {
         return reinforcementController;
     }
 
+    function setAreaForTroopTransfer(area: Area): void {
+        if (areaToMoveUnits === area) {
+            webSocketHandler.current!.sendClearAreaSelection();
+        } else if (areaToReceiveUnits === area) {
+            setAreaToReceiveUnits(null);
+        } else if (areaToMoveUnits !== null) {
+            setAreaToReceiveUnits(area);
+            setShouldDisplayUnitManeuverButton(true);
+            // webSocketHandler.current!.sendCombatInfo(attackingArea.getName(), area.getName());
+        } else {
+            setAreaToMoveUnits(area);
+        }
+    }
+
     function setAreaForCombat(area: Area): void {
         if (attackingArea === area) {
             webSocketHandler.current!.sendClearAreaSelection();
@@ -229,6 +253,8 @@ function GameDisplay() {
     function clearSelectedAreas() {
         setAttackingArea(null);
         setDefendingArea(null);
+        setAreaToMoveUnits(null);
+        setAreaToReceiveUnits(null);
     }
 
     function handleCombat(): void {
@@ -236,7 +262,7 @@ function GameDisplay() {
             attackingArea!,
             defendingArea!
         );
-        
+
         const defendingDice = getMaxDefendingDice();
         const results = combatController.getCombatResults(attackingDice, defendingDice);
         webSocketHandler.current!.sendCombatResults(attackingArea!.getName(), defendingArea!.getName(), results);
@@ -272,12 +298,18 @@ function GameDisplay() {
     }
 
     function onEndTurnClick(): void {
-        webSocketHandler.current!.sendEndTurn();
+        if (shouldDisplayTroopTransferButton) {
+            webSocketHandler.current!.sendEndTurn();
+        } else {
+            resetCombatState();
+            webSocketHandler.current!.sendTroopTransferSetup();
+        }
     }
 
     function handleEndTurn(): void {
         game!.handleNewTurn();
         updateGameState(game!);
+        setShouldDisplayTroopTransferButton(false);
         setShouldDisplayReinforcementsModal(true);
         resetCombatState();
         checkIfGameOver();
@@ -292,7 +324,14 @@ function GameDisplay() {
     }
 
     function onMoveUnitButtonClick(): void {
-        if (UnitManeuverController.isManeuverValid(areaToMoveUnits!, unitsToMove)) {
+        if (!UnitManeuverController.isManeuverValid(areaToMoveUnits!, unitsToMove)) {
+            return;
+        }
+
+        if (shouldDisplayTroopTransferButton) {
+            webSocketHandler.current!.sendTroopTransfer(areaToMoveUnits!.getName(), areaToReceiveUnits!.getName(), unitsToMove);
+            webSocketHandler.current!.sendEndTurn()
+        } else {
             webSocketHandler.current!.sendUnitManeuvre(areaToMoveUnits!.getName(), areaToReceiveUnits!.getName(), unitsToMove);
         }
     }
@@ -332,10 +371,18 @@ function GameDisplay() {
         return CombatValidator.isCombatValid(attackingArea!, attackingDice);
     }
 
-    function isMoveUnitsButtonDisabled(): boolean {
-        return unitsToMove < 1 && !isUsersTurn();
-    }
+    function isUnitManeouvreInputDisabled(): boolean {
+        if (!isUsersTurn()) {
+            return true;
+        }
 
+        if (shouldDisplayTroopTransferButton) {
+            return (areaToMoveUnits === null || areaToReceiveUnits === null);
+        }
+
+        return false;
+    }
+    
     function isEndTurnButtonDisabled(): boolean {
         return (
             shouldDisplayUnitManeuverButton ||
@@ -362,9 +409,9 @@ function GameDisplay() {
     }
 
     if (game.waitingForUsersToJoin() && gameType === 'online') {
-        const totalPlayersConnected = game!.getPlayers().reduce((acc, cur) => cur.getUserID()? ++acc : acc, 0);
+        const totalPlayersConnected = game!.getPlayers().reduce((acc, cur) => cur.getUserID() ? ++acc : acc, 0);
         const playersLeftToJoin = game!.getPlayers().length - totalPlayersConnected;
-        return <WaitingForPlayers playersLeftToJoin={playersLeftToJoin}/>
+        return <WaitingForPlayers playersLeftToJoin={playersLeftToJoin} />
     }
 
     const currentPlayer = game!.getCurrentPlayer();
@@ -374,9 +421,12 @@ function GameDisplay() {
                 attackingArea={attackingArea}
                 defendingArea={defendingArea}
                 attackingDice={attackingDice}
+                troopTransferStart={areaToMoveUnits}
+                troopTransferEnd={areaToReceiveUnits}
                 currentPlayer={currentPlayer!}
                 onAreaSelect={onAreaSelect}
                 isUsersTurn={isUsersTurn()}
+                isCombatPhase={!shouldDisplayTroopTransferButton}
             />
             <TurnInformation
                 turnsRemaining={game!.getTurnsRemaining()}
@@ -393,14 +443,15 @@ function GameDisplay() {
                     isUsersTurn={isUsersTurn()}
                 />
             )}
-            {shouldDisplayUnitManeuverButton && (
+            {(shouldDisplayUnitManeuverButton || shouldDisplayTroopTransferButton) && (
                 <UnitManeuverHandler
-                    max={areaToMoveUnits!.getUnits() - 1}
+                    max={areaToMoveUnits ? areaToMoveUnits.getUnits() - 1 : 0}
                     unitsToMove={unitsToMove}
                     onMoveUnits={onMoveUnitButtonClick}
                     setUnitsToMove={setUnitsToMove}
-                    isButtonDisabled={isMoveUnitsButtonDisabled()}
-                    isDisabled={!isUsersTurn()}
+                    isInputDisabled={isUnitManeouvreInputDisabled()}
+                    isInputEnabled={(shouldDisplayUnitManeuverButton) || (shouldDisplayTroopTransferButton && areaToMoveUnits !== null)}
+                    label={shouldDisplayTroopTransferButton ? "Troop Transfers" : "Unit Maneuvers"}
                 />
             )}
             {shouldDisplayReinforcementsModal && (
@@ -411,13 +462,12 @@ function GameDisplay() {
             <EndTurnButton
                 onEndTurnClick={onEndTurnClick}
                 isDisabled={isEndTurnButtonDisabled()}
+                shouldDisplayTroopTransferButton={shouldDisplayTroopTransferButton}
             />
-            <Leaderboard game={game}/>
+            <Leaderboard game={game} />
             {isGameOver && (
                 <GameOverModal game={game} />
             )}
         </div>
     );
 }
-
-export default GameDisplay;

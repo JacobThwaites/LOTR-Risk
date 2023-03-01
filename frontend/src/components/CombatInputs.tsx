@@ -12,8 +12,8 @@ export default function CombatInputs(props: Props) {
   return (
     <div className="combat-handler__dice-input">
       <div className="combat-handler__dice-input--attacking">
+        <label>Attacking Dice</label>
         <UnitInput
-          label="Attacking Dice"
           name="attackingDice"
           max={props.maxAttackingDice}
           value={props.attackingDice}

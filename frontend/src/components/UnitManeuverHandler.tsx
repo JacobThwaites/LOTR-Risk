@@ -6,27 +6,28 @@ type Props = {
   max: number,
   unitsToMove: number,
   onMoveUnits: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
-  isButtonDisabled: boolean,
   setUnitsToMove: Dispatch<SetStateAction<number>>,
-  isDisabled: boolean
+  isInputDisabled: boolean,
+  label: string,
+  isInputEnabled: boolean
 }
 
 export default function UnitManeuverHandler(props: Props) {
   return (
     <div className="unit-maneuver-handler">
       <div>
+        <label>{props.label}</label>
         <UnitInput
-          label="Unit Maneuvers"
           name="unitsToMove"
           max={props.max}
           onChange={(num: number) => props.setUnitsToMove(num)}
           value={props.unitsToMove}
-          disabled={props.isDisabled}
+          disabled={props.isInputDisabled}
         />
       </div>
-      <MoveUnitsButton 
+      <MoveUnitsButton
         onMoveUnits={props.onMoveUnits}
-        isDisabled={props.isButtonDisabled}
+        isDisabled={props.isInputDisabled}
       />
     </div>
   );

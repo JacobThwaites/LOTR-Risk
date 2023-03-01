@@ -4,8 +4,8 @@
     align-items: center;
     justify-content: space-evenly;
 
-    grid-column: 1 / 1;
-    grid-row: 2 / 4;
+    grid-column: 4;
+    grid-row: 1 / 2;
 
     &__dice-input {
         @media only screen and (max-width: 950px) { 

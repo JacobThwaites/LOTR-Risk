@@ -2,14 +2,13 @@ import { Adjacencies } from "../Enums/AreaAdjacencies";
 import { AreaType } from "../Models/AreaType";
 import { Player } from "../Models/Player";
 
-export function getAreasForUnitManeuvre(area: AreaType, player: Player): Array<AreaType> {
+export function getConnectedAreasForTroopTransfer(area: AreaType, player: Player): Array<AreaType> {
     const connected: Array<AreaType> = [];
     const visited: any = {};
 
-
     function dfs(area: AreaType) {
         const areaName = area.getName();
-        if (visited[areaName]) {
+        if (visited.hasOwnProperty(areaName)) {
             return;
         }
 
@@ -28,6 +27,5 @@ export function getAreasForUnitManeuvre(area: AreaType, player: Player): Array<A
     }
 
     dfs(area);
-    
     return connected;
 }
