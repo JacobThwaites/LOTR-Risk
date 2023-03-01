@@ -72,6 +72,7 @@ export default function GameDisplay() {
 
     useEffect(() => {
         async function connectSockets() {
+            // TODO: move base path to env file
             const socket = new WebSocket(`ws://localhost:8001/api/game/${gameID}`);
             const socketHandler = new WebSocketHandler(gameID, socket);
             webSocketHandler.current = socketHandler;
@@ -102,7 +103,7 @@ export default function GameDisplay() {
         }
     }, [isGameLoaded])
 
-    function processWebSocketMessage(event: any): void {
+    function processWebSocketMessage(event: MessageEvent): void {
         const messageData = JSON.parse(event.data);
 
         if (webSocketHandler.current!.isMessageAlreadyProcessed(messageData.id)) {
@@ -139,7 +140,6 @@ export default function GameDisplay() {
             const areaToMoveUnits = Areas[messageData.areaToMoveUnits];
             const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
             onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
-            onTroopTransferCompletion();
         }  else if (messageData.type === GameEventType.END_TURN) {
             console.log('end turn received')
             handleEndTurn();
@@ -301,10 +301,6 @@ export default function GameDisplay() {
         resetCombatState();
         webSocketHandler.current!.sendTroopTransferSetup();
     }
-
-    function onTroopTransferCompletion(): void {
-        webSocketHandler.current!.sendEndTurn();
-    }
     
     function handleEndTurn(): void {
         game!.handleNewTurn();
@@ -330,6 +326,7 @@ export default function GameDisplay() {
 
         if (shouldDisplayTroopTransferButton) {
             webSocketHandler.current!.sendTroopTransfer(areaToMoveUnits!.getName(), areaToReceiveUnits!.getName(), unitsToMove);
+            webSocketHandler.current!.sendEndTurn()
         } else {
             webSocketHandler.current!.sendUnitManeuvre(areaToMoveUnits!.getName(), areaToReceiveUnits!.getName(), unitsToMove);
         }
