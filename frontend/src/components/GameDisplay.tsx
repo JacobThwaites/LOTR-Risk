@@ -371,10 +371,18 @@ export default function GameDisplay() {
         return CombatValidator.isCombatValid(attackingArea!, attackingDice);
     }
 
-    function isMoveUnitsButtonDisabled(): boolean {
-        return unitsToMove < 1 && !isUsersTurn();
-    }
+    function isUnitManeouvreInputDisabled(): boolean {
+        if (!isUsersTurn()) {
+            return true;
+        }
 
+        if (shouldDisplayTroopTransferButton) {
+            return (areaToMoveUnits === null || areaToReceiveUnits === null);
+        }
+
+        return false;
+    }
+    
     function isEndTurnButtonDisabled(): boolean {
         return (
             shouldDisplayUnitManeuverButton ||
@@ -435,18 +443,15 @@ export default function GameDisplay() {
                     isUsersTurn={isUsersTurn()}
                 />
             )}
-            {shouldDisplayTroopTransferButton && (
-                <h1>Troop Transfer</h1>
-            )}
-            {shouldDisplayUnitManeuverButton && (
+            {(shouldDisplayUnitManeuverButton || shouldDisplayTroopTransferButton) && (
                 <UnitManeuverHandler
-                    max={areaToMoveUnits!.getUnits() - 1}
+                    max={areaToMoveUnits ? areaToMoveUnits.getUnits() - 1 : 0}
                     unitsToMove={unitsToMove}
                     onMoveUnits={onMoveUnitButtonClick}
                     setUnitsToMove={setUnitsToMove}
-                    isButtonDisabled={isMoveUnitsButtonDisabled()}
-                    isDisabled={!isUsersTurn()}
-                    isTroopTransfers={shouldDisplayTroopTransferButton}
+                    isInputDisabled={isUnitManeouvreInputDisabled()}
+                    isInputEnabled={(shouldDisplayUnitManeuverButton) || (shouldDisplayTroopTransferButton && areaToMoveUnits !== null)}
+                    label={shouldDisplayTroopTransferButton ? "Troop Transfers" : "Unit Maneuvers"}
                 />
             )}
             {shouldDisplayReinforcementsModal && (
