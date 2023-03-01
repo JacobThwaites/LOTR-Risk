@@ -72,8 +72,7 @@ export default function GameDisplay() {
 
     useEffect(() => {
         async function connectSockets() {
-            // TODO: move base path to env file
-            const socket = new WebSocket(`ws://localhost:8001/api/game/${gameID}`);
+            const socket = new WebSocket(`ws://${process.env.REACT_APP_BASE_URL}/api/game/${gameID}`);
             const socketHandler = new WebSocketHandler(gameID, socket);
             webSocketHandler.current = socketHandler;
     

@@ -8,8 +8,8 @@ type Props = {
 
 export default function Leaderboard(props: Props): JSX.Element {
     const leaderboardInfo = LeaderboardCalculator.getLeaderboard(props.game);
-    const entries = leaderboardInfo.map((entry: LeaderboardEntryData) => {
-        return <LeaderboardRows entry={entry} />
+    const entries = leaderboardInfo.map((entry: LeaderboardEntryData, i: number) => {
+        return <LeaderboardRows entry={entry} key={i}/>
     })
 
     return (
@@ -25,7 +25,7 @@ export default function Leaderboard(props: Props): JSX.Element {
 
 function LeaderboardHeaders(): JSX.Element {
     return (
-        <div className='leaderboard--headers'>
+        <div className='leaderboard--headers' >
             <p>Player</p>
             <p>Areas</p>
             <p>Units</p>

@@ -6,7 +6,7 @@ import { Areas } from '../Enums/Areas';
 import { Colour } from '../Enums/Colours';
 import { getConnectedAreasForTroopTransfer } from '../Controllers/TroopTransferConnections';
 
-describe('AreaSelectValidator', () => {
+describe('Troop Transfer Area select', () => {
     let player: Player;
     let area1: Area;
     let area2: Area;

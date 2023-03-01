@@ -16,6 +16,7 @@
     "@types/react-router": "^5.1.8",
     "acorn": "^7.4.0",
     "chai": "^4.2.0",
+    "dotenv": "^16.0.3",
     "font-awesome": "^4.7.0",
     "mocha": "^10.2.0",
     "polylabel": "^1.1.0",

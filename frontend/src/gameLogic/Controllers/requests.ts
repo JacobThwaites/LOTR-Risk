@@ -9,7 +9,7 @@ export async function saveGame(numPlayers: number, playerAreas: Array<string>) {
             players: players
         }
 
-        return fetch('http://localhost:8000/api/game', {
+        return fetch(`http://${process.env.REACT_APP_BASE_URL}/api/game`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -41,7 +41,7 @@ function formatPlayerData(playerAreas: Array<string>): Array<{ areas: string }> 
 
 export async function getGame(gameID: string) {
     try {
-        return fetch(`http://localhost:8000/api/game/${gameID}`, {
+        return fetch(`http://${process.env.REACT_APP_BASE_URL}/api/game/${gameID}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -57,7 +57,7 @@ export async function getGame(gameID: string) {
 export async function addUserIdToPlayer(player: Player, userID: string): Promise<boolean> {
     try {
         const playerID = player.getID();
-        const res = await fetch(`http://localhost:8000/api/player/${playerID}`, {
+        const res = await fetch(`http://${process.env.REACT_APP_BASE_URL}/api/player/${playerID}`, {
             method: 'PATCH',
             headers: {
                 'Accept': 'application/json',
