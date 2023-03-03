@@ -5,4 +5,8 @@
         height: min-content;
         text-align: center;
     };
+
+    @media only screen and (max-width: 450px) { 
+        padding-top: 1rem;
+    };
 }
