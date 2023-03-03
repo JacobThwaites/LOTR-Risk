@@ -4,19 +4,97 @@
     align-items: center;
     justify-content: space-evenly;
 
-    grid-column: 4;
+    grid-column: 4 / 5;
     grid-row: 1 / 2;
 
     &__dice-input {
-        @media only screen and (max-width: 950px) { 
+        @media only screen and (max-width: 1261px) {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        ;
+
+        @media only screen and (max-width: 950px) {
             display: flex;
             flex-direction: row;
-        };
+        }
+
+        ;
+
+        @media only screen and (max-width: 750px) {
+            flex-direction: column;
+
+        }
+
+        ;
     }
 
-    @media only screen and (max-width: 950px) { 
+    @media only screen and (max-width: 950px) {
+        grid-column: 1 / 1;
+        grid-row: 1 / 1;
+        height: 12rem;
+        align-self: end;
+        align-items: center;
+
+        & button {
+            max-height: 6rem;
+        }
+
+        & .react-numeric-input {
+            max-width: 10rem;
+            min-width: 0px;
+        }
+
+        & .number-selector {
+            max-height: 10rem;
+            max-width: 10rem;
+            min-width: 0px;
+        }
+    }
+
+    ;
+
+    @media only screen and (max-width: 750px) {
+        grid-row: 1 / 1;
         grid-column: 2 / 4;
-        grid-row: 3 / 4;
-        height: 5rem;
-    };
+        flex-direction: row;
+        align-items: center;
+
+
+        & .react-numeric-input {
+            max-height: 4rem;
+        }
+
+        & .number-selector {
+            max-height: 4rem;
+        }
+
+        & button {
+            max-height: 6rem;
+        }
+    }
+
+    @media only screen and (max-width: 500px) {
+        flex-direction: column;
+        align-items: center;
+
+        &__dice-input {
+            align-items: center;
+        }
+
+        & .react-numeric-input {
+            max-height: 3rem;
+        }
+
+        & .number-selector {
+            max-height: 3rem;
+        }
+
+        & button {
+            max-width: 12rem;
+            max-height: 4rem;
+        }
+    }
 }

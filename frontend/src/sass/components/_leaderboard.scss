@@ -3,7 +3,8 @@
 
     border: 1px solid grey;
     border-radius: 3px;
-    max-width: 27rem;
+    width: 90%;
+    justify-self: center;
 
     grid-column: 2 / 1;
     grid-row: 2 / 3;
@@ -36,4 +37,14 @@
         justify-content: space-around;
         width: 97%;
     }
+
+    @media only screen and (max-width: 750px) { 
+        grid-row: 4 / 5;
+        margin-top: 1rem;
+    };
+
+    @media only screen and (max-width: 500px) { 
+        grid-row: 5 / 5;
+        align-self: start;
+    };
 }

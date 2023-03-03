@@ -1,8 +1,15 @@
 .end-turn {
-    grid-row: 4 / 4;
+    grid-row: 3 / 4;
     grid-column: 1 / 2;
+    align-self: end;
     
     display: flex;
     justify-content: center;
     align-items: center;
+
+    @media only screen and (max-width: 500px) {
+        grid-row: 4 / 4;
+        align-self: flex-start;
+        margin-top: 1rem;
+      }
 }

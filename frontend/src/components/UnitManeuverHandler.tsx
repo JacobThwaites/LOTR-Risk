@@ -15,7 +15,7 @@ type Props = {
 export default function UnitManeuverHandler(props: Props) {
   return (
     <div className="unit-maneuver-handler">
-      <div>
+      <div className="unit-maneuver-handler--input">
         <label>{props.label}</label>
         <UnitInput
           name="unitsToMove"

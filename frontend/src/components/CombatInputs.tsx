@@ -11,16 +11,14 @@ type Props = {
 export default function CombatInputs(props: Props) {
   return (
     <div className="combat-handler__dice-input">
-      <div className="combat-handler__dice-input--attacking">
-        <label>Attacking Dice</label>
-        <UnitInput
-          name="attackingDice"
-          max={props.maxAttackingDice}
-          value={props.attackingDice}
-          onChange={(num: number) => props.setAttackingDice(num)}
-          disabled={!props.areInputsDisabled}
-        />
-      </div>
+      <label>Attacking Dice: </label>
+      <UnitInput
+        name="attackingDice"
+        max={props.maxAttackingDice}
+        value={props.attackingDice}
+        onChange={(num: number) => props.setAttackingDice(num)}
+        disabled={!props.areInputsDisabled}
+      />
     </div>
   );
 }

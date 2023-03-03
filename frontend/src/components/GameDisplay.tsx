@@ -231,7 +231,6 @@ export default function GameDisplay() {
         } else if (areaToMoveUnits !== null) {
             setAreaToReceiveUnits(area);
             setShouldDisplayUnitManeuverButton(true);
-            // webSocketHandler.current!.sendCombatInfo(attackingArea.getName(), area.getName());
         } else {
             setAreaToMoveUnits(area);
         }
@@ -451,7 +450,7 @@ export default function GameDisplay() {
                     setUnitsToMove={setUnitsToMove}
                     isInputDisabled={isUnitManeouvreInputDisabled()}
                     isInputEnabled={(shouldDisplayUnitManeuverButton) || (shouldDisplayTroopTransferButton && areaToMoveUnits !== null)}
-                    label={shouldDisplayTroopTransferButton ? "Troop Transfers" : "Unit Maneuvers"}
+                    label={shouldDisplayTroopTransferButton ? "Troop Transfers: " : "Unit Maneuvers: "}
                 />
             )}
             {shouldDisplayReinforcementsModal && (

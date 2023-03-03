@@ -53,4 +53,21 @@
             color: $color-haradwaith-yellow;
         }
     }
+
+    @media only screen and (max-width: 950px) { 
+        grid-column: 2 / 3;
+        grid-row: 5 / 6;
+
+        height: 50vh;
+    };
+
+    @media only screen and (max-width: 750px) { 
+        grid-row: 4 / 5;
+        width: 90%;
+        margin-top: 1rem;
+    };
+
+    @media only screen and (max-width: 500px) { 
+        grid-row: 5 / 5;
+    };
 }

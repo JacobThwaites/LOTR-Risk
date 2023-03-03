@@ -3,4 +3,47 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
+
+    &--input {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    @media only screen and (max-width: 950px) {
+        grid-column: 1 / 1;
+        grid-row: 1 / 1;
+        align-self: end;
+        margin-bottom: 1rem;
+    }
+
+    @media only screen and (max-width: 750px) {
+        grid-row: 1 / 1;
+        grid-column: 2 / 4;
+        flex-direction: row;
+        align-items: center;
+
+
+        & .react-numeric-input {
+            max-height: 4rem;
+        }
+
+        & .number-selector {
+            max-height: 4rem;
+        }
+
+        & button {
+            max-height: 6rem;
+        }
+    }
+
+    @media only screen and (max-width: 500px) {
+        flex-direction: column;
+        gap: 1rem;
+
+        & button {
+            max-height: 4rem;
+            max-width: 12rem;
+        }
+    }
 }

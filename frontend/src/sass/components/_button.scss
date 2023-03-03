@@ -1,16 +1,17 @@
 #end-turn-button {
-    background-color: lightblue;
+    background-color: $color-medium-blue;
+    color: white;
 
     &:hover {
-        background-color: darken(lightblue, 15%);
+        background-color: darken($color-medium-blue, 15%);
     }
 }
 
 #combat-button {
-    background-color: red;
+    background-color: $color-red;
 
     &:hover {
-        background-color: darken(red, 15%);
+        background-color: darken($color-red, 15%);
     }
 }
 

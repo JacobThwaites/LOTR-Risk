@@ -7,6 +7,15 @@
     max-height: 100vh;
 
     @media only screen and (max-width: 950px) { 
-        // max-height: 150vh;
+        grid-template-columns: repeat(3, 1fr);
+    };
+
+    @media only screen and (max-width: 750px) { 
+        grid-template-rows: repeat(5, 1fr);
+    };
+
+    @media only screen and (max-width: 500px) { 
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: 12rem repeat(5, 1fr);
     };
 }

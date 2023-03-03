@@ -1,6 +1,6 @@
 .reinforcements {
   font-family: "ringbearer";
-  
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -8,8 +8,30 @@
   grid-column: 4 / 4;
   grid-row: 1 / 2;
 
+  @media only screen and (max-width: 1045px) {
+    text-align: center;
+  }
+
   @media only screen and (max-width: 950px) {
     grid-column: 1 / 1;
-    grid-row: 2 / 2;
+    grid-row: 1 / 1;
+    align-self: end;
+    margin-bottom: 1rem;
+  }
+
+  @media only screen and (max-width: 750px) {
+    grid-column: 3 / 3;
+    grid-row: 1 / 1;
+    width: 100%;
+  }
+
+  @media only screen and (max-width: 500px) {
+    grid-column: 2 / 2;
+  }
+
+  @media only screen and (max-width: 390px) {
+    & input {
+      max-width: 12rem;
+    }
   }
 }
