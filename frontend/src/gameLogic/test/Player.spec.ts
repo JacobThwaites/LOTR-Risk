@@ -1,11 +1,12 @@
 import { Area } from '../Models/Area';
-import { AdventureCard } from '../Models/AdventureCard';
 import { Player } from '../Models/Player';
 import { Region } from '../Models/Region';
 import { Colour } from '../Enums/Colours';
+import { AreaName } from '../Enums/AreaNames';
+import { TerritoryCard } from '../Models/TerritoryCard';
+import { Symbol } from '../Enums/Symbols';
 import { assert } from 'chai';
 import 'mocha';
-import { AreaName } from '../Enums/AreaNames';
 
 describe('Player', () => {
     let area1: Area;
@@ -14,7 +15,7 @@ describe('Player', () => {
     let area4: Area;
     let area5: Area;
     let area6: Area;
-    let card1: AdventureCard;
+    let card1: TerritoryCard;
     let player: Player;
     let region: Region;
     beforeEach(function() {
@@ -26,7 +27,7 @@ describe('Player', () => {
         area6 = new Area(AreaName.KHAND);
         const areas = [area1, area2, area3, area4, area5, area6];
         region = new Region('haradwaith', areas, 2);
-        card1 = new AdventureCard('Do something');
+        card1 = new TerritoryCard(Symbol.ELVEN_ARCHER);
         player = new Player(1, Colour.GREEN, '');
         player.addUnits(10);
         player.addReinforcements(5);
@@ -42,9 +43,12 @@ describe('Player', () => {
     });
 
     it('should be able to take a card', () => {
-        player.takeAdventureCard(card1);
-        const result = player.getAdventureCard(0);
-        assert.equal(result, card1);
+        let cards = player.getTerritoryCards();
+        assert.isEmpty(cards);
+        player.addTerritoryCard(card1);
+        cards = player.getTerritoryCards();
+        assert.equal(cards.length, 1);
+        assert.equal(cards[0], card1);
     });
 
     it('should be able to add an area', () => {

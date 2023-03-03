@@ -259,7 +259,8 @@ export default function GameDisplay() {
     function handleCombat(): void {
         const combatController = new CombatController(
             attackingArea!,
-            defendingArea!
+            defendingArea!,
+            game!
         );
 
         const defendingDice = getMaxDefendingDice();
@@ -272,7 +273,8 @@ export default function GameDisplay() {
         const defendingArea = Areas[defendingAreaName];
         const combatController = new CombatController(
             attackingArea,
-            defendingArea
+            defendingArea,
+            game!
         );
 
         combatController.handleResults(results);
