@@ -5,17 +5,23 @@ import { TerritoryCard } from "../Models/TerritoryCard";
 export type TradableCards = [TerritoryCard, TerritoryCard, TerritoryCard];
 
 export default class TerritoryCardManager {
-    public static areCardsValid(cards: TerritoryCard[]): boolean {
+    public static isNewCardValidWithExistingCards(existingCards: TerritoryCard[], newCard: TerritoryCard): boolean {
+        const cards = [...existingCards, newCard];
+        
         if (cards.length > 3) {
             return false;
         }
 
         if (cards.length === 3) {
-            const cardBonus = this.getBonusForCards(cards as TradableCards);
-            return cardBonus > 0;
+            return this.areCardsExchangeable(cards as TradableCards);
         }
 
         return true;
+    }
+
+    public static areCardsExchangeable(cards: TradableCards): boolean {
+        const cardBonus = this.getBonusForCards(cards);
+        return cardBonus > 0;
     }
 
     public static exchangeCards(player: Player, cards: TradableCards): void {

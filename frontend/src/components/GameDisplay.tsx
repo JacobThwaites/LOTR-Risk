@@ -24,6 +24,11 @@ import WaitingForPlayers from "./WaitingForPlayers";
 import { v4 as uuidv4 } from 'uuid';
 import Leaderboard from "./Leaderboard";
 import RegionBonusInfo from "./RegionBonusInfo";
+import TerritoryCards from "./TerritoryCards";
+import BlankCards from "../assets/blank-cards.svg";
+import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
+import { Symbol } from "../gameLogic/Enums/Symbols";
+import { Player } from "../gameLogic/Models/Player";
 
 type PlayerResponseType = {
     "id": string,
@@ -43,6 +48,7 @@ export default function GameDisplay() {
     const [shouldDisplayReinforcementsModal, setShouldDisplayReinforcementsModal] = useState<boolean>(false);
     const [shouldDisplayTroopTransferButton, setShouldDisplayTroopTransferButton] = useState<boolean>(false);
     const [shouldHandleStartingReinforcements, setShouldHandleStartingReinforcements] = useState<boolean>(true);
+    const [shouldDisplayTerritoryCards, setShouldDisplayTerritoryCards] = useState<boolean>(false);
     const [areaToMoveUnits, setAreaToMoveUnits] = useState<Area | null>(null);
     const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<Area | null>(null);
     const [unitsToMove, setUnitsToMove] = useState<number>(0);
@@ -65,6 +71,15 @@ export default function GameDisplay() {
             setGame(game);
             setShouldDisplayReinforcementsModal(true);
             setIsGameLoaded(true);
+
+            // TODO: remove after testing
+            for (let i = 0; i < game.getPlayers().length; i++) {
+                const player = game.getPlayers()[i];
+                player.addTerritoryCard(new TerritoryCard(Symbol.EAGLE));
+                player.addTerritoryCard(new TerritoryCard(Symbol.EAGLE));
+                player.addTerritoryCard(new TerritoryCard(Symbol.EAGLE));
+                player.addTerritoryCard(new TerritoryCard(Symbol.CAVALRY));
+            }
         }
 
         setupGame();
@@ -405,6 +420,26 @@ export default function GameDisplay() {
         return currentPlayer.getUserID() === userID;
     }
 
+    function getUserCards() {
+        const player = getUserPlayer();
+        return player!.getTerritoryCards();
+    }
+
+    function getUserPlayer(): Player {
+        if (gameType === 'local') {
+            return game!.getCurrentPlayer();
+        }
+
+        const players = game!.getPlayers();
+        for (let i = 0; i <= players.length; i++) {
+            if (players[i].getUserID() === userID) {
+                return players[i];
+            }
+        }
+
+        return players[0];
+    }
+
     if (!game) {
         return (<></>);
     }
@@ -466,6 +501,18 @@ export default function GameDisplay() {
                 shouldDisplayTroopTransferButton={shouldDisplayTroopTransferButton}
             />
             <Leaderboard game={game} />
+            {shouldDisplayTerritoryCards && (
+                <TerritoryCards 
+                    onClose={() => setShouldDisplayTerritoryCards(false)}
+                    cards={getUserCards()}
+                    player={getUserPlayer()}
+                    updateGameState={() => updateGameState(game!)}
+                    
+                />
+            )}
+            <button onClick={() => setShouldDisplayTerritoryCards(true)}>Show Cards</button>
+            {/* TODO: add cards svg as button */}
+            {/* <img src={BlankCards} alt="asdf"/> */}
             {isGameOver && (
                 <GameOverModal game={game} />
             )}

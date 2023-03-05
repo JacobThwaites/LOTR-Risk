@@ -157,28 +157,31 @@ describe('TerritoryCardManager', () => {
         const card2 = new TerritoryCard(Symbol.WILD_CARD);
         const card3 = new TerritoryCard(Symbol.WILD_CARD);
         const card4 = new TerritoryCard(Symbol.WILD_CARD);
-        const cards = [card1, card2, card3, card4];
+        const cards = [card1, card2, card3];
         
-        assert.isFalse(TerritoryCardManager.areCardsValid(cards));
+        assert.isFalse(TerritoryCardManager.isNewCardValidWithExistingCards(cards, card4));
     });
 
     it('areCardsValid should return false if cards cannot be exchanged', () => {
         const card1 = new TerritoryCard(Symbol.ARCHER);
         const card2 = new TerritoryCard(Symbol.ARCHER);
         const card3 = new TerritoryCard(Symbol.CAVALRY);
-        const cards = [card1, card2, card3];
+        const cards: TradableCards = [card1, card2, card3];
         
-        assert.isFalse(TerritoryCardManager.areCardsValid(cards));
+        assert.isFalse(TerritoryCardManager.areCardsExchangeable(cards));
     });
 
     it('areCardsValid should return true if cards could create a valid combination', () => {
         const archerCard = new TerritoryCard(Symbol.ARCHER);
         const cavalryCard = new TerritoryCard(Symbol.CAVALRY);
         
-        const allArcherCards = [archerCard, archerCard, archerCard];
-        assert.isTrue(TerritoryCardManager.areCardsValid(allArcherCards));
+        const allArcherCards: TradableCards = [archerCard, archerCard, archerCard];
+        assert.isTrue(TerritoryCardManager.areCardsExchangeable(allArcherCards));
 
-        const mixedCards = [archerCard, cavalryCard];
-        assert.isTrue(TerritoryCardManager.areCardsValid(mixedCards));
+        const mixedCards = [archerCard];
+        assert.isTrue(TerritoryCardManager.isNewCardValidWithExistingCards(mixedCards, cavalryCard));
+
+        const archers = [archerCard, archerCard];
+        assert.isTrue(TerritoryCardManager.isNewCardValidWithExistingCards(archers, archerCard));
     });
 });
