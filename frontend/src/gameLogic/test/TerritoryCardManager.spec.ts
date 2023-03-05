@@ -119,4 +119,66 @@ describe('TerritoryCardManager', () => {
         
         assert.equal(player.getUnits(), 10);
     });
+
+    it('should give the player 0 units if the card combination is invalid', () => {
+        assert.equal(player.getUnits(), 0);
+
+        const card1 = new TerritoryCard(Symbol.ARCHER);
+        const card2 = new TerritoryCard(Symbol.ARCHER);
+        const card3 = new TerritoryCard(Symbol.CAVALRY);
+        const cards: TradableCards = [card1, card2, card3];
+        TerritoryCardManager.exchangeCards(player, cards);
+        
+        assert.equal(player.getUnits(), 0);
+    });
+
+    it('should remove the cards from the player after they are traded in', () => {
+        const card1 = new TerritoryCard(Symbol.ARCHER);
+        const card2 = new TerritoryCard(Symbol.ARCHER);
+        const card3 = new TerritoryCard(Symbol.CAVALRY);
+        const card4 = new TerritoryCard(Symbol.ARCHER);
+        player.addTerritoryCard(card1);
+        player.addTerritoryCard(card2);
+        player.addTerritoryCard(card3);
+        player.addTerritoryCard(card4);
+        const cards: TradableCards = [card1, card2, card4];
+        
+        assert.equal(player.getTerritoryCards().length, 4);
+
+        TerritoryCardManager.exchangeCards(player, cards);
+        
+        assert.equal(player.getTerritoryCards().length, 1);
+        const remainingCard = player.getTerritoryCards()[0];
+        assert.equal(remainingCard, card3);
+    });
+
+    it('areCardsValid should return false if number of cards is greater than 3', () => {
+        const card1 = new TerritoryCard(Symbol.ARCHER);
+        const card2 = new TerritoryCard(Symbol.WILD_CARD);
+        const card3 = new TerritoryCard(Symbol.WILD_CARD);
+        const card4 = new TerritoryCard(Symbol.WILD_CARD);
+        const cards = [card1, card2, card3, card4];
+        
+        assert.isFalse(TerritoryCardManager.areCardsValid(cards));
+    });
+
+    it('areCardsValid should return false if cards cannot be exchanged', () => {
+        const card1 = new TerritoryCard(Symbol.ARCHER);
+        const card2 = new TerritoryCard(Symbol.ARCHER);
+        const card3 = new TerritoryCard(Symbol.CAVALRY);
+        const cards = [card1, card2, card3];
+        
+        assert.isFalse(TerritoryCardManager.areCardsValid(cards));
+    });
+
+    it('areCardsValid should return true if cards could create a valid combination', () => {
+        const archerCard = new TerritoryCard(Symbol.ARCHER);
+        const cavalryCard = new TerritoryCard(Symbol.CAVALRY);
+        
+        const allArcherCards = [archerCard, archerCard, archerCard];
+        assert.isTrue(TerritoryCardManager.areCardsValid(allArcherCards));
+
+        const mixedCards = [archerCard, cavalryCard];
+        assert.isTrue(TerritoryCardManager.areCardsValid(mixedCards));
+    });
 });

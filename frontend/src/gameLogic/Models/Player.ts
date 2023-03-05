@@ -66,7 +66,7 @@ export class Player {
         this.territoryCards.push(card);
     }
 
-    removeTerritoryCard(index: number) {
+    removeTerritoryCardByIndex(index: number) {
         this.territoryCards.splice(index, 1);
     }
 

@@ -9,7 +9,12 @@ export default class TerritoryCardManager {
         if (cards.length > 3) {
             return false;
         }
-// TODO: implement
+
+        if (cards.length === 3) {
+            const cardBonus = this.getBonusForCards(cards as TradableCards);
+            return cardBonus > 0;
+        }
+
         return true;
     }
 
@@ -41,8 +46,8 @@ export default class TerritoryCardManager {
             return 8;
         }
 
-        const uniqueCount = cardCounts[Symbol.ARCHER] + cardCounts[Symbol.CAVALRY] + cardCounts[Symbol.EAGLE] + cardCounts[Symbol.WILD_CARD];
-        if (uniqueCount === 3) {
+        const uniqueCount = (cardCounts[Symbol.ARCHER] + cardCounts[Symbol.CAVALRY] + cardCounts[Symbol.EAGLE] + cardCounts[Symbol.WILD_CARD]);
+        if (this.isUniqueCount(cardCounts) && uniqueCount === 3) {
             return 10;
         }
 
@@ -60,9 +65,36 @@ export default class TerritoryCardManager {
         return counts;
     }
 
+    private static isUniqueCount(cardCounts: any): boolean {
+        if (cardCounts[Symbol.ARCHER] > 1) {
+            return false;
+        } 
+        
+        if (cardCounts[Symbol.CAVALRY] > 1) {
+            return false;
+        } 
+
+        if (cardCounts[Symbol.EAGLE] > 1) {
+            return false;
+        } 
+
+        return true;
+    }
+
     private static removeCardsFromPlayer(cards: TradableCards, player: Player): void {
         for (let i = 0; i < cards.length; i++) {
-            // TODO: implement
+            const symbol = cards[i].getSymbolValue();
+            this.removeSinglePlayerCardBySymbol(player, symbol);
+        }
+    }
+
+    private static removeSinglePlayerCardBySymbol(player: Player, symbol: Symbol): void {
+        const cards = player.getTerritoryCards();
+        for (let i = 0; i < cards.length; i++) {
+            if (cards[i].getSymbolValue() === symbol) {
+                player.removeTerritoryCardByIndex(i);
+                return;
+            }
         }
     }
 
