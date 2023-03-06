@@ -24,11 +24,12 @@ import WaitingForPlayers from "./WaitingForPlayers";
 import { v4 as uuidv4 } from 'uuid';
 import Leaderboard from "./Leaderboard";
 import RegionBonusInfo from "./RegionBonusInfo";
-import TerritoryCards from "./TerritoryCards";
+import TerritoryCardsDialog from "./TerritoryCardsDialog";
 import BlankCards from "../assets/blank-cards.svg";
 import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
 import { Symbol } from "../gameLogic/Enums/Symbols";
 import { Player } from "../gameLogic/Models/Player";
+import makeWebSocketHandler from "../utils/makeWebSocketHandler";
 
 type PlayerResponseType = {
     "id": string,
@@ -77,7 +78,9 @@ export default function GameDisplay() {
                 const player = game.getPlayers()[i];
                 player.addTerritoryCard(new TerritoryCard(Symbol.EAGLE));
                 player.addTerritoryCard(new TerritoryCard(Symbol.EAGLE));
-                player.addTerritoryCard(new TerritoryCard(Symbol.EAGLE));
+                player.addTerritoryCard(new TerritoryCard(Symbol.ARCHER));
+                player.addTerritoryCard(new TerritoryCard(Symbol.CAVALRY));
+                player.addTerritoryCard(new TerritoryCard(Symbol.ARCHER));
                 player.addTerritoryCard(new TerritoryCard(Symbol.CAVALRY));
             }
         }
@@ -88,7 +91,7 @@ export default function GameDisplay() {
     useEffect(() => {
         async function connectSockets() {
             const socket = new WebSocket(`ws://${process.env.REACT_APP_BASE_URL}/api/game/${gameID}`);
-            const socketHandler = new WebSocketHandler(gameID, socket);
+            const socketHandler = makeWebSocketHandler(gameID, socket);
             webSocketHandler.current = socketHandler;
 
             socket.onopen = () => {
@@ -502,7 +505,7 @@ export default function GameDisplay() {
             />
             <Leaderboard game={game} />
             {shouldDisplayTerritoryCards && (
-                <TerritoryCards 
+                <TerritoryCardsDialog 
                     onClose={() => setShouldDisplayTerritoryCards(false)}
                     cards={getUserCards()}
                     player={getUserPlayer()}

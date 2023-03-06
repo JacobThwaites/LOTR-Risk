@@ -1,8 +1,13 @@
 import React, { useState } from "react";
-import { Dialog } from '@mui/material';
+import { Dialog, DialogContent } from '@mui/material';
 import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
 import TerritoryCardManager, { TradableCards } from "../gameLogic/Controllers/TerritoryCardManager";
 import { Player } from "../gameLogic/Models/Player";
+import { Symbol } from "../gameLogic/Enums/Symbols";
+import eagle from '../assets/eagle.svg';
+import nazgul from '../assets/nazgul.png';
+import archer from '../assets/archer.svg';
+
 
 type Props = { 
   onClose: any, 
@@ -11,7 +16,7 @@ type Props = {
   updateGameState: any
 }
 
-export default function TerritoryCards(props: Props): JSX.Element {
+export default function TerritoryCardsDialog(props: Props): JSX.Element {
   const [selectedCards, setSelectedCards] = useState<TerritoryCard[]>([]);
 
   function onCardSelect(card: TerritoryCard): void {
@@ -38,12 +43,14 @@ export default function TerritoryCards(props: Props): JSX.Element {
   })
 
   return (
-    <Dialog onClose={props.onClose} open={true} fullWidth maxWidth='sm' className='territory-cards'>
-      <h1>Territory Cards</h1>
-      <div className='territory-cards--list'>
-        {cards}
-      </div>
-      <button disabled={!areSelectedCardsExchangeable()} onClick={tradeCards}>Exchange Cards</button>
+    <Dialog onClose={props.onClose} open={true} fullWidth maxWidth='sm' className='territory-cards' scroll='paper'>
+      <h1 className='territory-cards--header'>Territory Cards</h1>
+      <DialogContent>
+        <div className='territory-cards--list'>
+          {cards}
+        </div>
+      </DialogContent>
+      <button className='territory-cards--button' disabled={!areSelectedCardsExchangeable()} onClick={tradeCards}>Exchange Cards</button>
     </Dialog>
   );
 }
@@ -55,9 +62,25 @@ function Card(props: { card: TerritoryCard, index: number, isSelected: boolean, 
     className += ' selected';
   }
 
+  function getImageSource(symbol: Symbol): string {
+    if (symbol === Symbol.ARCHER) {
+      return archer;
+    } else if (symbol === Symbol.CAVALRY) {
+      return nazgul;
+    } else if (symbol === Symbol.EAGLE) {
+      return eagle;
+    } else {
+      return 'wild card';
+    }
+  }
+
+  const symbol = props.card.getSymbolValue();
   return (
     <div className={className} key={props.index} onClick={props.onClick}>
-      {props.card.getSymbolValue()}
+      <div className='territory-card--card_symbol'>
+        <img src={getImageSource(symbol)} alt={symbol}/>
+      </div>
+      {symbol}
     </div>
   );
 }
