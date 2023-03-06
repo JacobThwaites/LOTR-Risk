@@ -7,6 +7,7 @@ import { Symbol } from "../gameLogic/Enums/Symbols";
 import eagle from '../assets/eagle.svg';
 import nazgul from '../assets/nazgul.png';
 import archer from '../assets/archer.svg';
+import CustomButton from "./common/CustomButton";
 
 
 type Props = { 
@@ -50,7 +51,7 @@ export default function TerritoryCardsDialog(props: Props): JSX.Element {
           {cards}
         </div>
       </DialogContent>
-      <button className='territory-cards--button' disabled={!areSelectedCardsExchangeable()} onClick={tradeCards}>Exchange Cards</button>
+      <CustomButton id='territory-cards--button' onClick={tradeCards} label='Exchange Cards' disabled={!areSelectedCardsExchangeable()} />
     </Dialog>
   );
 }

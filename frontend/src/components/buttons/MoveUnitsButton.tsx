@@ -1,5 +1,5 @@
 import React from "react";
-import FormButton from '../common/FormButton';
+import CustomButton from "../common/CustomButton";
 
 type Props = {
   onMoveUnits: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
@@ -8,8 +8,7 @@ type Props = {
 
 function MoveUnitsButtons(props: Props) {
   return (
-    <FormButton 
-      id='unit-maneuver-button'
+    <CustomButton 
       label='Move Units'
       onClick={props.onMoveUnits}
       disabled={props.isDisabled}

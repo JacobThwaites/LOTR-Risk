@@ -30,6 +30,7 @@ import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
 import { Symbol } from "../gameLogic/Enums/Symbols";
 import { Player } from "../gameLogic/Models/Player";
 import makeWebSocketHandler from "../utils/makeWebSocketHandler";
+import CustomButton from "./common/CustomButton";
 
 type PlayerResponseType = {
     "id": string,
@@ -513,7 +514,7 @@ export default function GameDisplay() {
                     
                 />
             )}
-            <button onClick={() => setShouldDisplayTerritoryCards(true)}>Show Cards</button>
+            <CustomButton id='show-territory-cards-button' onClick={() => setShouldDisplayTerritoryCards(true)} label='Show Cards'/>
             {/* TODO: add cards svg as button */}
             {/* <img src={BlankCards} alt="asdf"/> */}
             {isGameOver && (
