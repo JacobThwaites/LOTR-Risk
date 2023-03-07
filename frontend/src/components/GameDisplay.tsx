@@ -72,17 +72,6 @@ export default function GameDisplay() {
             setGame(game);
             setShouldDisplayReinforcementsModal(true);
             setIsGameLoaded(true);
-
-            // TODO: remove after testing
-            for (let i = 0; i < game.getPlayers().length; i++) {
-                const player = game.getPlayers()[i];
-                player.addTerritoryCard(new TerritoryCard(Symbol.EAGLE));
-                player.addTerritoryCard(new TerritoryCard(Symbol.EAGLE));
-                player.addTerritoryCard(new TerritoryCard(Symbol.ARCHER));
-                player.addTerritoryCard(new TerritoryCard(Symbol.CAVALRY));
-                player.addTerritoryCard(new TerritoryCard(Symbol.ARCHER));
-                player.addTerritoryCard(new TerritoryCard(Symbol.CAVALRY));
-            }
         }
 
         setupGame();

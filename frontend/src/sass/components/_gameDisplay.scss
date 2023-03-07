@@ -14,35 +14,8 @@
         grid-template-rows: repeat(5, 1fr);
     };
 
-    @media only screen and (max-width: 500px) { 
+    @media only screen and (max-width: 547px) { 
         grid-template-columns: repeat(2, 1fr);
         grid-template-rows: 12rem repeat(5, 1fr);
     };
-}
-
-#show-territory-cards-button {
-    justify-self: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    grid-row: 3;
-    grid-column: 4;
-    align-self: end;
-
-    & img {
-        height: 10rem;
-        width: 10rem;
-        position: relative;
-    }
-}
-
-#show-territory-cards-button--num-cards {
-    justify-self: center;
-    align-self: center;
-    position: absolute;
-
-    color: #fff;
-    text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;
-    font-size: xx-large;
 }
