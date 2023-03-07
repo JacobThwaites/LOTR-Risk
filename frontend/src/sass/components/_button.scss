@@ -1,5 +1,6 @@
 #end-turn-button {
-    background-color: $color-medium-blue;
+    // background-color: $color-medium-blue;
+    background-color: $color-10;
     color: white;
 
     &:hover {
@@ -7,45 +8,6 @@
     }
 }
 
-#combat-button {
-    background-color: $color-red;
-
-    &:hover {
-        background-color: darken($color-red, 15%);
-    }
-}
-
-#unit-maneuver-button {
-    background-color: green;
-
-    &:hover {
-        background-color: darken(green, 15%);
-    }
-}
-
-#number-of-players--button {
-    background-color: #04ba04;
-
-    &:hover {
-        background-color: darken(#04ba04, 10%);
-    }
-}
-
-#name-selector--button {
-    background-color: #04ba04;
-
-    &:hover {
-        background-color: darken(#04ba04, 10%);
-    }
-}
-
-#game-type-selector--button {
-    background-color: #04ba04;
-
-    &:hover {
-        background-color: darken(#04ba04, 10%);
-    }
-}
 
 .button {
     font-family: 'ringbearer';

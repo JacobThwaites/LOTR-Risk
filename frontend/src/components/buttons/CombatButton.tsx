@@ -1,5 +1,5 @@
 import React from "react";
-import FormButton from '../common/FormButton';
+import CustomButton from "../common/CustomButton";
 
 type Props = {
   onCombatButtonClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
@@ -8,11 +8,11 @@ type Props = {
 
 function CombatButton(props: Props) {
   return (
-    <FormButton 
-      id='combat-button'
+    <CustomButton 
       label='Handle Combat'
       onClick={props.onCombatButtonClick}
       disabled={props.isDisabled}
+    
     />
   );
 }

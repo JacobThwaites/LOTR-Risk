@@ -14,7 +14,7 @@
         grid-template-rows: repeat(5, 1fr);
     };
 
-    @media only screen and (max-width: 500px) { 
+    @media only screen and (max-width: 547px) { 
         grid-template-columns: repeat(2, 1fr);
         grid-template-rows: 12rem repeat(5, 1fr);
     };

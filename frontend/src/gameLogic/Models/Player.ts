@@ -1,8 +1,8 @@
-import { AdventureCard } from './AdventureCard';
 import { Region } from './Region';
 import { Colour } from '../Enums/Colours';
 import { getRegionForArea } from '../../utils/getRegionForArea';
 import { AreaType } from './AreaType';
+import { TerritoryCard } from './TerritoryCard';
 
 export class Player {
     private id: number;
@@ -10,7 +10,7 @@ export class Player {
     private isGood: boolean;
     private units: number;
     private reinforcements: number;
-    private adventureCards: Array<AdventureCard>;
+    private territoryCards: Array<TerritoryCard>;
     private areas: Array<AreaType>;
     private regions: Array<Region>;
     private colour: Colour;
@@ -24,7 +24,7 @@ export class Player {
         this.isGood = colour === (Colour.GREEN || Colour.YELLOW);
         this.units = 0;
         this.reinforcements = 0;
-        this.adventureCards = [];
+        this.territoryCards = [];
         this.areas = [];
         this.regions = [];
         this.colour = colour;
@@ -58,16 +58,16 @@ export class Player {
         return this.colour;
     }
 
-    getAdventureCard(index: number) {
-        return this.adventureCards[index];
+    getTerritoryCards() {
+        return this.territoryCards;
     }
 
-    takeAdventureCard(card: AdventureCard) {
-        this.adventureCards.push(card);
+    addTerritoryCard(card: TerritoryCard) {
+        this.territoryCards.push(card);
     }
 
-    removeAdventureCard(index: number) {
-        this.adventureCards.splice(index, 1);
+    removeTerritoryCardByIndex(index: number) {
+        this.territoryCards.splice(index, 1);
     }
 
     addUnits(numberOfUnits: number) {

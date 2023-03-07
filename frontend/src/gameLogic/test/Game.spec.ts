@@ -5,6 +5,7 @@ import { Player } from '../Models/Player';
 import { Game } from '../Models/Game';
 import { assert } from 'chai';
 import 'mocha';
+import { CombatController } from '../Controllers/CombatController';
 
 describe('Game', () => {
     let player1: Player;
@@ -21,7 +22,12 @@ describe('Game', () => {
         area2 = new Area(AreaName.ITHILIEN);
         player1.addArea(area1);
         player2.addArea(area2);
+        area1.setPlayer(player1);
+        area2.setPlayer(player2);
         game = new Game(playersList, 1);
+
+        area1.addUnits(2);
+        area2.addUnits(1);
     })
 
     it('have players', () => {
@@ -65,12 +71,6 @@ describe('Game', () => {
         assert.strictEqual(maxTurnsReached, false);
     });
 
-    it('should be able to check if max turns have been reached and return false when reached', () => {
-        game.incrementCurrentTurn();
-        const maxTurnsReached = game.checkMaxTurnsReached();
-        assert.strictEqual(maxTurnsReached, true);
-    });
-
     it('should increment the current turn when all players have finished their turn', () => {
         const firstPlayerTurn = game.checkMaxTurnsReached();
         assert.strictEqual(firstPlayerTurn, false);
@@ -81,4 +81,19 @@ describe('Game', () => {
         const thirdPlayerTurn = game.checkMaxTurnsReached();
         assert.strictEqual(thirdPlayerTurn, true);
     });    
+
+    it('should give a player a territory card at the end of a turn if they have captured a territory that turn', () => {
+        player1.addArea(area1);
+        assert.equal(player1.getTerritoryCards().length, 0);
+        const combatController = new CombatController(area1, area2, game);
+        combatController.handleResults(['attacker']);
+        game.handleNewTurn();
+        assert.equal(player1.getTerritoryCards().length, 1);
+    });
+
+    it('should not give a player a territory card at the end of a turn if they didn\'t capture a territory that turn', () => {
+        assert.equal(player1.getTerritoryCards().length, 0);
+        game.handleNewTurn();
+        assert.equal(player1.getTerritoryCards().length, 0);
+    });
 });

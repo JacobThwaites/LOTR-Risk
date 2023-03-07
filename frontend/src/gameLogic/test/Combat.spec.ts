@@ -5,6 +5,7 @@ import { Player } from '../Models/Player';
 import { Colour } from '../Enums/Colours';
 import { assert } from 'chai';
 import { Stronghold } from '../Models/Stronghold';
+import { Game } from '../Models/Game';
 
 describe('Combat', () => {
     let combatController: CombatController;
@@ -12,39 +13,20 @@ describe('Combat', () => {
     let defendingArea: Stronghold;
     let attacker: Player;
     let defender: Player;
+    let game: Game;
     beforeEach(function () {
         attackingArea = new Area(AreaName.TOWER_HILLS);
         defendingArea = new Stronghold(AreaName.EVENDIM_HILLS);
         attacker = new Player(1, Colour.GREEN, 'userID');
         defender = new Player(2, Colour.RED, 'userID');
+        game = new Game([attacker, defender], 1);
         attacker.addUnits(10);
         defender.addUnits(10);
         attackingArea.setPlayer(attacker);
         defendingArea.setPlayer(defender);
-        combatController = new CombatController(attackingArea, defendingArea);
+        combatController = new CombatController(attackingArea, defendingArea, game);
     })
 
-    it('should be able to get the dice bonus for a defender with a stronghold', () => {
-        const result = combatController.getDefenderDiceBonus(defendingArea);
-        assert.equal(result, 1);
-    });
-
-    it('should be able to get the dice bonus for a defender with a stronghold and a leader', () => {
-        defendingArea.changeHasLeader();
-        const result = combatController.getDefenderDiceBonus(defendingArea);
-        assert.equal(result, 2);
-    });
-
-    it('should be able to get the dice bonus for an attacker with a leader', () => {
-        attackingArea.changeHasLeader();
-        const result = combatController.getAttackerDiceBonus(attackingArea);
-        assert.equal(result, 1);
-    });
-
-    it('should not add a bonus for an attacker with a stronghold', () => {
-        const result = combatController.getAttackerDiceBonus(defendingArea);
-        assert.equal(result, 0);
-    });
     it('should remove units from the defender if the attacker rolls higher', () => {
         combatController.handleResults(['attacker']);
         const result = defender.getUnits();

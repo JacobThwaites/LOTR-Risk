@@ -1,0 +1,40 @@
+#show-territory-cards-button {
+    justify-self: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    grid-row: 3;
+    grid-column: 4;
+    align-self: end;
+
+    & img {
+        height: 10rem;
+        width: 10rem;
+        position: relative;
+    }
+
+    @media only screen and (max-width: 950px) {
+        grid-row: 3;
+        grid-column: 1;
+        align-self: center;
+    }
+
+    @media only screen and (max-width: 550px) {
+        grid-column: 2;
+        grid-row: 4;
+        align-self: start;
+        justify-self: center;
+        margin-top: 1rem;
+    }
+}
+
+#show-territory-cards-button--num-cards {
+    justify-self: center;
+    align-self: center;
+    position: absolute;
+
+    color: #fff;
+    text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;
+    font-size: xx-large;
+}

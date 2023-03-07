@@ -24,6 +24,12 @@ import WaitingForPlayers from "./WaitingForPlayers";
 import { v4 as uuidv4 } from 'uuid';
 import Leaderboard from "./Leaderboard";
 import RegionBonusInfo from "./RegionBonusInfo";
+import TerritoryCardsDialog from "./TerritoryCardsDialog";
+import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
+import { Symbol } from "../gameLogic/Enums/Symbols";
+import { Player } from "../gameLogic/Models/Player";
+import makeWebSocketHandler from "../utils/makeWebSocketHandler";
+import TerritoryCardsButton from "./TerritoryCardsButton";
 
 type PlayerResponseType = {
     "id": string,
@@ -43,6 +49,7 @@ export default function GameDisplay() {
     const [shouldDisplayReinforcementsModal, setShouldDisplayReinforcementsModal] = useState<boolean>(false);
     const [shouldDisplayTroopTransferButton, setShouldDisplayTroopTransferButton] = useState<boolean>(false);
     const [shouldHandleStartingReinforcements, setShouldHandleStartingReinforcements] = useState<boolean>(true);
+    const [shouldDisplayTerritoryCards, setShouldDisplayTerritoryCards] = useState<boolean>(false);
     const [areaToMoveUnits, setAreaToMoveUnits] = useState<Area | null>(null);
     const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<Area | null>(null);
     const [unitsToMove, setUnitsToMove] = useState<number>(0);
@@ -73,7 +80,7 @@ export default function GameDisplay() {
     useEffect(() => {
         async function connectSockets() {
             const socket = new WebSocket(`ws://${process.env.REACT_APP_BASE_URL}/api/game/${gameID}`);
-            const socketHandler = new WebSocketHandler(gameID, socket);
+            const socketHandler = makeWebSocketHandler(gameID, socket);
             webSocketHandler.current = socketHandler;
 
             socket.onopen = () => {
@@ -259,7 +266,8 @@ export default function GameDisplay() {
     function handleCombat(): void {
         const combatController = new CombatController(
             attackingArea!,
-            defendingArea!
+            defendingArea!,
+            game!
         );
 
         const defendingDice = getMaxDefendingDice();
@@ -272,7 +280,8 @@ export default function GameDisplay() {
         const defendingArea = Areas[defendingAreaName];
         const combatController = new CombatController(
             attackingArea,
-            defendingArea
+            defendingArea,
+            game!
         );
 
         combatController.handleResults(results);
@@ -403,6 +412,26 @@ export default function GameDisplay() {
         return currentPlayer.getUserID() === userID;
     }
 
+    function getUserCards() {
+        const player = getUserPlayer();
+        return player!.getTerritoryCards();
+    }
+
+    function getUserPlayer(): Player {
+        if (gameType === 'local') {
+            return game!.getCurrentPlayer();
+        }
+
+        const players = game!.getPlayers();
+        for (let i = 0; i <= players.length; i++) {
+            if (players[i].getUserID() === userID) {
+                return players[i];
+            }
+        }
+
+        return players[0];
+    }
+
     if (!game) {
         return (<></>);
     }
@@ -464,6 +493,16 @@ export default function GameDisplay() {
                 shouldDisplayTroopTransferButton={shouldDisplayTroopTransferButton}
             />
             <Leaderboard game={game} />
+            <TerritoryCardsButton onClick={() => setShouldDisplayTerritoryCards(true)} numCards={getUserCards().length}/>
+            {shouldDisplayTerritoryCards && (
+                <TerritoryCardsDialog 
+                    onClose={() => setShouldDisplayTerritoryCards(false)}
+                    cards={getUserCards()}
+                    player={getUserPlayer()}
+                    updateGameState={() => updateGameState(game!)}
+                    
+                />
+            )}
             {isGameOver && (
                 <GameOverModal game={game} />
             )}

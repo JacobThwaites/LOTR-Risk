@@ -14,7 +14,7 @@ export default function Leaderboard(props: Props): JSX.Element {
 
     return (
         <div className='leaderboard'>
-            <h3 className='leaderboard--title'>Leaderboard</h3>
+            <h1 className='leaderboard--title'>Leaderboard</h1>
             <div className='leaderboard--table'>
                 <LeaderboardHeaders />
                 {entries}

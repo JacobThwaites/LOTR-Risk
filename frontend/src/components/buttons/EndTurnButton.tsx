@@ -1,5 +1,5 @@
 import React from "react";
-import FormButton from '../common/FormButton';
+import CustomButton from "../common/CustomButton";
 
 type Props = {
   onEndTurnClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
@@ -10,11 +10,10 @@ type Props = {
 function EndTurnButton(props: Props) {
   return (
     <div className='end-turn'>
-      <FormButton
-        id='end-turn-button'
+      <CustomButton 
         label={props.shouldDisplayTroopTransferButton ? 'Skip Troop Transfer' : 'End Turn'}
         onClick={props.onEndTurnClick}
-        disabled={props.isDisabled}
+        disabled={props.isDisabled} 
       />
     </div>
   );

@@ -1,3 +1,4 @@
+import TerritoryCardManager from '../Controllers/TerritoryCardManager';
 import { Player } from './Player';
 
 export class Game {
@@ -5,33 +6,43 @@ export class Game {
     private maxTurns: number;
     private currentTurn: number;
     private currentPlayersTurn: number;
+    private hasPlayerCapturedAreaThisTurn: boolean;
     constructor(players: Array<Player>, maxTurns: number) {
         this.players = players;
         this.maxTurns = maxTurns;
         this.currentTurn = 0;
         this.currentPlayersTurn = 0;
+        this.hasPlayerCapturedAreaThisTurn = false;
     }
 
-    getPlayers(): Array<Player> {
+    public getPlayers(): Array<Player> {
         return this.players;
     }
 
-    getCurrentPlayer(): Player {
+    public getCurrentPlayer(): Player {
         const indexOfPlayer = this.currentPlayersTurn;
         return this.players[indexOfPlayer];
     }
 
-    getTurnsRemaining(): number {
+    public getTurnsRemaining(): number {
         return this.maxTurns - this.currentTurn;
     }
 
-    handleNewTurn() {
+    public handlePlayerCapturingArea(): void {
+        this.hasPlayerCapturedAreaThisTurn = true;
+    }
+
+    public handleNewTurn() {
+        if (this.hasPlayerCapturedAreaThisTurn) {
+            this.giveCurrentPlayerTerritoryCard();
+        }
+
         this.changeCurrentPlayer();
         const newCurrentPlayer = this.getCurrentPlayer();
         newCurrentPlayer.addReinforcementsForNewTurn();
     }
 
-    changeCurrentPlayer() {
+    public changeCurrentPlayer() {
         this.currentPlayersTurn += 1;
         const lastPlayer = this.players.length - 1;
         if (this.currentPlayersTurn > lastPlayer) {
@@ -40,7 +51,7 @@ export class Game {
         }
     }
 
-    assignStartingUnits() {
+    public assignStartingUnits() {
         const unitsAvailable = this.getStartingUnitsAvailable();
 
         for (let i = 0; i < this.players.length; i++) {
@@ -49,7 +60,7 @@ export class Game {
         }
     }
 
-    getStartingUnitsAvailable(): number {
+    private getStartingUnitsAvailable(): number {
         // TODO: remove after testing
         return 34;
         // if (this.players.length === 2) {
@@ -61,7 +72,7 @@ export class Game {
         // }
     }
 
-    playersHaveReinforcements(): boolean {
+    public playersHaveReinforcements(): boolean {
         for (let i = 0; i < this.players.length; i++) {
             if (this.players[i].getReinforcements() > 0) {
                 return true;
@@ -71,15 +82,15 @@ export class Game {
         return false;
     }
 
-    incrementCurrentTurn() {
+    private incrementCurrentTurn() {
         this.currentTurn++;
     }
 
-    checkMaxTurnsReached(): boolean {
+    public checkMaxTurnsReached(): boolean {
         return this.maxTurns <= this.currentTurn;
     }
 
-    addUserIDToNextAvailablePlayer(userID: string) {
+    public addUserIDToNextAvailablePlayer(userID: string) {
         for (let i = 0; i < this.players.length; i++) {
             if (!this.players[i].getUserID()) {
                 this.players[i].setUserID(userID);
@@ -88,7 +99,7 @@ export class Game {
         }
     }
 
-    getNextUnusedPlayer(): Player | null {
+    public getNextUnusedPlayer(): Player | null {
         for (let i = 0; i < this.players.length; i++) {
             if (!this.players[i].getUserID()) {
                 return this.players[i];
@@ -98,7 +109,7 @@ export class Game {
         return null;
     }
 
-    waitingForUsersToJoin(): boolean {
+    public waitingForUsersToJoin(): boolean {
         for (let i = 0; i < this.players.length; i++) {
             if (!this.players[i].getUserID()) {
                 return true;
@@ -106,5 +117,11 @@ export class Game {
         }
 
         return false;
+    }
+
+    private giveCurrentPlayerTerritoryCard(): void {
+        const currentPlayer = this.getCurrentPlayer();
+        TerritoryCardManager.givePlayerNewCard(currentPlayer);
+        this.hasPlayerCapturedAreaThisTurn = false;
     }
 }

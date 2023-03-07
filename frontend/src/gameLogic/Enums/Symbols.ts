@@ -1,5 +1,6 @@
 export enum Symbol {
-    ELVEN_ARCHER = 1,
-    DARK_RIDER = 3,
-    EAGLE = 5,
+    ARCHER = "Archer",
+    CAVALRY = "Cavalry",
+    EAGLE = "Eagle",
+    WILD_CARD = "Wild Card"
 }

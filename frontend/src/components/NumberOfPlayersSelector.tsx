@@ -1,6 +1,6 @@
 import React from 'react';
 import NumberSelector from './common/NumberSelector';
-import FormButton from './common/FormButton';
+import CustomButton from './common/CustomButton';
 
 type Props = {
     numberOfPlayers: number,
@@ -21,7 +21,7 @@ export default function NumberOfPlayersSelector(props: Props) {
                 value={props.numberOfPlayers}
                 onChange={props.onChange}
             />
-            <FormButton 
+            <CustomButton 
                 id='number-of-players--button'
                 label='Submit'
                 onClick={props.onSubmit}

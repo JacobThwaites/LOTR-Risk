@@ -1,5 +1,5 @@
 import React from "react";
-import FormButton from "./common/FormButton";
+import CustomButton from "./common/CustomButton";
 import GameTypeSelectorOptions from "./GameTypeSelectorOptions";
 
 type Props = {
@@ -16,7 +16,7 @@ export default function GameTypeSelector(props: Props) {
         selectGameType={props.selectGameType}
         gameType={props.gameType}
       />
-      <FormButton
+      <CustomButton 
         label="submit"
         disabled={!props.gameType}
         id='game-type-selector--button'
