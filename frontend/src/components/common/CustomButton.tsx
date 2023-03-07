@@ -4,12 +4,13 @@ type Props = {
     id?: string
     label: any,
     onClick: any,
-    disabled?: boolean
+    disabled?: boolean,
+    title?: string
 }
 
 export default function CustomButton(props: Props): JSX.Element {
     return (
-        <button disabled={props.disabled} id={props.id} className='custom-button' onClick={props.onClick}>
+        <button disabled={props.disabled} id={props.id} className='custom-button' onClick={props.onClick} title={props.title}>
             {props.label}
         </button>
     )

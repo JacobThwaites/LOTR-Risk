@@ -10,6 +10,6 @@ export default function TerritoryCardsButton(props: { onClick: any, numCards: nu
         </>
     )
     return (
-        <CustomButton id='show-territory-cards-button' onClick={props.onClick} label={label}/>
+        <CustomButton id='show-territory-cards-button' onClick={props.onClick} label={label} title='Territory Cards'/>
     )
 }

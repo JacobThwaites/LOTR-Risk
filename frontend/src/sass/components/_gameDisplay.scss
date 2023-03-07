@@ -26,6 +26,10 @@
     justify-content: center;
     align-items: center;
 
+    grid-row: 3;
+    grid-column: 4;
+    align-self: end;
+
     & img {
         height: 10rem;
         width: 10rem;

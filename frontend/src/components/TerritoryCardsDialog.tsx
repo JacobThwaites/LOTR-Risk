@@ -7,6 +7,7 @@ import { Symbol } from "../gameLogic/Enums/Symbols";
 import eagle from '../assets/eagle.svg';
 import nazgul from '../assets/nazgul.png';
 import archer from '../assets/archer.svg';
+import wildCard from '../assets/wild-card.png';
 import CustomButton from "./common/CustomButton";
 
 
@@ -71,7 +72,7 @@ function Card(props: { card: TerritoryCard, index: number, isSelected: boolean, 
     } else if (symbol === Symbol.EAGLE) {
       return eagle;
     } else {
-      return 'wild card';
+      return wildCard;
     }
   }
 
@@ -79,9 +80,11 @@ function Card(props: { card: TerritoryCard, index: number, isSelected: boolean, 
   return (
     <div className={className} key={props.index} onClick={props.onClick}>
       <div className='territory-card--card_symbol'>
-        <img src={getImageSource(symbol)} alt={symbol}/>
+        <img className={`symbol-${symbol}`} src={getImageSource(symbol)} alt={symbol}/>
       </div>
-      {symbol}
+      <p>
+        {symbol}
+      </p>
     </div>
   );
 }
