@@ -1,5 +1,4 @@
 .territory-cards {
-    
     &--header {
         text-align: center;
     }
@@ -24,15 +23,17 @@
         height: 300px;
         width: 200px;
 
+        background-color: white;
+
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: space-evenly;
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);
 
         &_symbol {
             height: 200px;
             width: 150px;
-            border: 1px solid black;
         }
 
         & img {
@@ -42,19 +43,22 @@
         }
 
         &:hover {
-            transform: scale(1.15);
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);
             cursor: pointer;
         }
 
+        &:active {
+            box-shadow: 0 3px #666;
+            transform: translateY(4px, 2s);
+        }
+
         &.selected {
-            border: 3px solid $color-red;
+            box-shadow: 0 0 10px 10px $color-light-blue;
+
         }
     }
+}
 
-    &--button {
-        height: 10rem;
-        align-self: center;
-        margin-bottom: 1rem;
-    }
+#territory-cards--button {
+    align-self: center;
+    margin: 1rem;
 }
