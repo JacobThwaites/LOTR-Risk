@@ -22,4 +22,23 @@
 
 #show-territory-cards-button {
     justify-self: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & img {
+        height: 10rem;
+        width: 10rem;
+        position: relative;
+    }
+}
+
+#show-territory-cards-button--num-cards {
+    justify-self: center;
+    align-self: center;
+    position: absolute;
+
+    color: #fff;
+    text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;
+    font-size: xx-large;
 }

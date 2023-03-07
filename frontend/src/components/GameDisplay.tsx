@@ -25,12 +25,11 @@ import { v4 as uuidv4 } from 'uuid';
 import Leaderboard from "./Leaderboard";
 import RegionBonusInfo from "./RegionBonusInfo";
 import TerritoryCardsDialog from "./TerritoryCardsDialog";
-import BlankCards from "../assets/blank-cards.svg";
 import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
 import { Symbol } from "../gameLogic/Enums/Symbols";
 import { Player } from "../gameLogic/Models/Player";
 import makeWebSocketHandler from "../utils/makeWebSocketHandler";
-import CustomButton from "./common/CustomButton";
+import TerritoryCardsButton from "./TerritoryCardsButton";
 
 type PlayerResponseType = {
     "id": string,
@@ -505,6 +504,7 @@ export default function GameDisplay() {
                 shouldDisplayTroopTransferButton={shouldDisplayTroopTransferButton}
             />
             <Leaderboard game={game} />
+            <TerritoryCardsButton onClick={() => setShouldDisplayTerritoryCards(true)} numCards={getUserCards().length}/>
             {shouldDisplayTerritoryCards && (
                 <TerritoryCardsDialog 
                     onClose={() => setShouldDisplayTerritoryCards(false)}
@@ -514,9 +514,6 @@ export default function GameDisplay() {
                     
                 />
             )}
-            <CustomButton id='show-territory-cards-button' onClick={() => setShouldDisplayTerritoryCards(true)} label='Show Cards'/>
-            {/* TODO: add cards svg as button */}
-            {/* <img src={BlankCards} alt="asdf"/> */}
             {isGameOver && (
                 <GameOverModal game={game} />
             )}
