@@ -8,8 +8,6 @@
       "esnext"
     ],
     "module": "esnext",
-    // uncomment to run typescript tests
-    // "module": "commonjs",
     "watch": true,
     "outDir": "./build",
     "strict": true,

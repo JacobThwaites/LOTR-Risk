@@ -1,24 +1,8 @@
 #end-turn-button {
-    // background-color: $color-medium-blue;
     background-color: $color-10;
     color: white;
 
     &:hover {
-        background-color: darken($color-medium-blue, 15%);
-    }
-}
-
-
-.button {
-    font-family: 'ringbearer';
-    height: 8rem;
-    width: 16rem;
-    color: white;
-    font-size: 3rem;
-    line-height: 1;
-
-    &.disabled {
-        cursor: not-allowed !important;
-        opacity: .5 !important;
+        background-color: darken($color-10, 15%);
     }
 }

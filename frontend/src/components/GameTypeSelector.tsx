@@ -17,7 +17,7 @@ export default function GameTypeSelector(props: Props) {
         gameType={props.gameType}
       />
       <CustomButton 
-        label="submit"
+        label="Submit"
         disabled={!props.gameType}
         id='game-type-selector--button'
         onClick={props.onSubmitGameType}

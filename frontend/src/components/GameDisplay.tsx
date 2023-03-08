@@ -25,11 +25,10 @@ import { v4 as uuidv4 } from 'uuid';
 import Leaderboard from "./Leaderboard";
 import RegionBonusInfo from "./RegionBonusInfo";
 import TerritoryCardsDialog from "./TerritoryCardsDialog";
-import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
-import { Symbol } from "../gameLogic/Enums/Symbols";
 import { Player } from "../gameLogic/Models/Player";
 import makeWebSocketHandler from "../utils/makeWebSocketHandler";
 import TerritoryCardsButton from "./TerritoryCardsButton";
+import NotFound from "./NotFound";
 
 type PlayerResponseType = {
     "id": string,
@@ -63,7 +62,12 @@ export default function GameDisplay() {
     useEffect(() => {
         async function setupGame() {
             const res = await getGame(gameID);
-            const json = await res!.json();
+
+            if (!res.ok) {
+                return;
+            }
+
+            const json = await res.json();
             const areaNames = getPlayerAreaNames(json.data.players);
             const areas = getAreas(areaNames);
             const playerIDs = json.data.players.map((p: any) => { return p.id });
@@ -433,7 +437,7 @@ export default function GameDisplay() {
     }
 
     if (!game) {
-        return (<></>);
+        return (<NotFound />);
     }
 
     if (game.waitingForUsersToJoin() && gameType === 'online') {

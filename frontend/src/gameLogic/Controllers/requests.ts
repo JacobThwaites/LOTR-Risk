@@ -50,7 +50,7 @@ export async function getGame(gameID: string) {
         });
     } catch (err) {
         console.error(err);
-        return;
+        return {ok: false, json: () => {}};
     }
 }
 

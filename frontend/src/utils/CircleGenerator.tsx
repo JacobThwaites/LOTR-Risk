@@ -2,13 +2,6 @@ import React, { Component } from "react";
 import Circle from '../components/svgPaths/Circle';
 import { AreaType } from "../gameLogic/Models/AreaType";
 
-type Element = {
-  x: number,
-  y: number,
-  width: number,
-  height: number
-}
-
 type Coordinates = {
   x: number, 
   y: number

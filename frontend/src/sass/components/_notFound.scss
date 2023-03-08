@@ -1,0 +1,10 @@
+.not-found {
+    @include absCenter;
+
+    text-align: center;
+    font-size: medium;
+
+    & h1 {
+        font-size: xx-large;
+    }
+}
