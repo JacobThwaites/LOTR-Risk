@@ -29,6 +29,7 @@ import { Player } from "../gameLogic/Models/Player";
 import makeWebSocketHandler from "../utils/makeWebSocketHandler";
 import TerritoryCardsButton from "./TerritoryCardsButton";
 import NotFound from "./NotFound";
+import getUserIDForGame, { deleteUserIDForGame } from "../utils/userIDManager";
 
 type PlayerResponseType = {
     "id": string,
@@ -53,7 +54,7 @@ export default function GameDisplay() {
     const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<Area | null>(null);
     const [unitsToMove, setUnitsToMove] = useState<number>(0);
     const [isGameOver, setIsGameOver] = useState<boolean>(false);
-    const [userID] = useState(uuidv4());
+    const [userID] = useState(getUserIDForGame(gameID));
     const ws = useRef<WebSocket>();
     const webSocketHandler = useRef<WebSocketHandler>();
     const location: { state: { gameType?: string } } = useLocation();
@@ -110,6 +111,10 @@ export default function GameDisplay() {
         return () => {
             ws.current?.close();
             webSocketHandler.current?.closeSocket();
+
+            if (isGameOver) {
+                deleteUserIDForGame(gameID);
+            }
         }
     }, [isGameLoaded])
 
@@ -175,6 +180,9 @@ export default function GameDisplay() {
         if (!playerResponse) {
             console.log("Unable to join game");
         }
+
+        localStorage.setItem(gameID, userID);
+        console.log(localStorage);
 
         webSocketHandler.current!.sendPlayerJoinedNotification(userID);
     }
@@ -427,7 +435,7 @@ export default function GameDisplay() {
         }
 
         const players = game!.getPlayers();
-        for (let i = 0; i <= players.length; i++) {
+        for (let i = 0; i < players.length; i++) {
             if (players[i].getUserID() === userID) {
                 return players[i];
             }
