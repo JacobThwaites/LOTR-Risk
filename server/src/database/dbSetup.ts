@@ -10,9 +10,13 @@ export default function setupDatabase() {
 
         const createDatabase = `CREATE DATABASE IF NOT EXISTS risk`;
 
+        const dropGame = `DROP TABLE IF EXISTS game;`;
+        const dropPlayer = `DROP TABLE IF EXISTS player;`;
+
         const createGame = `CREATE TABLE IF NOT EXISTS game (
             id CHAR(36),
             num_players INTEGER NOT NULL,
+            is_game_over BOOLEAN,
             PRIMARY KEY (id)
             )`;
 
@@ -26,11 +30,26 @@ export default function setupDatabase() {
             )`;
 
         connection.query(createDatabase, function (err, result) {
-                if (err) {
-                    console.log("couldn't create database");
-                    throw err;
-                }
-              });
+            if (err) {
+                console.log("couldn't create database");
+                throw err;
+            }
+        });
+        
+        connection.query(dropPlayer, function (err: Error, results: any, fields: any) {
+            if (err) {
+                console.log(err.message);
+                throw err;
+            }
+        });
+
+        connection.query(dropGame, function (err: Error, results: any, fields: any) {
+            if (err) {
+                console.log(err.message);
+                throw err;
+            }
+        });
+        
 
         connection.query(createGame, function (err: Error, results: any, fields: any) {
             if (err) {
@@ -55,3 +74,4 @@ export default function setupDatabase() {
     });
 
 }
+
