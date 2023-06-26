@@ -12,6 +12,7 @@ export enum GameEventType {
     TROOP_TRANSFER_SETUP = "TROOP TRANSFER SETUP",
     TROOP_TRANSFER = "TROOP TRANSFER",
     PLAYER_JOINED = "PLAYER JOINED",
+    PLAYER_RECONNECTED = "PLAYER RECONNECTED"
 }
 
 export default class WebSocketHandler {
@@ -126,6 +127,15 @@ export default class WebSocketHandler {
     sendPlayerJoinedNotification(userID: string) {
         const messageBody = {
             type: GameEventType.PLAYER_JOINED,
+            userID
+        }
+
+        this.sendMessage(messageBody);
+    }
+
+    sendPlayerReconnected(userID: string) {
+        const messageBody = {
+            type: GameEventType.PLAYER_RECONNECTED,
             userID
         }
 

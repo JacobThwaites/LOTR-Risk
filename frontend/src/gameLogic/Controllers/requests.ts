@@ -67,7 +67,7 @@ export async function addUserIdToPlayer(player: Player, userID: string): Promise
         });
 
         if (!res.ok) {
-            throw new Error("Faiedl to update player userID");
+            throw new Error("Failed to update player userID");
         }
 
         return true;

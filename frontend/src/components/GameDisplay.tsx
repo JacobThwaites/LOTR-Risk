@@ -21,7 +21,6 @@ import WebSocketHandler, { GameEventType } from "../utils/WebSocketHandler";
 import { Areas } from "../gameLogic/Enums/Areas";
 import { AreaType } from "../gameLogic/Models/AreaType";
 import WaitingForPlayers from "./WaitingForPlayers";
-import { v4 as uuidv4 } from 'uuid';
 import Leaderboard from "./Leaderboard";
 import RegionBonusInfo from "./RegionBonusInfo";
 import TerritoryCardsDialog from "./TerritoryCardsDialog";
@@ -29,7 +28,7 @@ import { Player } from "../gameLogic/Models/Player";
 import makeWebSocketHandler from "../utils/makeWebSocketHandler";
 import TerritoryCardsButton from "./TerritoryCardsButton";
 import NotFound from "./NotFound";
-import getUserIDForGame, { deleteUserIDForGame } from "../utils/userIDManager";
+import { getUserIDForGame, deleteUserIDForGame, saveUserIDToLocalStorage, hasPlayerAlreadyJoined } from "../utils/userIDManager";
 
 type PlayerResponseType = {
     "id": string,
@@ -54,7 +53,7 @@ export default function GameDisplay() {
     const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<Area | null>(null);
     const [unitsToMove, setUnitsToMove] = useState<number>(0);
     const [isGameOver, setIsGameOver] = useState<boolean>(false);
-    const [userID] = useState(getUserIDForGame(gameID));
+    const [userID, setUserID] = useState<string>("");
     const ws = useRef<WebSocket>();
     const webSocketHandler = useRef<WebSocketHandler>();
     const location: { state: { gameType?: string } } = useLocation();
@@ -77,6 +76,7 @@ export default function GameDisplay() {
             setGame(game);
             setShouldDisplayReinforcementsModal(true);
             setIsGameLoaded(true);
+            console.log("setup game called")
         }
 
         setupGame();
@@ -90,7 +90,10 @@ export default function GameDisplay() {
 
             socket.onopen = () => {
                 console.log('Connected to the WebSocket server');
-                onJoin();
+                if (!hasPlayerAlreadyJoined(gameID)) {
+                    console.log("on join called");
+                    onJoin();
+                }
             };
 
             socket.onmessage = (event) => {
@@ -169,6 +172,8 @@ export default function GameDisplay() {
     }
 
     async function onJoin() {
+        const userID = getUserIDForGame(gameID);
+        setUserID(userID);
         const nextAvailablePlayer = game!.getNextUnusedPlayer();
 
         if (!nextAvailablePlayer) {
@@ -181,8 +186,7 @@ export default function GameDisplay() {
             console.log("Unable to join game");
         }
 
-        localStorage.setItem(gameID, userID);
-        console.log(localStorage);
+        saveUserIDToLocalStorage(gameID, userID);
 
         webSocketHandler.current!.sendPlayerJoinedNotification(userID);
     }

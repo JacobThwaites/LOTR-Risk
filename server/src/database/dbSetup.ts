@@ -9,9 +9,7 @@ export default function setupDatabase() {
         }
         
         createDatabase(connection);
-        dropTables(connection);
         createTables(connection);
-
         endConnection(connection);
     });
 }
