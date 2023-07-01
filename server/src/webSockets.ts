@@ -48,6 +48,7 @@ export class WebSocketManager {
             pingTimeout = setTimeout(() => {
                 console.log('Client did not respond to ping. Terminating connection.');
                 this.removeClient(ws);
+                clearInterval(pingInterval);
             }, 10000);
         });
     
@@ -70,7 +71,6 @@ export const onConnection = (wss: any, webSocketManager: WebSocketManager) => {
 
         ws.on('close', function () {
             webSocketManager.removeClient(ws);
-            // TODO: remove timeout and interval for ws
         })
     }
 };
