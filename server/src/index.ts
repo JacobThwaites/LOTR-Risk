@@ -38,7 +38,7 @@ server.on('upgrade', function (request: any, socket: any, head: any) {
 app.use('/api/game/:gameID', (req: any, res, next) => {
     const { gameID } = req.params;
     const wss = webSocketManager.getServerByGameID(gameID);
-    wss.on('connection', onConnection(wss, webSocketManager));
+    wss.on('connection', onConnection(wss, webSocketManager, gameID));
     next();
 });
 

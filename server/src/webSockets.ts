@@ -1,8 +1,10 @@
+import { WebSocketServer, WebSocket } from "ws";
+
 const ws = require('ws');
 
 export class WebSocketManager {
-    private servers: any;
-    private clients: any;
+    private servers: { [gameID: string]: WebSocketServer };
+    private clients: WebSocket[];
     constructor() {
         this.servers = {};
         this.clients = [];
@@ -17,52 +19,50 @@ export class WebSocketManager {
         return this.servers[gameID];
     }
 
-    addClient(ws: any) {
+    addClient(ws: WebSocket) {
         this.clients.push(ws);
     }
 
-    removeClient(ws: any) {
+    removeClient(ws: WebSocket) {
         ws.close();
         this.clients.splice(this.clients.indexOf(ws), 1);
     }
 
-    checkForDisconnectedClients() {
-        let pingInterval: NodeJS.Timeout | null = setInterval(() => {
-            this.clients.forEach((client: any) => {
-                this.checkClientHeartbeat(client);
-            });
-        }, 5000);
-    }
-
-    checkClientHeartbeat(ws: any) {
-        console.log("checking heartbeat");
-        
+    checkClientHeartbeat(ws: WebSocket, gameID: string) {
         const pingInterval = setInterval(() => {
             ws.ping();
         }, 5000);
     
         ws.on('pong', () => {
-            // Client responded to the ping, reset the timer
-            console.log('Received pong from client');
             clearTimeout(pingTimeout);
             pingTimeout = setTimeout(() => {
-                console.log('Client did not respond to ping. Terminating connection.');
                 this.removeClient(ws);
+                const server = this.getServerByGameID(gameID);
+                if (!server.clients.size) {
+                    this.removeServerByGameID(gameID);
+                }
+                
                 clearInterval(pingInterval);
             }, 10000);
         });
     
         let pingTimeout = setTimeout(() => {
-            console.log('Client did not respond to ping. Terminating connection.');
             this.removeClient(ws);
+            clearInterval(pingInterval);
         }, 10000);
+    }
+
+    removeServerByGameID(gameID: string) {
+        const wss = this.servers[gameID];        
+        wss.close();
+        delete this.servers[gameID];
     }
 }
 
-export const onConnection = (wss: any, webSocketManager: WebSocketManager) => {
-    return (ws: any) => {
+export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketManager, gameID: string) => {
+    return (ws: WebSocket) => {
         webSocketManager.addClient(ws);
-        webSocketManager.checkClientHeartbeat(ws);
+        webSocketManager.checkClientHeartbeat(ws, gameID);
 
         ws.on('message', function (data: Buffer) {
             processMessage(data, wss);
@@ -75,7 +75,7 @@ export const onConnection = (wss: any, webSocketManager: WebSocketManager) => {
     }
 };
 
-function processMessage(data: Buffer, wss: any) {
+function processMessage(data: Buffer, wss: WebSocketServer) {
     const messageData = parseMessageBuffer(data);
     emitMessage(JSON.stringify(messageData), wss);
 }
@@ -85,8 +85,8 @@ function parseMessageBuffer(data: Buffer) {
     return JSON.parse(str);
 }
 
-function emitMessage(message: string, wss: any) {
-    wss.clients.forEach((client: any) => {
+function emitMessage(message: string, wss: WebSocketServer) {
+    wss.clients.forEach((client: WebSocket) => {
         if (client.readyState === ws.OPEN) {
             client.send(message);
         }
