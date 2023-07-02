@@ -32,28 +32,37 @@ export class WebSocketManager {
         const pingInterval = setInterval(() => {
             ws.ping();
         }, 5000);
-    
+
         ws.on('pong', () => {
             clearTimeout(pingTimeout);
-            pingTimeout = setTimeout(() => {
-                this.removeClient(ws);
-                const server = this.getServerByGameID(gameID);
-                if (!server.clients.size) {
-                    this.removeServerByGameID(gameID);
-                }
-                
-                clearInterval(pingInterval);
-            }, 10000);
+            pingTimeout = this.createTimeout(ws, gameID, pingInterval);
         });
-    
-        let pingTimeout = setTimeout(() => {
+
+        let pingTimeout = this.createTimeout(ws, gameID, pingInterval);
+    }
+
+    createTimeout(ws: WebSocket, gameID: string, pingInterval: NodeJS.Timer) {
+        return setTimeout(() => {
             this.removeClient(ws);
+            this.broadcastPlayerDisconnect(gameID, ws);
+
+            const server = this.getServerByGameID(gameID);
+            if (!server.clients.size) {
+                this.removeServerByGameID(gameID);
+            }
+
             clearInterval(pingInterval);
         }, 10000);
     }
 
+    broadcastPlayerDisconnect(gameID: string, ws: any): void {
+        const server = this.getServerByGameID(gameID);
+        const message = { id: 1, type: "PLAYER DISCONNECTED", user: ws };
+        emitMessage(JSON.stringify(message), server);
+    }
+
     removeServerByGameID(gameID: string) {
-        const wss = this.servers[gameID];        
+        const wss = this.servers[gameID];
         wss.close();
         delete this.servers[gameID];
     }

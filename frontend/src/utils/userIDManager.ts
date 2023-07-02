@@ -21,7 +21,3 @@ export function deleteUserIDForGame(gameID: string): void {
 export function saveUserIDToLocalStorage(gameID: string, userID: string): void {
     localStorage.setItem(gameID, userID);
 }
-
-export function hasPlayerAlreadyJoined(gameID: string): boolean {
-    return localStorage.getItem(gameID) !== null;
-}
