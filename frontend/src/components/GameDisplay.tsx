@@ -28,7 +28,7 @@ import { Player } from "../gameLogic/Models/Player";
 import makeWebSocketHandler from "../utils/makeWebSocketHandler";
 import TerritoryCardsButton from "./TerritoryCardsButton";
 import NotFound from "./NotFound";
-import { getUserIDForGame, deleteUserIDForGame, saveUserIDToLocalStorage, hasPlayerAlreadyJoined } from "../utils/userIDManager";
+import { getUserIDForGame, deleteUserIDForGame, saveUserIDToLocalStorage, hasPlayerAlreadyJoined, generateUserID } from "../utils/userIDManager";
 
 type PlayerResponseType = {
     "id": string,
@@ -57,7 +57,7 @@ export default function GameDisplay() {
     const ws = useRef<WebSocket>();
     const webSocketHandler = useRef<WebSocketHandler>();
     const location: { state: { gameType?: string } } = useLocation();
-    const gameType = location.state?.gameType;
+    const gameType = location.state ? location.state.gameType : "online";
 
     useEffect(() => {
         async function setupGame() {
@@ -90,10 +90,7 @@ export default function GameDisplay() {
 
             socket.onopen = () => {
                 console.log('Connected to the WebSocket server');
-                if (!hasPlayerAlreadyJoined(gameID)) {
-                    console.log("on join called");
-                    onJoin();
-                }
+                onJoin();
             };
 
             socket.onmessage = (event) => {
@@ -172,25 +169,29 @@ export default function GameDisplay() {
     }
 
     async function onJoin() {
-        const userID = getUserIDForGame(gameID);
-        setUserID(userID);
-        const nextAvailablePlayer = game!.getNextUnusedPlayer();
-
-        if (!nextAvailablePlayer) {
-            return;
+        let userID = getUserIDForGame(gameID);
+        
+        if (!userID) {
+            userID = generateUserID();
+            const nextAvailablePlayer = game!.getNextUnusedPlayer();
+    
+            if (!nextAvailablePlayer) {
+                return;
+            }
+    
+            const playerResponse = await addUserIdToPlayer(nextAvailablePlayer, userID);
+    
+            if (!playerResponse) {
+                console.log("Unable to join game");
+            }
+    
+            saveUserIDToLocalStorage(gameID, userID);
+    
+            webSocketHandler.current!.sendPlayerJoinedNotification(userID);
         }
 
-        const playerResponse = await addUserIdToPlayer(nextAvailablePlayer, userID);
-
-        if (!playerResponse) {
-            console.log("Unable to join game");
-        }
-
-        saveUserIDToLocalStorage(gameID, userID);
-
-        webSocketHandler.current!.sendPlayerJoinedNotification(userID);
+        setUserID(userID!);
     }
-
     function getPlayerAreaNames(playerData: Array<PlayerResponseType>): Array<string> {
         const playerAreas = [];
 
@@ -458,7 +459,7 @@ export default function GameDisplay() {
         return <WaitingForPlayers playersLeftToJoin={playersLeftToJoin} />
     }
 
-    const currentPlayer = game!.getCurrentPlayer();
+    const currentPlayer = game!.getCurrentPlayer(); 
     return (
         <div id='game-display'>
             <Map
