@@ -29,6 +29,7 @@ import makeWebSocketHandler from "../utils/makeWebSocketHandler";
 import TerritoryCardsButton from "./TerritoryCardsButton";
 import NotFound from "./NotFound";
 import { getUserIDForGame, deleteUserIDForGame, saveUserIDToLocalStorage, generateUserID } from "../utils/userIDManager";
+import PlayerDisconnectModal from "./PlayerDisconnectModal";
 
 type PlayerResponseType = {
     "id": string,
@@ -53,6 +54,7 @@ export default function GameDisplay() {
     const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<Area | null>(null);
     const [unitsToMove, setUnitsToMove] = useState<number>(0);
     const [isGameOver, setIsGameOver] = useState<boolean>(false);
+    const [disconnectedPlayers, setDisconnectedPlayers] = useState<string[]>([]);
     const [userID, setUserID] = useState<string>("");
     const ws = useRef<WebSocket>();
     const webSocketHandler = useRef<WebSocketHandler>();
@@ -171,23 +173,23 @@ export default function GameDisplay() {
 
     async function onJoin() {
         let userID = getUserIDForGame(gameID);
-        
+
         if (!userID) {
             userID = generateUserID();
             const nextAvailablePlayer = game!.getNextUnusedPlayer();
-    
+
             if (!nextAvailablePlayer) {
                 return;
             }
-    
+
             const playerResponse = await addUserIdToPlayer(nextAvailablePlayer, userID);
-    
+
             if (!playerResponse) {
                 console.log("Unable to join game");
             }
-    
+
             saveUserIDToLocalStorage(gameID, userID);
-    
+
             webSocketHandler.current!.sendPlayerJoinedNotification(userID);
         }
 
@@ -351,6 +353,8 @@ export default function GameDisplay() {
 
     function handlePlayerDisconnect(userID: string): void {
         console.log("player disconnected: " + userID);
+        const newDisconnectedPlayers = [...disconnectedPlayers, userID];
+        setDisconnectedPlayers(newDisconnectedPlayers);
     }
 
     function onMoveUnitButtonClick(): void {
@@ -412,7 +416,7 @@ export default function GameDisplay() {
 
         return false;
     }
-    
+
     function isEndTurnButtonDisabled(): boolean {
         return (
             shouldDisplayUnitManeuverButton ||
@@ -464,7 +468,7 @@ export default function GameDisplay() {
         return <WaitingForPlayers playersLeftToJoin={playersLeftToJoin} />
     }
 
-    const currentPlayer = game!.getCurrentPlayer(); 
+    const currentPlayer = game!.getCurrentPlayer();
     return (
         <div id='game-display'>
             <Map
@@ -515,15 +519,18 @@ export default function GameDisplay() {
                 shouldDisplayTroopTransferButton={shouldDisplayTroopTransferButton}
             />
             <Leaderboard game={game} />
-            <TerritoryCardsButton onClick={() => setShouldDisplayTerritoryCards(true)} numCards={getUserCards().length}/>
+            <TerritoryCardsButton onClick={() => setShouldDisplayTerritoryCards(true)} numCards={getUserCards().length} />
             {shouldDisplayTerritoryCards && (
-                <TerritoryCardsDialog 
+                <TerritoryCardsDialog
                     onClose={() => setShouldDisplayTerritoryCards(false)}
                     cards={getUserCards()}
                     player={getUserPlayer()}
                     updateGameState={() => updateGameState(game!)}
-                    
+
                 />
+            )}
+            {disconnectedPlayers && (
+                <PlayerDisconnectModal />
             )}
             {isGameOver && (
                 <GameOverModal game={game} />
