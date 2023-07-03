@@ -54,7 +54,7 @@ export default function GameDisplay() {
     const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<Area | null>(null);
     const [unitsToMove, setUnitsToMove] = useState<number>(0);
     const [isGameOver, setIsGameOver] = useState<boolean>(false);
-    const [disconnectedPlayers, setDisconnectedPlayers] = useState<string[]>([]);
+    const [disconnectedPlayers, setDisconnectedPlayers] = useState<Player[]>([]);
     const [userID, setUserID] = useState<string>("");
     const ws = useRef<WebSocket>();
     const webSocketHandler = useRef<WebSocketHandler>();
@@ -382,9 +382,22 @@ export default function GameDisplay() {
     }
 
     function handlePlayerDisconnect(userID: string): void {
-        console.log("player disconnected: " + userID);
-        const newDisconnectedPlayers = [...disconnectedPlayers, userID];
-        setDisconnectedPlayers(newDisconnectedPlayers);
+        const player = getPlayerByUserID(userID);
+
+        if (player) {
+            const newDisconnectedPlayers = [...disconnectedPlayers, player];
+            setDisconnectedPlayers(newDisconnectedPlayers);
+        }
+    }
+
+    function getPlayerByUserID(userID: string): Player | null {
+        for (const player of game!.getPlayers()) {
+            if (player.getUserID() === userID) {
+                return player;
+            }
+        }
+
+        return null;
     }
 
     function onMoveUnitButtonClick(): void {
@@ -560,7 +573,9 @@ export default function GameDisplay() {
                 />
             )}
             {disconnectedPlayers.length > 0 && (
-                <PlayerDisconnectModal />
+                disconnectedPlayers.map(player => 
+                    <PlayerDisconnectModal playerColour={player.getColour()}/>
+                )
             )}
             {isGameOver && (
                 <GameOverModal game={game} />

@@ -1,7 +1,11 @@
 import React from "react";
 
-export default function PlayerDisconnectModal(): JSX.Element {
+type Props = {
+    playerColour: string;
+}
+
+export default function PlayerDisconnectModal(props: Props): JSX.Element {
     return (
-        <h1>player disconnected</h1>
+        <h1>{props.playerColour} Player Disconnected</h1>
     )
 }

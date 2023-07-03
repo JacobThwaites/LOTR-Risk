@@ -108,7 +108,6 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
             }
         });
 
-
         ws.on('close', function () {
             webSocketManager.removeClient(webSocketWithID, gameID);
         })
