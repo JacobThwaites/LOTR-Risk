@@ -180,8 +180,13 @@ export default function GameDisplay() {
                 handleEndTurn();
                 break;
             } 
-            case GameEventType.PLAYER_DISCONNECTED: {
+            case GameEventType.PLAYER_DISCONNECT: {
                 handlePlayerDisconnect(messageData.user);
+                break;
+            }
+            case GameEventType.PLAYER_RECONNECT: {
+                const newDisconnectedPlayers = disconnectedPlayers.filter(p => p.getUserID() !== messageData.userID)
+                setDisconnectedPlayers(newDisconnectedPlayers);
                 break;
             }
             case GameEventType.GAME_OVER_DISCONNECT: {
@@ -574,7 +579,7 @@ export default function GameDisplay() {
             )}
             {disconnectedPlayers.length > 0 && (
                 disconnectedPlayers.map(player => 
-                    <PlayerDisconnectModal playerColour={player.getColour()}/>
+                    <PlayerDisconnectModal key={player.getID()} playerColour={player.getColour()}/>
                 )
             )}
             {isGameOver && (
