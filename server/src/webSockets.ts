@@ -2,6 +2,8 @@ import { WebSocketServer, WebSocket } from "ws";
 import WebSocketWithID from "./WebSocketWithID";
 import PlayerDisconnectionTracker from "./PlayerDisconnectionTracker";
 import { countdownManager } from "./CountdownManager";
+
+import { v4 as uuidv4 } from 'uuid';
 const ws = require('ws');
 
 export class WebSocketManager {
@@ -49,7 +51,7 @@ export class WebSocketManager {
         return setTimeout(() => {
             this.broadcastPlayerDisconnect(gameID, webSocketWithID);
             this.removeClient(webSocketWithID, gameID);
-            this.startDisconnectTimeout(webSocketWithID.getID());
+            this.startDisconnectTimeout(webSocketWithID.getID(), gameID);
 
             const server = this.getGameServer(gameID);
             if (!server.clients.size) {
@@ -62,7 +64,7 @@ export class WebSocketManager {
 
     broadcastPlayerDisconnect(gameID: string, webSocketWithID: WebSocketWithID): void {
         const server = this.getGameServer(gameID);
-        const message = { id: 1, type: "PLAYER DISCONNECTED", user: webSocketWithID.getID() };
+        const message = { id: uuidv4(), type: "PLAYER DISCONNECTED", user: webSocketWithID.getID() };
         emitMessage(JSON.stringify(message), server);
     }
 
@@ -73,13 +75,15 @@ export class WebSocketManager {
         delete this.clients[gameID];
     }
 
-    startDisconnectTimeout(userID: string): void {
-        const disconnectionTracker = new PlayerDisconnectionTracker(() => this.onUserTimeout(userID));
+    startDisconnectTimeout(userID: string, gameID: string): void {
+        const disconnectionTracker = new PlayerDisconnectionTracker(() => this.onUserTimeout(userID, gameID));
         disconnectionTracker.startDisconnectionCountdown();
     }
 
-    onUserTimeout(userID: string) {
-        console.log("onUserTimeout " + userID);
+    onUserTimeout(userID: string, gameID: string) {
+        const server = this.getGameServer(gameID);
+        const message = { id: uuidv4(), type: "GAME OVER DISCONNECTION", userID };
+        emitMessage(JSON.stringify(message), server);
     }
 
     onPlayerReconnect(userID: string) {

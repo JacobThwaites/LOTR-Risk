@@ -161,6 +161,8 @@ export default function GameDisplay() {
             handleEndTurn();
         } else if (messageData.type === GameEventType.PLAYER_DISCONNECTED) {
             handlePlayerDisconnect(messageData.user);
+        } else if (messageData.type === GameEventType.GAME_OVER_DISCONNECT) {
+            setIsGameOver(true);
         }
     }
 

@@ -8,10 +8,9 @@ export default class PlayerDisconnectionTracker {
     }
 
     startDisconnectionCountdown() {
-        console.log("started disconnect timeout");
         this.disconnectionCountdown = setTimeout(() => {
-            console.log("notification sent");
             this.countdownCallback();
+            // TODO: change to 60000
         }, 5000)
     }
 
