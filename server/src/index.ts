@@ -3,8 +3,10 @@ import * as games from './games';
 import * as players from './players';
 import { WebSocketManager, onConnection } from './webSockets';
 import setupDatabase from './database/dbSetup';
+import { WebSocket } from 'ws';
 import { enableCORS } from './cors';
 import { parse } from 'url';
+import { IncomingMessage } from 'http';
 
 setupDatabase();
 
@@ -20,24 +22,24 @@ const WEBSOCKETS_PORT = 8001;
 
 const webSocketManager = new WebSocketManager();
 
-server.on('upgrade', function (request: any, socket: any, head: any) {
-    const { pathname } = parse(request.url);
+server.on('upgrade', function (request: IncomingMessage, socket: any, head: Buffer) {
+    const { pathname } = parse(request.url!);
 
     if (!pathname) {
         return;
     }
 
     const gameID = pathname.substring(pathname.length - 8);
-    const wss = webSocketManager.getServerByGameID(gameID);
+    const wss = webSocketManager.getGameServer(gameID);
 
-    wss.handleUpgrade(request, socket, head, function (ws: any) {
+    wss.handleUpgrade(request, socket, head, function (ws: WebSocket) {
         wss.emit('connection', ws, request);
     });
 });
 
 app.use('/api/game/:gameID', (req: any, res, next) => {
     const { gameID } = req.params;
-    const wss = webSocketManager.getServerByGameID(gameID);
+    const wss = webSocketManager.getGameServer(gameID);
     wss.on('connection', onConnection(wss, webSocketManager, gameID));
     next();
 });

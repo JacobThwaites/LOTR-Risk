@@ -1,85 +1,93 @@
 import { WebSocketServer, WebSocket } from "ws";
-
+import WebSocketWithID from "./WebSocketWithID";
 const ws = require('ws');
 
 export class WebSocketManager {
     private servers: { [gameID: string]: WebSocketServer };
-    private clients: WebSocket[];
+    private clients: { [gameID: string]: { [userID: string]: WebSocket } };
     constructor() {
         this.servers = {};
-        this.clients = [];
+        this.clients = {};
     }
 
-    getServerByGameID(gameID: string) {
+    getGameServer(gameID: string) {
         if (this.servers[gameID]) {
             return this.servers[gameID];
         }
 
         this.servers[gameID] = new ws.Server({ noServer: true });
+        this.clients[gameID] = {};
         return this.servers[gameID];
     }
 
-    addClient(ws: WebSocket) {
-        this.clients.push(ws);
+    addClient(gameID: string, ws: WebSocketWithID) {
+        this.clients[gameID][ws.getID()] = ws.getWebSocketInstance();
     }
 
-    removeClient(ws: WebSocket) {
-        ws.close();
-        this.clients.splice(this.clients.indexOf(ws), 1);
+    removeClient(webSocketWithID: WebSocketWithID, gameID: string): void {
+        webSocketWithID.getWebSocketInstance().close();
+        delete this.clients[gameID][webSocketWithID.getID()];
     }
 
-    checkClientHeartbeat(ws: WebSocket, gameID: string) {
+    checkClientHeartbeat(webSocketWithID: WebSocketWithID, gameID: string) {
+        const ws = webSocketWithID.getWebSocketInstance();
         const pingInterval = setInterval(() => {
             ws.ping();
         }, 5000);
 
         ws.on('pong', () => {
             clearTimeout(pingTimeout);
-            pingTimeout = this.createTimeout(ws, gameID, pingInterval);
+            pingTimeout = this.createHeartbeatTimeout(webSocketWithID, gameID, pingInterval);
         });
 
-        let pingTimeout = this.createTimeout(ws, gameID, pingInterval);
+        let pingTimeout = this.createHeartbeatTimeout(webSocketWithID, gameID, pingInterval);
     }
 
-    createTimeout(ws: WebSocket, gameID: string, pingInterval: NodeJS.Timer) {
+    createHeartbeatTimeout(webSocketWithID: WebSocketWithID, gameID: string, pingInterval: NodeJS.Timer) {
         return setTimeout(() => {
-            this.removeClient(ws);
-            this.broadcastPlayerDisconnect(gameID, ws);
+            this.broadcastPlayerDisconnect(gameID, webSocketWithID);
+            this.removeClient(webSocketWithID, gameID);
 
-            const server = this.getServerByGameID(gameID);
+            const server = this.getGameServer(gameID);
             if (!server.clients.size) {
-                this.removeServerByGameID(gameID);
+                this.removeGameServer(gameID);
             }
 
             clearInterval(pingInterval);
         }, 10000);
     }
 
-    broadcastPlayerDisconnect(gameID: string, ws: any): void {
-        const server = this.getServerByGameID(gameID);
-        const message = { id: 1, type: "PLAYER DISCONNECTED", user: ws };
+    broadcastPlayerDisconnect(gameID: string, webSocketWithID: WebSocketWithID): void {
+        const server = this.getGameServer(gameID);
+        const message = { id: 1, type: "PLAYER DISCONNECTED", user: webSocketWithID.getID() };
         emitMessage(JSON.stringify(message), server);
     }
 
-    removeServerByGameID(gameID: string) {
+    removeGameServer(gameID: string) {
         const wss = this.servers[gameID];
         wss.close();
         delete this.servers[gameID];
+        delete this.clients[gameID];
     }
 }
 
 export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketManager, gameID: string) => {
     return (ws: WebSocket) => {
-        webSocketManager.addClient(ws);
-        webSocketManager.checkClientHeartbeat(ws, gameID);
+        const webSocketWithID = new WebSocketWithID(ws);
+        webSocketManager.checkClientHeartbeat(webSocketWithID, gameID);
 
         ws.on('message', function (data: Buffer) {
-            processMessage(data, wss);
+            const messageData = processMessage(data, wss);
+
+            if (messageData.type === 'PLAYER JOINED') {
+                webSocketWithID.setID(messageData.userID);
+                webSocketManager.addClient(gameID, webSocketWithID);
+            }
         });
 
 
         ws.on('close', function () {
-            webSocketManager.removeClient(ws);
+            webSocketManager.removeClient(webSocketWithID, gameID);
         })
     }
 };
@@ -87,6 +95,7 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
 function processMessage(data: Buffer, wss: WebSocketServer) {
     const messageData = parseMessageBuffer(data);
     emitMessage(JSON.stringify(messageData), wss);
+    return messageData;
 }
 
 function parseMessageBuffer(data: Buffer) {

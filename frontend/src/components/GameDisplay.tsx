@@ -28,7 +28,7 @@ import { Player } from "../gameLogic/Models/Player";
 import makeWebSocketHandler from "../utils/makeWebSocketHandler";
 import TerritoryCardsButton from "./TerritoryCardsButton";
 import NotFound from "./NotFound";
-import { getUserIDForGame, deleteUserIDForGame, saveUserIDToLocalStorage, hasPlayerAlreadyJoined, generateUserID } from "../utils/userIDManager";
+import { getUserIDForGame, deleteUserIDForGame, saveUserIDToLocalStorage, generateUserID } from "../utils/userIDManager";
 
 type PlayerResponseType = {
     "id": string,
@@ -76,7 +76,6 @@ export default function GameDisplay() {
             setGame(game);
             setShouldDisplayReinforcementsModal(true);
             setIsGameLoaded(true);
-            console.log("setup game called")
         }
 
         setupGame();
@@ -158,6 +157,8 @@ export default function GameDisplay() {
             onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
         } else if (messageData.type === GameEventType.END_TURN) {
             handleEndTurn();
+        } else if (messageData.type === GameEventType.PLAYER_DISCONNECTED) {
+            handlePlayerDisconnect(messageData.user);
         }
     }
 
@@ -346,6 +347,10 @@ export default function GameDisplay() {
         if (maxTurnsReached) {
             setIsGameOver(true);
         }
+    }
+
+    function handlePlayerDisconnect(userID: string): void {
+        console.log("player disconnected: " + userID);
     }
 
     function onMoveUnitButtonClick(): void {
