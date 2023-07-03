@@ -191,6 +191,8 @@ export default function GameDisplay() {
             saveUserIDToLocalStorage(gameID, userID);
 
             webSocketHandler.current!.sendPlayerJoinedNotification(userID);
+        } else {
+            webSocketHandler.current!.sendPlayerReconnected(userID);
         }
 
         setUserID(userID!);
@@ -468,7 +470,7 @@ export default function GameDisplay() {
         return <WaitingForPlayers playersLeftToJoin={playersLeftToJoin} />
     }
 
-    const currentPlayer = game!.getCurrentPlayer();
+    const currentPlayer = game!.getCurrentPlayer();   
     return (
         <div id='game-display'>
             <Map
@@ -529,7 +531,7 @@ export default function GameDisplay() {
 
                 />
             )}
-            {disconnectedPlayers && (
+            {disconnectedPlayers.length > 0 && (
                 <PlayerDisconnectModal />
             )}
             {isGameOver && (

@@ -1,5 +1,7 @@
 import { WebSocketServer, WebSocket } from "ws";
 import WebSocketWithID from "./WebSocketWithID";
+import PlayerDisconnectionTracker from "./PlayerDisconnectionTracker";
+import { countdownManager } from "./CountdownManager";
 const ws = require('ws');
 
 export class WebSocketManager {
@@ -47,6 +49,7 @@ export class WebSocketManager {
         return setTimeout(() => {
             this.broadcastPlayerDisconnect(gameID, webSocketWithID);
             this.removeClient(webSocketWithID, gameID);
+            this.startDisconnectTimeout(webSocketWithID.getID());
 
             const server = this.getGameServer(gameID);
             if (!server.clients.size) {
@@ -69,6 +72,19 @@ export class WebSocketManager {
         delete this.servers[gameID];
         delete this.clients[gameID];
     }
+
+    startDisconnectTimeout(userID: string): void {
+        const disconnectionTracker = new PlayerDisconnectionTracker(() => this.onUserTimeout(userID));
+        disconnectionTracker.startDisconnectionCountdown();
+    }
+
+    onUserTimeout(userID: string) {
+        console.log("onUserTimeout " + userID);
+    }
+
+    onPlayerReconnect(userID: string) {
+        countdownManager.cancelCountdown(userID);
+    }
 }
 
 export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketManager, gameID: string) => {
@@ -78,10 +94,13 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
 
         ws.on('message', function (data: Buffer) {
             const messageData = processMessage(data, wss);
-
             if (messageData.type === 'PLAYER JOINED') {
                 webSocketWithID.setID(messageData.userID);
                 webSocketManager.addClient(gameID, webSocketWithID);
+            } else if (messageData.type === 'PLAYER RECONNECTED') {
+                webSocketWithID.setID(messageData.userID);
+                webSocketManager.addClient(gameID, webSocketWithID);
+                webSocketManager.onPlayerReconnect(messageData.userID);
             }
         });
 
