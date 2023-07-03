@@ -128,41 +128,67 @@ export default function GameDisplay() {
             webSocketHandler.current!.previousMessageUUID = messageData.id;
         }
 
-        if (messageData.type === GameEventType.COMBAT) {
-            const attackingArea = Areas[messageData.attackingArea];
-            const defendingArea = Areas[messageData.defendingArea];
-            setAttackingArea(attackingArea);
-            setDefendingArea(defendingArea);
-        } else if (messageData.type === GameEventType.PLAYER_JOINED) {
-            game!.addUserIDToNextAvailablePlayer(messageData.userID);
-            updateGameState(game!);
-        } else if (messageData.type === GameEventType.CLEAR_SELECTED_AREAS) {
-            setShouldDisplayUnitManeuverButton(false);
-            clearSelectedAreas();
-        } else if (messageData.type === GameEventType.STARTING_REINFORCEMENT) {
-            const area = Areas[messageData.areaName];
-            handleStartingReinforcements(area);
-        } else if (messageData.type === GameEventType.REINFORCEMENT) {
-            const area = Areas[messageData.areaName];
-            addReinforcements(area);
-        } else if (messageData.type === GameEventType.COMBAT_RESULTS) {
-            updateAreasAfterCombat(messageData.attackingArea, messageData.defendingArea, messageData.results);
-        } else if (messageData.type === GameEventType.UNIT_MANEURVRE) {
-            const areaToMoveUnits = Areas[messageData.areaToMoveUnits];
-            const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
-            onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
-        } else if (messageData.type === GameEventType.TROOP_TRANSFER_SETUP) {
-            setShouldDisplayTroopTransferButton(true);
-        } else if (messageData.type === GameEventType.TROOP_TRANSFER) {
-            const areaToMoveUnits = Areas[messageData.areaToMoveUnits];
-            const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
-            onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
-        } else if (messageData.type === GameEventType.END_TURN) {
-            handleEndTurn();
-        } else if (messageData.type === GameEventType.PLAYER_DISCONNECTED) {
-            handlePlayerDisconnect(messageData.user);
-        } else if (messageData.type === GameEventType.GAME_OVER_DISCONNECT) {
-            setIsGameOver(true);
+        switch (messageData.type) {
+            case GameEventType.COMBAT: {
+                const attackingArea = Areas[messageData.attackingArea];
+                const defendingArea = Areas[messageData.defendingArea];
+                setAttackingArea(attackingArea);
+                setDefendingArea(defendingArea);
+                break;
+            }
+            case GameEventType.PLAYER_JOINED: {
+                game!.addUserIDToNextAvailablePlayer(messageData.userID);
+                updateGameState(game!);
+                break;
+            }
+            case GameEventType.CLEAR_SELECTED_AREAS: {
+                setShouldDisplayUnitManeuverButton(false);
+                clearSelectedAreas();
+                break;
+            }
+            case GameEventType.STARTING_REINFORCEMENT: {
+                const area = Areas[messageData.areaName];
+                handleStartingReinforcements(area);
+                break;
+            }
+            case GameEventType.REINFORCEMENT: {
+                const area = Areas[messageData.areaName];
+                addReinforcements(area);
+                break;
+            }
+            case GameEventType.COMBAT_RESULTS: {
+                updateAreasAfterCombat(messageData.attackingArea, messageData.defendingArea, messageData.results);
+                break;
+            }
+            case GameEventType.UNIT_MANEURVRE: {
+                const areaToMoveUnits = Areas[messageData.areaToMoveUnits];
+                const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
+                onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
+                break;
+            }
+            case GameEventType.TROOP_TRANSFER_SETUP: {
+                setShouldDisplayTroopTransferButton(true);
+                break;
+            }
+            case GameEventType.TROOP_TRANSFER: {
+                const areaToMoveUnits = Areas[messageData.areaToMoveUnits];
+                const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
+                onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
+                break;
+            } 
+            case GameEventType.END_TURN: {
+                handleEndTurn();
+                break;
+            } 
+            case GameEventType.PLAYER_DISCONNECTED: {
+                handlePlayerDisconnect(messageData.user);
+                break;
+            }
+            case GameEventType.GAME_OVER_DISCONNECT: {
+                setIsGameOver(true);
+            }
+            default:
+                break;
         }
     }
 
