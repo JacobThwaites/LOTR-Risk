@@ -20,7 +20,7 @@ async function getPlayerById(id: number) {
 
 async function createPlayer(player: Player) {
     try {
-        const query = `INSERT INTO player (areas, game_id, user_id) VALUES (?,?,?,?)`;
+        const query = `INSERT INTO player (areas, game_id, user_id) VALUES (?,?,?)`;
     
         const params = [player.areas, player.gameID, player.userID ? player.userID : null];
         const res = await db.execute(query, params);
@@ -48,7 +48,7 @@ function convertPlayersToRows(players: Player[]): Array<Array<string | undefined
     return rows;
 }
 
-async function updatePlayer(playerID: number, userID: number) {
+async function addUserID(playerID: number, userID: number) {
     const query = 'UPDATE player SET user_id = ? WHERE id = ?';
     const params = [userID, playerID];
     const res = await db.query(query, params);
@@ -61,5 +61,5 @@ module.exports = {
     createPlayer,
     createMultiplePlayers,
     getPlayerById,
-    updatePlayer
+    addUserID
 };

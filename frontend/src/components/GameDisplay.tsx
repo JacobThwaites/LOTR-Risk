@@ -219,6 +219,7 @@ export default function GameDisplay() {
 
             if (!playerResponse) {
                 console.log("Unable to join game");
+                return;
             }
 
             saveUserIDToLocalStorage(gameID, userID);

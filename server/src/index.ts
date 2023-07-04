@@ -70,11 +70,12 @@ if (process.env.NODE_ENV !== 'test') {
 app.get('/api/game', games.allGames);
 app.get("/api/game/:uuid", games.getGameByUUID);
 app.post("/api/game/", games.createGame);
+app.patch('/api/game/:uuid', games.addUserToGame);
 
 // Player
 app.get('/api/player', players.allPlayers);
 app.get('/api/player/:id', players.getPlayerById);
-app.patch('/api/player/:id', players.updatePlayer);
+app.patch('/api/player/:id', players.addUserIDToPlayer);
 app.post("/api/player/", players.createPlayer);
 
 // Default response for any other request

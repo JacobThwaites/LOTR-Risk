@@ -42,7 +42,7 @@ export const createPlayer = async function (req: Request, res: Response) {
     const dbRes = await playerQueries.createPlayer(player);
 
     if (!dbRes) {
-        res.status(500).json({ "error": "There was an error creating the Player" });
+        res.status(500).json({ "error": "There was an error creating the Player", dbRes });
         return;
     }
 
@@ -52,7 +52,7 @@ export const createPlayer = async function (req: Request, res: Response) {
     });
 }
 
-export const updatePlayer = async function (req: Request, res: Response) {
+export const addUserIDToPlayer = async function (req: Request, res: Response) {
     const { id } = req.params;
     const { userID } = req.body;
     
@@ -61,7 +61,7 @@ export const updatePlayer = async function (req: Request, res: Response) {
         return;
     }
 
-    const dbRes = await playerQueries.updatePlayer(id, userID);
+    const dbRes = await playerQueries.addUserID(id, userID);
 
     if (!dbRes) {
         res.status(500).json({ "error": "There was an error updating the Player" });

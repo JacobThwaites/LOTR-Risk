@@ -1,7 +1,12 @@
-import request from 'supertest';
-
-require('jest');
+const gameQueries = require("./database/gameQueries");
+const playerQueries = require("./database/playerQueries");
+import makePlayer from './models/player';
+import makeGame, { Game } from './models/game';
 const app = require('./index');
+
+import request from 'supertest';
+import { v4 as uuidv4 } from 'uuid';
+require('jest');
 
 let gameId: any;
 
@@ -10,15 +15,15 @@ describe('POST /api/game', function () {
     const payload = {
       numPlayers: 2,
       players: [
-          {
-              areas: "area1",
-              userID: "userID"
-          },
-          {
-              areas: "area2"
-          }
+        {
+          areas: "area1",
+          userID: "userID"
+        },
+        {
+          areas: "area2"
+        }
       ]
-  }
+    }
 
     request(app)
       .post('/api/game')
@@ -49,6 +54,63 @@ describe('GET /api/game/:gameId', function () {
       .expect(200)
       .end(function(err, res) {
         expect(res.body.data.id).toEqual(gameId);
+        expect(res.statusCode).toEqual(200);
+        if (err) return done(err);
+        done();
+      })
+  });
+});
+
+
+describe('PATCH /api/game/:gameId', function() {
+  let gameID: string;
+
+  beforeAll(async () => {
+    gameID = uuidv4();
+    gameID = gameID.substring(0, 8);
+    const numberOfPlayers = 2;
+    const gameData: Game = makeGame(gameID, numberOfPlayers);
+    await gameQueries.createGame(gameData);
+
+    for (let i = 0; i < numberOfPlayers; i++) {
+      const testPlayer = makePlayer('', gameID);
+      await playerQueries.createPlayer(testPlayer);
+    }
+  });
+
+  it('can add a userID to the next available player in a game if there are spaces remaining', function (done) {
+    const payload = {
+      userID: "ID"
+    };
+    
+    request(app)
+      .patch(`/api/game/${gameID}`)
+      .send(payload)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end(function (err: Error, res: request.Response) {
+        expect(res.body.data.players[0].userID).toEqual(payload.userID);
+        expect(res.statusCode).toEqual(200);
+        if (err) return done(err);
+        done();
+      })
+  });
+
+  it('returns a 500 error if every player already has a userID', function (done) {
+
+    const payload = {
+      userID: "ID"
+    };
+    
+    request(app)
+      .patch(`/api/game/${gameID}`)
+      .send(payload)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end(function (err: Error, res: request.Response) {
+        expect(res.body.data.players[0].userID).toEqual(payload.userID);
         expect(res.statusCode).toEqual(200);
         if (err) return done(err);
         done();

@@ -85,3 +85,51 @@ export const createGame = async function (req: Request, res: Response) {
         "data": game
     });
 }
+
+export const addUserToGame = async function (req: Request, res: Response) {
+    const { uuid } = req.params;
+    const { userID } = req.body;
+    
+    if (!userID) {
+        res.status(400).json({ "error": "User ID not specified" });
+        return;
+    }
+
+    const game = await gameQueries.getByUUID(uuid);
+
+    if (!game) {
+        res.status(404).json({ "error": `No game found with uuid ${uuid}` });
+        return;
+    }
+
+    const nextAvailablePlayer = getNextPlayerWithoutUserID(game.players);
+
+    if (!nextAvailablePlayer) {
+        res.status(500).json({ "error": "No more available players" });
+        return;
+    }
+
+    const playerUpdateRes = await playerQueries.addUserIDToPlayer(nextAvailablePlayer.id, userID);
+    
+    if (!playerUpdateRes) {
+        res.status(500).json({ "error": "There was an error updating the player" });
+        return;
+    }
+
+    const updatedGame = await gameQueries.getByUUID(uuid);
+
+    res.status(200).json({
+        "message": "success",
+        "data": updatedGame
+    });
+}
+
+function getNextPlayerWithoutUserID(players: any[]): any | false {
+    for (const player of players) {
+        if (!player.userID) {
+            return player;
+        }
+    }
+
+    return false;
+}
