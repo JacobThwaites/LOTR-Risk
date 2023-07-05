@@ -20,17 +20,17 @@ async function getByUUID(uuid: string) {
     return rows[0];
 }
 
-async function createGame(game: Game): Promise<boolean> {
+async function createGame(game: Game): Promise<any> {
     const query = 'INSERT INTO game (id, num_players, is_game_over) VALUES (?,?, ?)';
 
     const params = [game.uuid, game.numPlayers, false];
     const res = await db.execute(query, params);
-
+    
     if (!res) {
         return false;
     }
 
-    return true;
+    return JSON.parse(JSON.stringify(res));
 }
 
 module.exports = {

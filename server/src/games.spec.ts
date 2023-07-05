@@ -31,7 +31,7 @@ describe('POST /api/game', function () {
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(201)
-      .end(function(err: Error, res: request.Response) {
+      .end(function (err: Error, res: request.Response) {
         expect(res.body.data.num_players).toEqual(payload.numPlayers);
         expect(res.body.data.players).toHaveLength(2);
         expect(res.body.data.players[0].areas).toEqual('area1');
@@ -52,7 +52,7 @@ describe('GET /api/game/:gameId', function () {
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end(function(err, res) {
+      .end(function (err, res) {
         expect(res.body.data.id).toEqual(gameId);
         expect(res.statusCode).toEqual(200);
         if (err) return done(err);
@@ -62,8 +62,9 @@ describe('GET /api/game/:gameId', function () {
 });
 
 
-describe('PATCH /api/game/:gameId', function() {
+describe('PATCH /api/game/:gameId', function () {
   let gameID: string;
+  let fullGameID: string;
 
   beforeAll(async () => {
     gameID = uuidv4();
@@ -76,13 +77,25 @@ describe('PATCH /api/game/:gameId', function() {
       const testPlayer = makePlayer('', gameID);
       await playerQueries.createPlayer(testPlayer);
     }
+
+    fullGameID = uuidv4();
+    fullGameID = fullGameID.substring(0, 8);
+    const fullGameData: Game = makeGame(fullGameID, numberOfPlayers);
+    await gameQueries.createGame(fullGameData);
+
+    for (let i = 0; i < numberOfPlayers; i++) {
+      const testPlayer = makePlayer('', fullGameID);
+      const res = await playerQueries.createPlayer(testPlayer);
+      const playerID = res[0].insertId;
+      await playerQueries.addUserID(playerID, i);
+    }
   });
 
   it('can add a userID to the next available player in a game if there are spaces remaining', function (done) {
     const payload = {
       userID: "ID"
     };
-    
+
     request(app)
       .patch(`/api/game/${gameID}`)
       .send(payload)
@@ -98,20 +111,19 @@ describe('PATCH /api/game/:gameId', function() {
   });
 
   it('returns a 500 error if every player already has a userID', function (done) {
-
     const payload = {
       userID: "ID"
     };
-    
+
     request(app)
-      .patch(`/api/game/${gameID}`)
+      .patch(`/api/game/${fullGameID}`)
       .send(payload)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect(200)
+      .expect(500)
       .end(function (err: Error, res: request.Response) {
-        expect(res.body.data.players[0].userID).toEqual(payload.userID);
-        expect(res.statusCode).toEqual(200);
+        expect(res.statusCode).toEqual(500);
+        expect(res.body.error).toEqual('No more available players');
         if (err) return done(err);
         done();
       })
