@@ -19,7 +19,7 @@ function createDatabase(connection: mysql.Connection) {
 
     connection.query(createDatabase, function (err, result) {
         if (err) {
-            console.log("couldn't create database");
+            console.error("couldn't create database");
             throw err;
         }
     });
@@ -31,14 +31,14 @@ function dropTables(connection: mysql.Connection) {
 
     connection.query(dropPlayer, function (err: Error, results: any, fields: any) {
         if (err) {
-            console.log(err.message);
+            console.error(err.message);
             throw err;
         }
     });
 
     connection.query(dropGame, function (err: Error, results: any, fields: any) {
         if (err) {
-            console.log(err.message);
+            console.error(err.message);
             throw err;
         }
     });
@@ -63,14 +63,14 @@ function createTables(connection: mysql.Connection) {
 
     connection.query(createGame, function (err: Error, results: any, fields: any) {
         if (err) {
-            console.log(err.message);
+            console.error(err.message);
             throw err;
         }
     });
 
     connection.query(createPlayers, function (err: Error, results: any, fields: any) {
         if (err) {
-            console.log(err.message);
+            console.error(err.message);
             throw err;
         }
     });
@@ -79,7 +79,7 @@ function createTables(connection: mysql.Connection) {
 function endConnection(connection: mysql.Connection) {
     connection.end(function (err: Error) {
         if (err) {
-            console.log(err.message);
+            console.error(err.message);
             throw err;
         }
     });

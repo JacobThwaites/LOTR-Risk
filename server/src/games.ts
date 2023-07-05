@@ -109,7 +109,7 @@ export const addUserToGame = async function (req: Request, res: Response) {
         return;
     }
 
-    const playerUpdateRes = await playerQueries.addUserIDToPlayer(nextAvailablePlayer.id, userID);
+    const playerUpdateRes = await playerQueries.addUserID(nextAvailablePlayer.id, userID);
     
     if (!playerUpdateRes) {
         res.status(500).json({ "error": "There was an error updating the player" });

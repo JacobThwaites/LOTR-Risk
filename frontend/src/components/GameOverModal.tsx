@@ -14,6 +14,7 @@ export default function GameOverModal(props: { game: Game }) {
             <div className='game-over--leaderboard'>
                 <Leaderboard game={props.game}/>
             </div>
+            {/* TODO: return home onclick */}
             <button className='game-over--button' onClick={() => console.log('return home')}>Home</button>
         </Dialog>
 
