@@ -102,6 +102,14 @@ export const addUserToGame = async function (req: Request, res: Response) {
         return;
     }
 
+    if (isUserIDAlreadyInGame(game.players, userID)) {
+        res.status(200).json({
+            "message": "userID already in game",
+            "data": game
+        });
+        return;
+    }
+
     const nextAvailablePlayer = getNextPlayerWithoutUserID(game.players);
 
     if (!nextAvailablePlayer) {
@@ -122,6 +130,16 @@ export const addUserToGame = async function (req: Request, res: Response) {
         "message": "success",
         "data": updatedGame
     });
+}
+
+function isUserIDAlreadyInGame(players: any[], userID: string): boolean {
+    for (const player of players) {
+        if (player.userID === userID) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function getNextPlayerWithoutUserID(players: any[]): any | false {

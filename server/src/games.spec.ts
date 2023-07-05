@@ -66,7 +66,7 @@ describe('PATCH /api/game/:gameId', function () {
   let gameID: string;
   let fullGameID: string;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     gameID = uuidv4();
     gameID = gameID.substring(0, 8);
     const numberOfPlayers = 2;
@@ -75,7 +75,12 @@ describe('PATCH /api/game/:gameId', function () {
 
     for (let i = 0; i < numberOfPlayers; i++) {
       const testPlayer = makePlayer('', gameID);
-      await playerQueries.createPlayer(testPlayer);
+      const res = await playerQueries.createPlayer(testPlayer);
+
+      if (i === 0) {
+        const playerID = res[0].insertId;
+        await playerQueries.addUserID(playerID, i);
+      }
     }
 
     fullGameID = uuidv4();
@@ -103,10 +108,42 @@ describe('PATCH /api/game/:gameId', function () {
       .expect('Content-Type', /json/)
       .expect(200)
       .end(function (err: Error, res: request.Response) {
-        expect(res.body.data.players[0].userID).toEqual(payload.userID);
+        expect(res.body.data.players[1].userID).toEqual(payload.userID);
         expect(res.statusCode).toEqual(200);
         if (err) return done(err);
         done();
+      })
+  });
+
+  it('doesn\'t add userID if it already exists on one of the players', async function () {
+    const game = await gameQueries.getByUUID(gameID);
+    let totalPlayersWithUserID = game.players.reduce((acc: number, player: {[userID: string]: string | null}) => {
+      if (player.userID) {
+        return acc + 1;
+      }
+      return acc;
+    }, 0);
+
+    expect(totalPlayersWithUserID).toEqual(1);
+    
+
+    const existingUserID = game.players[0].userID;
+
+    request(app)
+      .patch(`/api/game/${gameID}`)
+      .send({userID: existingUserID})
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end(function (err: Error, res: request.Response) {
+        expect(res.statusCode).toEqual(200);
+        totalPlayersWithUserID = res.body.data.players.reduce((acc: number, player: {[userID: string]: string | null}) => {
+          if (player.userID) {
+            return acc + 1;
+          }
+          return acc;
+        }, 0);
+        expect(totalPlayersWithUserID).toEqual(1);
       })
   });
 
