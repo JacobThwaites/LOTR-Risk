@@ -128,4 +128,24 @@ describe('PATCH /api/game/:gameId', function () {
         done();
       })
   });
+
+  it('returns a 404 error if gameUUID doesn\'t exist', function (done) {
+    const invalidGameUUID = '-';
+    const payload = {
+      userID: "ID"
+    };
+
+    request(app)
+      .patch(`/api/game/${invalidGameUUID}`)
+      .send(payload)
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(404)
+      .end(function (err: Error, res: request.Response) {
+        expect(res.statusCode).toEqual(404);
+        expect(res.body.error).toEqual(`No game found with uuid ${invalidGameUUID}`);
+        if (err) return done(err);
+        done();
+      })
+  });
 });
