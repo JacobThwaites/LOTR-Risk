@@ -90,23 +90,15 @@ export class Game {
         return this.maxTurns <= this.currentTurn;
     }
 
-    public addUserIDToNextAvailablePlayer(userID: string) {
+    public addUserIDToPlayer(userID: string) {
         for (let i = 0; i < this.players.length; i++) {
-            if (!this.players[i].getUserID()) {
+            if (this.players[i].getUserID() === userID) {
+                return;
+            } else if (!this.players[i].getUserID()) {
                 this.players[i].setUserID(userID);
                 return;
             }
         }
-    }
-
-    public getNextUnusedPlayer(): Player | null {
-        for (let i = 0; i < this.players.length; i++) {
-            if (!this.players[i].getUserID()) {
-                return this.players[i];
-            }
-        }
-
-        return null;
     }
 
     public waitingForUsersToJoin(): boolean {

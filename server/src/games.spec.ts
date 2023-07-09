@@ -137,6 +137,8 @@ describe('PATCH /api/game/:gameId', function () {
       .expect(200)
       .end(function (err: Error, res: request.Response) {
         expect(res.statusCode).toEqual(200);
+        expect(res.body.message).toEqual('userID already in game');
+        
         totalPlayersWithUserID = res.body.data.players.reduce((acc: number, player: {[userID: string]: string | null}) => {
           if (player.userID) {
             return acc + 1;
@@ -166,7 +168,7 @@ describe('PATCH /api/game/:gameId', function () {
       })
   });
 
-  it('returns a 404 error if gameUUID doesn\'t exist', function (done) {
+  it('returns a 404 error if there is no game with the given ID', function (done) {
     const invalidGameUUID = '-';
     const payload = {
       userID: "ID"

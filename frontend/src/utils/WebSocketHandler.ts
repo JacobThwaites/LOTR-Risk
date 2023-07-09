@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-
+import { getUserID } from './userIDManager';
 
 export enum GameEventType {
     CLEAR_SELECTED_AREAS = "CLEAR SELECTED AREAS",
@@ -13,13 +13,12 @@ export enum GameEventType {
     TROOP_TRANSFER = "TROOP TRANSFER",
     PLAYER_JOINED = "PLAYER JOINED",
     PLAYER_DISCONNECT = "PLAYER DISCONNECTED",
-    PLAYER_RECONNECT = "PLAYER RECONNECTED",
     GAME_OVER_DISCONNECT = "GAME OVER DISCONNECTION"
 }
 
 export default class WebSocketHandler {
     gameID: string;
-    socket: any;
+    socket: WebSocket;
     previousMessageUUID: string;
 
     constructor(gameID: string, socket: WebSocket) {
@@ -126,19 +125,10 @@ export default class WebSocketHandler {
         this.sendMessage(messageBody);
     }
 
-    sendPlayerJoinedNotification(userID: string) {
+    sendPlayerJoinedNotification() {     
         const messageBody = {
             type: GameEventType.PLAYER_JOINED,
-            userID
-        }
-
-        this.sendMessage(messageBody);
-    }
-
-    sendPlayerReconnected(userID: string) {
-        const messageBody = {
-            type: GameEventType.PLAYER_RECONNECT,
-            userID
+            userID: getUserID()
         }
 
         this.sendMessage(messageBody);

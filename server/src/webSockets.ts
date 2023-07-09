@@ -14,7 +14,7 @@ export class WebSocketManager {
         this.clients = {};
     }
 
-    getGameServer(gameID: string) {
+    public getGameServer(gameID: string) {
         if (this.servers[gameID]) {
             return this.servers[gameID];
         }
@@ -24,16 +24,20 @@ export class WebSocketManager {
         return this.servers[gameID];
     }
 
-    addClient(gameID: string, ws: WebSocketWithID) {
+    public addClient(gameID: string, ws: WebSocketWithID) {
         this.clients[gameID][ws.getID()] = ws.getWebSocketInstance();
     }
 
-    removeClient(webSocketWithID: WebSocketWithID, gameID: string): void {
+    public removeClient(webSocketWithID: WebSocketWithID, gameID: string): void {
         webSocketWithID.getWebSocketInstance().close();
         delete this.clients[gameID][webSocketWithID.getID()];
     }
 
-    checkClientHeartbeat(webSocketWithID: WebSocketWithID, gameID: string) {
+    public isUserAlreadyInGame(userID: string, gameID: string): boolean {
+        return this.clients[gameID].hasOwnProperty(userID);
+    }
+
+    public checkClientHeartbeat(webSocketWithID: WebSocketWithID, gameID: string) {
         const ws = webSocketWithID.getWebSocketInstance();
         const pingInterval = setInterval(() => {
             ws.ping();
@@ -47,7 +51,7 @@ export class WebSocketManager {
         let pingTimeout = this.createHeartbeatTimeout(webSocketWithID, gameID, pingInterval);
     }
 
-    createHeartbeatTimeout(webSocketWithID: WebSocketWithID, gameID: string, pingInterval: NodeJS.Timer) {
+    private createHeartbeatTimeout(webSocketWithID: WebSocketWithID, gameID: string, pingInterval: NodeJS.Timer) {
         return setTimeout(() => {
             this.broadcastPlayerDisconnect(gameID, webSocketWithID);
             this.removeClient(webSocketWithID, gameID);
@@ -98,13 +102,14 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
 
         ws.on('message', function (data: Buffer) {
             const messageData = processMessage(data, wss);
+            
             if (messageData.type === 'PLAYER JOINED') {
+                if (webSocketManager.isUserAlreadyInGame(messageData.userID, gameID)) {
+                    webSocketManager.removeClient(webSocketWithID, gameID);
+                    webSocketManager.onPlayerReconnect(messageData.userID);
+                }
                 webSocketWithID.setID(messageData.userID);
                 webSocketManager.addClient(gameID, webSocketWithID);
-            } else if (messageData.type === 'PLAYER RECONNECTED') {
-                webSocketWithID.setID(messageData.userID);
-                webSocketManager.addClient(gameID, webSocketWithID);
-                webSocketManager.onPlayerReconnect(messageData.userID);
             }
         });
 

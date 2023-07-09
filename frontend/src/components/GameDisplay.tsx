@@ -15,7 +15,7 @@ import { CombatValidator } from "../gameLogic/Controllers/CombatValidator";
 import { Game } from "../gameLogic/Models/Game";
 import { Area } from "../gameLogic/Models/Area";
 import { useParams, useLocation } from "react-router";
-import { addUserIdToPlayer, getGame } from "../gameLogic/Controllers/requests";
+import { addUserIDToGame } from "../gameLogic/Controllers/requests";
 import { getAreas } from "../utils/playerAreaParser";
 import WebSocketHandler, { GameEventType } from "../utils/WebSocketHandler";
 import { Areas } from "../gameLogic/Enums/Areas";
@@ -28,7 +28,7 @@ import { Player } from "../gameLogic/Models/Player";
 import makeWebSocketHandler from "../utils/makeWebSocketHandler";
 import TerritoryCardsButton from "./TerritoryCardsButton";
 import NotFound from "./NotFound";
-import { getUserIDForGame, deleteUserIDForGame, saveUserIDToLocalStorage, generateUserID } from "../utils/userIDManager";
+import { getUserID } from "../utils/userIDManager";
 import PlayerDisconnectModal from "./PlayerDisconnectModal";
 
 type PlayerResponseType = {
@@ -55,15 +55,15 @@ export default function GameDisplay() {
     const [unitsToMove, setUnitsToMove] = useState<number>(0);
     const [isGameOver, setIsGameOver] = useState<boolean>(false);
     const [disconnectedPlayers, setDisconnectedPlayers] = useState<Player[]>([]);
-    const [userID, setUserID] = useState<string>("");
-    const ws = useRef<WebSocket>();
-    const webSocketHandler = useRef<WebSocketHandler>();
+    const ws = useRef<WebSocket | null>();
+    const webSocketHandler = useRef<WebSocketHandler | null>();
+    const isWebSocketConnected = useRef<boolean>(); 
     const location: { state: { gameType?: string } } = useLocation();
     const gameType = location.state ? location.state.gameType : "online";
 
     useEffect(() => {
         async function setupGame() {
-            const res = await getGame(gameID);
+            const res = await addUserIDToGame(gameID);
 
             if (!res.ok) {
                 return;
@@ -84,40 +84,41 @@ export default function GameDisplay() {
     }, [gameID])
 
     useEffect(() => {
-        async function connectSockets() {
-            const socket = new WebSocket(`ws://${process.env.REACT_APP_BASE_URL}/api/game/${gameID}`);
-            const socketHandler = makeWebSocketHandler(gameID, socket);
-            webSocketHandler.current = socketHandler;
-
-            socket.onopen = () => {
-                console.log('Connected to the WebSocket server');
-                onJoin();
-            };
-
-            socket.onmessage = (event) => {
-                processWebSocketMessage(event);
-            };
-
-            socket.onclose = () => {
-                console.log('Closed socket connection');
-            }
-
-            ws.current = socket;
-        }
-
-        if (isGameLoaded) {
+        if (!isWebSocketConnected.current && isGameLoaded) {
             connectSockets();
+            isWebSocketConnected.current = true;
         }
 
         return () => {
             ws.current?.close();
-            webSocketHandler.current?.closeSocket();
-
-            if (isGameOver) {
-                deleteUserIDForGame(gameID);
-            }
+            webSocketHandler.current?.socket.close();
+            webSocketHandler.current = null;
+            ws.current = null;
+            isWebSocketConnected.current = false;
         }
-    }, [isGameLoaded])
+    }, [gameID, isGameLoaded]);
+
+    function connectSockets() {
+        const socket = new WebSocket(`ws://${process.env.REACT_APP_BASE_URL}/api/game/${gameID}`);
+        const socketHandler = makeWebSocketHandler(gameID, socket);
+
+        socket.onopen = () => {
+            console.log('Connected to the WebSocket server');
+            webSocketHandler.current!.sendPlayerJoinedNotification();
+        };
+
+        socket.onmessage = (event) => {
+            processWebSocketMessage(event);
+        };
+
+        socket.onclose = () => {
+            console.log('Closed socket connection');
+        }
+
+        webSocketHandler.current = socketHandler;
+
+        ws.current = socket;
+    }
 
     function processWebSocketMessage(event: MessageEvent): void {
         const messageData = JSON.parse(event.data);
@@ -137,7 +138,9 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.PLAYER_JOINED: {
-                game!.addUserIDToNextAvailablePlayer(messageData.userID);
+                const newDisconnectedPlayers = disconnectedPlayers.filter(p => p.getUserID() !== messageData.userID)
+                setDisconnectedPlayers(newDisconnectedPlayers);
+                game!.addUserIDToPlayer(messageData.userID);
                 updateGameState(game!);
                 break;
             }
@@ -175,22 +178,18 @@ export default function GameDisplay() {
                 const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
                 onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
                 break;
-            } 
+            }
             case GameEventType.END_TURN: {
                 handleEndTurn();
                 break;
-            } 
+            }
             case GameEventType.PLAYER_DISCONNECT: {
                 handlePlayerDisconnect(messageData.user);
                 break;
             }
-            case GameEventType.PLAYER_RECONNECT: {
-                const newDisconnectedPlayers = disconnectedPlayers.filter(p => p.getUserID() !== messageData.userID)
-                setDisconnectedPlayers(newDisconnectedPlayers);
-                break;
-            }
             case GameEventType.GAME_OVER_DISCONNECT: {
                 setIsGameOver(true);
+                break;
             }
             default:
                 break;
@@ -204,33 +203,6 @@ export default function GameDisplay() {
         setGame(newGame);
     }
 
-    async function onJoin() {
-        let userID = getUserIDForGame(gameID);
-
-        if (!userID) {
-            userID = generateUserID();
-            const nextAvailablePlayer = game!.getNextUnusedPlayer();
-
-            if (!nextAvailablePlayer) {
-                return;
-            }
-
-            const playerResponse = await addUserIdToPlayer(nextAvailablePlayer, userID);
-
-            if (!playerResponse) {
-                console.log("Unable to join game");
-                return;
-            }
-
-            saveUserIDToLocalStorage(gameID, userID);
-
-            webSocketHandler.current!.sendPlayerJoinedNotification(userID);
-        } else {
-            webSocketHandler.current!.sendPlayerReconnected(userID);
-        }
-
-        setUserID(userID!);
-    }
     function getPlayerAreaNames(playerData: Array<PlayerResponseType>): Array<string> {
         const playerAreas = [];
 
@@ -484,7 +456,7 @@ export default function GameDisplay() {
             return true;
         }
 
-        return currentPlayer.getUserID() === userID;
+        return currentPlayer.getUserID() === getUserID();
     }
 
     function getUserCards() {
@@ -499,7 +471,7 @@ export default function GameDisplay() {
 
         const players = game!.getPlayers();
         for (let i = 0; i < players.length; i++) {
-            if (players[i].getUserID() === userID) {
+            if (players[i].getUserID() === getUserID()) {
                 return players[i];
             }
         }
@@ -517,7 +489,7 @@ export default function GameDisplay() {
         return <WaitingForPlayers playersLeftToJoin={playersLeftToJoin} />
     }
 
-    const currentPlayer = game!.getCurrentPlayer();   
+    const currentPlayer = game!.getCurrentPlayer();
     return (
         <div id='game-display'>
             <Map
@@ -579,8 +551,8 @@ export default function GameDisplay() {
                 />
             )}
             {disconnectedPlayers.length > 0 && (
-                disconnectedPlayers.map(player => 
-                    <PlayerDisconnectModal key={player.getID()} playerColour={player.getColour()}/>
+                disconnectedPlayers.map(player =>
+                    <PlayerDisconnectModal key={player.getID()} playerColour={player.getColour()} />
                 )
             )}
             {isGameOver && (
