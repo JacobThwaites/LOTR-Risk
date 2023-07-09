@@ -103,7 +103,6 @@ export default function GameDisplay() {
         const socketHandler = makeWebSocketHandler(gameID, socket);
 
         socket.onopen = () => {
-            console.log('Connected to the WebSocket server');
             webSocketHandler.current!.sendPlayerJoinedNotification();
         };
 
