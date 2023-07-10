@@ -30,6 +30,8 @@ export class WebSocketManager {
 
     public removeClient(webSocketWithID: WebSocketWithID, gameID: string): void {
         webSocketWithID.getWebSocketInstance().close();
+        console.log("removing client");
+        
         delete this.clients[gameID][webSocketWithID.getID()];
     }
 
@@ -105,7 +107,13 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
             
             if (messageData.type === 'PLAYER JOINED') {
                 if (webSocketManager.isUserAlreadyInGame(messageData.userID, gameID)) {
-                    webSocketManager.removeClient(webSocketWithID, gameID);
+                    const test = ws.ping('',undefined, (e) => {
+                        console.log(e);
+                    })
+                    console.log('ping res');
+                    
+                    console.log(test);
+                    // webSocketManager.removeClient(webSocketWithID, gameID);
                     webSocketManager.onPlayerReconnect(messageData.userID);
                 }
                 webSocketWithID.setID(messageData.userID);
