@@ -39,7 +39,7 @@ export const createGame = async function (req: Request, res: Response) {
         errors.push("Number of players not specified");
     }
 
-    if (!req.body.players || req.body.players.length !== req.body.numPlayers) {
+    if (req.body.numPlayers < 2 || req.body.numPlayers > 4) {
         errors.push("Invalid number of players provided");
     }
 
@@ -48,45 +48,12 @@ export const createGame = async function (req: Request, res: Response) {
         return;
     }
 
-    const test = activeGames.createGame(req.body.userID, req.body.numPlayers);
-    console.log(test);
-    
-    let uuid = uuidv4();
-    uuid = uuid.substring(0, 8);
-
-    const gameData: Game = makeGame(uuid, req.body.numPlayers);
-
-    const players = [];
-
-    for (let i = 0; i < req.body.players.length; i++) {
-        const player: Player = {
-            areas: req.body.players[i].areas,
-            gameID: uuid,
-            userID: req.body.players[i].userID,
-        }
-
-        players.push(player);
-    }
-
-    const gameResponse = await gameQueries.createGame(gameData);
-    const playersResponse = await playerQueries.createMultiplePlayers(players);
-
-    if (!gameResponse || !playersResponse) {
-        res.status(500).json({
-            "message": "failed to save data"
-        })
-    }
-
-    const game = await gameQueries.getByUUID(uuid);
-
-    if (!game) {
-        res.status(500).json({ 'error': 'There was an error retrieving the game data' });
-        return;
-    }
+    const newGame = activeGames.createGame(req.body.userID, req.body.numPlayers);
+    const formattedGame = removeCircularReferences(newGame);
 
     res.status(201).json({
         "message": "success",
-        "data": game
+        "data": formattedGame
     });
 }
 
@@ -155,3 +122,24 @@ function getNextPlayerWithoutUserID(players: any[]): any | false {
 
     return false;
 }
+
+function removeCircularReferences(obj: any): any {
+    return JSON.parse(stringify(obj));
+}
+
+function stringify(obj: any) {
+    let cache: any = [];
+    let str = JSON.stringify(obj, function(key, value) {
+      if (typeof value === "object" && value !== null) {
+        if (cache.indexOf(value) !== -1) {
+          // Circular reference found, discard key
+          return;
+        }
+        // Store value in our collection
+        cache.push(value);
+      }
+      return value;
+    });
+    cache = null; // reset the cache
+    return str;
+  }
