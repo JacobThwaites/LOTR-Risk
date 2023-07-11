@@ -72,7 +72,6 @@ app.post("/api/game/", games.createGame);
 app.patch('/api/game/:uuid', games.addUserToGame);
 
 // Player
-app.get('/api/player', players.allPlayers);
 app.get('/api/player/:id', players.getPlayerById);
 app.patch('/api/player/:id', players.addUserIDToPlayer);
 app.post("/api/player/", players.createPlayer);

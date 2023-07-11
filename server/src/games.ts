@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { activeGames } from './database/ActiveGames';
+import { Game } from './gameLogic/Models/Game';
+import { Player } from './gameLogic/Models/Player';
 const gameQueries = require("./database/gameQueries");
 const playerQueries = require("./database/playerQueries");
 
@@ -11,9 +12,11 @@ export const getGameByUUID = async function (req: Request, res: Response) {
         return;
     }
 
+    const formattedGame = resolveCircularReferences(game);
+
     res.json({
         "message": "success",
-        "data": game
+        "data": formattedGame
     });
 }
 
@@ -32,8 +35,8 @@ export const createGame = async function (req: Request, res: Response) {
         return;
     }
 
-    const newGame = activeGames.createGame(req.body.userID, req.body.numPlayers);
-    const formattedGame = removeCircularReferences(newGame);
+    const newGame = gameQueries.createGame(req.body.userID, req.body.numPlayers);
+    const formattedGame = resolveCircularReferences(newGame);
 
     res.status(201).json({
         "message": "success",
@@ -56,30 +59,32 @@ export const addUserToGame = async function (req: Request, res: Response) {
         res.status(404).json({ "error": `No game found with uuid ${uuid}` });
         return;
     }
-
-    if (isUserIDAlreadyInGame(game.players, userID)) {
+    
+    if (isUserIDAlreadyInGame(userID, game)) {
+        const formattedGame = resolveCircularReferences(game);
         res.status(200).json({
             "message": "userID already in game",
-            "data": game
+            "data": formattedGame
         });
         return;
     }
 
-    const nextAvailablePlayer = getNextPlayerWithoutUserID(game.players);
+    const nextAvailablePlayer = getNextPlayerWithoutUserID(game.getPlayers());
 
     if (!nextAvailablePlayer) {
         res.status(500).json({ "error": "No more available players" });
         return;
     }
 
-    const playerUpdateRes = await playerQueries.addUserID(nextAvailablePlayer.id, userID);
+    const playerUpdateRes = playerQueries.addUserID(nextAvailablePlayer, userID);
     
     if (!playerUpdateRes) {
         res.status(500).json({ "error": "There was an error updating the player" });
         return;
     }
 
-    const updatedGame = await gameQueries.getByUUID(uuid);
+    let updatedGame = await gameQueries.getByUUID(uuid);
+    updatedGame = resolveCircularReferences(updatedGame);
 
     res.status(200).json({
         "message": "success",
@@ -87,9 +92,9 @@ export const addUserToGame = async function (req: Request, res: Response) {
     });
 }
 
-function isUserIDAlreadyInGame(players: any[], userID: string): boolean {
-    for (const player of players) {
-        if (player.userID === userID) {
+function isUserIDAlreadyInGame(userID: string, game: Game): boolean {
+    for (const player of game.getPlayers()) {
+        if (player.getUserID() === userID) {
             return true;
         }
     }
@@ -97,9 +102,9 @@ function isUserIDAlreadyInGame(players: any[], userID: string): boolean {
     return false;
 }
 
-function getNextPlayerWithoutUserID(players: any[]): any | false {
+function getNextPlayerWithoutUserID(players: Player[]): Player | false {
     for (const player of players) {
-        if (!player.userID) {
+        if (!player.getUserID()) {
             return player;
         }
     }
@@ -107,7 +112,7 @@ function getNextPlayerWithoutUserID(players: any[]): any | false {
     return false;
 }
 
-function removeCircularReferences(obj: any): any {
+function resolveCircularReferences(obj: any): any {
     return JSON.parse(stringify(obj));
 }
 
