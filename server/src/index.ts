@@ -67,7 +67,6 @@ if (process.env.NODE_ENV !== 'test') {
 // API Routes
 
 // Game 
-app.get('/api/game', games.allGames);
 app.get("/api/game/:uuid", games.getGameByUUID);
 app.post("/api/game/", games.createGame);
 app.patch('/api/game/:uuid', games.addUserToGame);
