@@ -4,26 +4,22 @@ import 'mocha';
 
 describe('Player Generator', () => {
     let playerGenerator: PlayerGenerator;
-    let userIDs: string[];
+    let userID: string;
     beforeEach(function () {
-        userIDs = ['user1', 'user2', ''];
+        userID = 'user1'
         
-        playerGenerator = new PlayerGenerator(userIDs);
+        playerGenerator = new PlayerGenerator(userID);
     })
 
     it('should be able to generate an array of players', () => {
-        const players = playerGenerator.generatePlayers(userIDs.length);
+        const players = playerGenerator.generatePlayers(1);
         assert.typeOf(players, 'array');
         assert.typeOf(players[0], 'Object');
     });
 
-    it('should generate a player for each userID provided', () => {
-        const players = playerGenerator.generatePlayers(userIDs.length);
+    it('should generate the given number of players', () => {
+        const players = playerGenerator.generatePlayers(3);
         const totalPlayers = players.length;
-        assert.equal(totalPlayers, userIDs.length);
-
-        for (let i = 0; i < players.length; i++) {
-            assert.equal(players[i].getUserID(), userIDs[i]);
-        }
+        assert.equal(totalPlayers, 3);
     });
 });

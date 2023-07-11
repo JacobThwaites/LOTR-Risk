@@ -8,9 +8,9 @@ class ActiveGames {
         this.gamesInProgress = {};
     }
 
-    public createGame(userIDs: string[], numberOfPlayers: number): Game {
+    public createGame(userID: string, numberOfPlayers: number): Game {
         const areas = setupAreaAssignments(numberOfPlayers);
-        const game = GameGenerator.generateGame(areas, numberOfPlayers, userIDs);
+        const game = GameGenerator.generateGame(areas, numberOfPlayers, userID);
         this.gamesInProgress[game.getUUID()] = game;
         return game;
     }

@@ -6,19 +6,16 @@ import 'mocha';
 
 describe('Game Generator', () => {
     let areaLists: Array<AreaType[]>;
-    let userIDs: string[];
+    let userID: string;
     beforeEach(function () {
-        userIDs = ['user1', 'user2'];
+        userID = 'user1'
         areaLists = [[Areas.FANGORN], [Areas.FORLINDON]];
     })
 
-    it('should be able to generate a game with the user IDs provided', () => {
-        const game = GameGenerator.generateGame(areaLists, userIDs.length, userIDs);
+    it('should be able to generate a game with the arguments provided', () => {
+        const game = GameGenerator.generateGame(areaLists, 2, userID);
         const players = game.getPlayers();
-        assert.equal(userIDs.length, players.length);
-
-        for (let i = 0; i < players.length; i++) {
-            assert.equal(userIDs[i], players[i].getUserID());
-        }
+        assert.equal(2, players.length);
+        assert.equal(players[0].getUserID(), userID);
     });
 });

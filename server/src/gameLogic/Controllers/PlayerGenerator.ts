@@ -2,15 +2,15 @@ import { Player } from "../Models/Player";
 import { Colour } from "../Enums/Colours";
 
 export class PlayerGenerator {
-  private userIDs: string[];
-  constructor(userIDs: string[]) {
-    this.userIDs = userIDs;
+  private gameCreatorUserID: string;
+  constructor(gameCreatorUserID: string) {
+    this.gameCreatorUserID = gameCreatorUserID;
   }
 
   generatePlayers(numberOfPlayers: number): Player[] {
     const players = [];
     for (let i = 0; i < numberOfPlayers; i++) {
-      const userID = this.userIDs[i];
+      const userID = i === 0 ? this.gameCreatorUserID: '';
       const player = this.createPlayer(i, userID);
       players.push(player);
     }

@@ -48,10 +48,9 @@ export const createGame = async function (req: Request, res: Response) {
         return;
     }
 
-    const test = activeGames.createGame([req.body.players[0].userID], req.body.numPlayers);
+    const test = activeGames.createGame(req.body.userID, req.body.numPlayers);
     console.log(test);
     
-
     let uuid = uuidv4();
     uuid = uuid.substring(0, 8);
 
