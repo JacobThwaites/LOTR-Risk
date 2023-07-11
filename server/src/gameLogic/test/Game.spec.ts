@@ -15,8 +15,8 @@ describe('Game', () => {
     let area2: Area;
     let game: Game;
     beforeEach(function () {
-        player1 = new Player(1, Colour.GREEN, 'userID');
-        player2 = new Player(2, Colour.RED, 'userID');
+        player1 = new Player(Colour.GREEN, 'userID');
+        player2 = new Player(Colour.RED, 'userID');
         playersList = [player1, player2];
         area1 = new Area(AreaName.RHUDAUR);
         area2 = new Area(AreaName.ITHILIEN);

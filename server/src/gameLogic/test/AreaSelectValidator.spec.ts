@@ -13,7 +13,7 @@ describe('Troop Transfer Area select', () => {
     let area3: Area;
     let area4: Area;
     beforeEach(function () {
-        player = new Player(1, Colour.GREEN, 'userID');
+        player = new Player(Colour.GREEN, 'userID');
         area1 = Areas.HARLINDON;
         area2 = Areas.LUNE_VALLEY;
         area3 = Areas.MITHLOND;

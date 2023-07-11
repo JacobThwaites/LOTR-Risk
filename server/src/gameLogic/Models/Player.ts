@@ -5,7 +5,6 @@ import { AreaType } from './AreaType';
 import { TerritoryCard } from './TerritoryCard';
 
 export class Player {
-    private id: number;
     private userID: string;
     private isGood: boolean;
     private units: number;
@@ -15,11 +14,9 @@ export class Player {
     private regions: Array<Region>;
     private colour: Colour;
     constructor(
-        id: number,
         colour: Colour,
         userID: string
         ) {
-        this.id = id;
         this.userID = userID;
         this.isGood = colour === (Colour.GREEN || Colour.YELLOW);
         this.units = 0;
@@ -28,10 +25,6 @@ export class Player {
         this.areas = [];
         this.regions = [];
         this.colour = colour;
-    }
-
-    getID(): number {
-        return this.id;
     }
 
     getUserID(): string {

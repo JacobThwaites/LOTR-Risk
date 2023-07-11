@@ -9,7 +9,7 @@ import { Symbol } from '../Enums/Symbols';
 describe('TerritoryCardManager', () => {
     let player: Player;
     beforeEach(function () {
-        player = new Player(1, Colour.BLACK, 'userID');
+        player = new Player(Colour.BLACK, 'userID');
     })
 
     it('should give the player 4 units for 3 archer cards', () => {

@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Request, Response } from 'express';
 import makeGame, { Game } from './models/game';
 import { Player } from './models/player';
+import { activeGames } from './database/ActiveGames';
 const gameQueries = require("./database/gameQueries");
 const playerQueries = require("./database/playerQueries");
 
@@ -46,6 +47,10 @@ export const createGame = async function (req: Request, res: Response) {
         res.status(400).json({ "error": errors.join(",") });
         return;
     }
+
+    const test = activeGames.createGame([req.body.players[0].userID], req.body.numPlayers);
+    console.log(test);
+    
 
     let uuid = uuidv4();
     uuid = uuid.substring(0, 8);
