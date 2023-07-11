@@ -1,18 +1,25 @@
 import TerritoryCardManager from '../Controllers/TerritoryCardManager';
 import { Player } from './Player';
+import { v4 as uuidv4 } from 'uuid';
 
 export class Game {
+    private uuid: string;
     private players: Array<Player>;
     private maxTurns: number;
     private currentTurn: number;
     private currentPlayersTurn: number;
     private hasPlayerCapturedAreaThisTurn: boolean;
     constructor(players: Array<Player>, maxTurns: number) {
+        this.uuid = generateGameUUID();
         this.players = players;
         this.maxTurns = maxTurns;
         this.currentTurn = 0;
         this.currentPlayersTurn = 0;
         this.hasPlayerCapturedAreaThisTurn = false;
+    }
+
+    public getUUID(): string {
+        return this.uuid;
     }
 
     public getPlayers(): Array<Player> {
@@ -116,4 +123,9 @@ export class Game {
         TerritoryCardManager.givePlayerNewCard(currentPlayer);
         this.hasPlayerCapturedAreaThisTurn = false;
     }
+}
+
+function generateGameUUID(): string {
+    let uuid = uuidv4();
+    return uuid.substring(0, 8);
 }

@@ -11,6 +11,7 @@ class ActiveGames {
     public createGame(userIDs: string[], numberOfPlayers: number): Game {
         const areas = setupAreaAssignments(numberOfPlayers);
         const game = GameGenerator.generateGame(areas, numberOfPlayers, userIDs);
+        this.gamesInProgress[game.getUUID()] = game;
         return game;
     }
 

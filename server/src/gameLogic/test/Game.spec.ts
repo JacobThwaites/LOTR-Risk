@@ -30,7 +30,13 @@ describe('Game', () => {
         area2.addUnits(1);
     })
 
-    it('have players', () => {
+    it('should auto-generate an 8-character UUID', () => {
+        const uuid = game.getUUID();
+        assert.isString(uuid);
+        assert.equal(uuid.length, 8);
+    });
+
+    it('should have players', () => {
         const result = game.getPlayers();
         assert.strictEqual(result, playersList);
     });
