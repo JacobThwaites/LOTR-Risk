@@ -2,11 +2,11 @@ import { Areas } from "../gameLogic/Enums/Areas";
 import { Area } from "../gameLogic/Models/Area";
 import { AreaType } from "../gameLogic/Models/AreaType";
 
-export function getAreas(areaNames: Array<string>) {
+export function getAreas(areaNames: Array<Array<string>>) {
     const playerAreas: Array<Array<AreaType>> = [];
 
     for (let i = 0; i < areaNames.length; i++) {
-        const names = areaNames[i].split(', ');
+        const names = areaNames[i];
         const areas = getAreasByNames(names);
         playerAreas.push(areas);
     }

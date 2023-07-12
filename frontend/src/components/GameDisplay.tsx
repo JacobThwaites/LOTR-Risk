@@ -31,13 +31,6 @@ import NotFound from "./NotFound";
 import { getUserID } from "../utils/userIDManager";
 import PlayerDisconnectModal from "./PlayerDisconnectModal";
 
-type PlayerResponseType = {
-    "id": string,
-    "name": string,
-    "areas": string,
-    "gameID": string
-}
-
 export default function GameDisplay() {
     const { gameID } = useParams<{ gameID: string }>();
     const [game, setGame] = useState<Game | null>(null);
@@ -202,11 +195,15 @@ export default function GameDisplay() {
         setGame(newGame);
     }
 
-    function getPlayerAreaNames(playerData: Array<PlayerResponseType>): Array<string> {
-        const playerAreas = [];
+    function getPlayerAreaNames(players: any): Array<Array<string>> {
+        const playerAreas: any = [];
 
-        for (let i = 0; i < playerData.length; i++) {
-            playerAreas.push(playerData[i].areas);
+        for (let i = 0; i < players.length; i++) {
+            playerAreas.push([]);
+            const { areas } = players[i];
+            for (let j = 0; j < areas.length; j++) {
+                playerAreas[i].push(areas[j].name);       
+            }
         }
 
         return playerAreas;
