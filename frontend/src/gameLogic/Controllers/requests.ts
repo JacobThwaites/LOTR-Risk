@@ -1,13 +1,12 @@
 import { getUserID } from "../../utils/userIDManager";
 import { Player } from "../Models/Player";
 
-export async function saveGame(numPlayers: number, playerAreas: Array<string>) {
-    const players = formatPlayerData(playerAreas);
+export async function saveGame(numPlayers: number) {
 
     try {
         const body = {
             numPlayers: numPlayers,
-            players: players
+            userID: getUserID() 
         }
 
         return fetch(`http://${process.env.REACT_APP_BASE_URL}/api/game`, {
@@ -22,22 +21,6 @@ export async function saveGame(numPlayers: number, playerAreas: Array<string>) {
         console.error(err);
         return;
     }
-}
-
-function formatPlayerData(playerAreas: Array<string>): Array<{ areas: string }> {
-    const players = [];
-
-    const firstPlayer = {
-        areas: playerAreas[0]
-    }
-    players.push(firstPlayer);
-
-    for (let i = 1; i < playerAreas.length; i++) {
-        const player = { areas: playerAreas[i] };
-        players.push(player)
-    }
-
-    return players;
 }
 
 export async function getGame(gameID: string) {
