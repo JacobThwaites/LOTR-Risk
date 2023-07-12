@@ -1,6 +1,5 @@
 import express from 'express';
 import * as games from './games';
-import * as players from './players';
 import { WebSocketManager, onConnection } from './webSockets';
 import setupDatabase from './database/dbSetup';
 import { WebSocket } from 'ws';
@@ -70,11 +69,6 @@ if (process.env.NODE_ENV !== 'test') {
 app.get("/api/game/:uuid", games.getGameByUUID);
 app.post("/api/game/", games.createGame);
 app.patch('/api/game/:uuid', games.addUserToGame);
-
-// Player
-app.get('/api/player/:id', players.getPlayerById);
-app.patch('/api/player/:id', players.addUserIDToPlayer);
-app.post("/api/player/", players.createPlayer);
 
 // Default response for any other request
 app.use(function (_req: express.Request, res: express.Response) {

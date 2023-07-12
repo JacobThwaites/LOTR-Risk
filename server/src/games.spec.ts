@@ -74,8 +74,6 @@ describe('GET /api/game/:gameId', function () {
       .expect('Content-Type', /json/)
       .expect(200)
       .end(function (err, res) {
-        console.log(res);
-        
         expect(res.body.data.uuid).toEqual(game.getUUID());
         expect(res.statusCode).toEqual(200);
         if (err) return done(err);
@@ -96,9 +94,6 @@ describe('PATCH /api/game/:gameId', function () {
     const payload = {
       userID: "ID"
     };
-
-    console.log("asdf");
-    console.log(game);
     
     const gameUUID = game.getUUID();
     request(app)
