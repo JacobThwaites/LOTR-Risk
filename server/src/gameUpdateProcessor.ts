@@ -6,6 +6,7 @@ import { emitMessage } from "./webSockets";
 
 export enum GameEventType {
     CLEAR_SELECTED_AREAS = "CLEAR SELECTED AREAS",
+    COMBAT_SETUP = "COMBAT SETUP",
     COMBAT = "COMBAT",
     COMBAT_RESULTS = "COMBAT RESULTS",
     STARTING_REINFORCEMENT = "STARTING REINFORCEMENT",
@@ -76,6 +77,12 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
                 emitMessage(gameOverMessage, wss);
             }
         }
+        case GameEventType.COMBAT_SETUP: {
+            const area = Areas[messageData.areaName];
+            currentPlayer.addReinforcementsToArea(area);
+            const combatMessage = generateCombatSetupMessage(messageData.id, messageData.attackingArea, messageData.defendingArea);
+            emitMessage(combatMessage, wss);
+        }
         default: {
             break;
         }
@@ -115,16 +122,25 @@ function generateReinforcementUpdateMessage(id: string, areaName: string): GameE
     }
 }
 
-function generateEndTurnMessage(id: string) {
+function generateEndTurnMessage(id: string): GameEventMessage {
     return {
         type: GameEventType.END_TURN,
         id
     }
 }
 
-function generateGameOverMessage(id: string) {
+function generateGameOverMessage(id: string): GameEventMessage {
     return {
         type: GameEventType.GAME_OVER,
         id
+    }
+}
+
+function generateCombatSetupMessage(id: string, attackingAreaName: string, defendingAreaName: string): GameEventMessage {
+    return {
+        type: GameEventType.COMBAT_SETUP,
+        id,
+        attackingAreaName,
+        defendingAreaName
     }
 }

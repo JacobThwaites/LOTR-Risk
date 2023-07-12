@@ -123,7 +123,7 @@ export default function GameDisplay() {
         }
 
         switch (messageData.type) {
-            case GameEventType.COMBAT: {
+            case GameEventType.COMBAT_SETUP: {
                 const attackingArea = Areas[messageData.attackingArea];
                 const defendingArea = Areas[messageData.defendingArea];
                 setAttackingArea(attackingArea);

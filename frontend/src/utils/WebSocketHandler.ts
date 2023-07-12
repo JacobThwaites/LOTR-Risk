@@ -3,7 +3,7 @@ import { getUserID } from './userIDManager';
 
 export enum GameEventType {
     CLEAR_SELECTED_AREAS = "CLEAR SELECTED AREAS",
-    COMBAT = "COMBAT",
+    COMBAT_SETUP = "COMBAT SETUP",
     COMBAT_RESULTS = "COMBAT RESULTS",
     STARTING_REINFORCEMENT = "STARTING REINFORCEMENT",
     REINFORCEMENT = "REINFORCEMENT",
@@ -31,6 +31,7 @@ export default class WebSocketHandler {
         this.socket.close();
     }
 
+    // TODO: this won't be needed once new backend approach is implemented
     isMessageAlreadyProcessed(messageUUID: string): boolean {
         return messageUUID === this.previousMessageUUID;
     }   
@@ -43,7 +44,7 @@ export default class WebSocketHandler {
 
     sendCombatInfo(attackingArea: string, defendingArea: string) {
         const messageBody = {
-            type: GameEventType.COMBAT,
+            type: GameEventType.COMBAT_SETUP,
             attackingArea,
             defendingArea
         }
