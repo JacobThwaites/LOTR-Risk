@@ -1,9 +1,10 @@
 import { WebSocketServer, WebSocket } from "ws";
 import WebSocketWithID from "./WebSocketWithID";
-import { updateGame } from "./gameUpdateProcessor";
+import { GameEventMessage, updateGame } from "./gameUpdateProcessor";
 import { WebSocketManager } from "./WebSocketManager";
 const gameQueries = require("./database/gameQueries");
 const ws = require('ws');
+
 
 export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketManager, gameID: string) => {
     const game = gameQueries.getByUUID(gameID);
@@ -21,13 +22,9 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
                 webSocketManager.setPreviousMessageID(messageData.id);
             }
 
-            emitMessage(JSON.stringify(messageData), wss);
+            emitMessage(messageData, wss);
 
-            const gameUpdateMessage = updateGame(messageData, game);
-
-            if (gameUpdateMessage) {
-                emitMessage(JSON.stringify(gameUpdateMessage), wss);
-            }
+            updateGame(messageData, game, wss);
 
             if (messageData.type === 'PLAYER JOINED') {
                 if (webSocketManager.isUserAlreadyInGame(messageData.userID, gameID)) {
@@ -50,10 +47,11 @@ function parseMessageBuffer(data: Buffer) {
     return JSON.parse(str);
 }
 
-export function emitMessage(message: string, wss: WebSocketServer) {
+export function emitMessage(message: GameEventMessage, wss: WebSocketServer) {
+    const formattedMessage = JSON.stringify(message);
     wss.clients.forEach((client: WebSocket) => {
         if (client.readyState === ws.OPEN) {
-            client.send(message);
+            client.send(formattedMessage);
         }
     });
 }

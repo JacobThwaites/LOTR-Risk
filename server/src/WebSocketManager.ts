@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import WebSocketWithID from "./WebSocketWithID";
 import PlayerDisconnectionTracker from "./PlayerDisconnectionTracker";
 import { emitMessage } from "./webSockets";
+import { GameEventType } from "./gameUpdateProcessor";
 const ws = require('ws');
 
 export class WebSocketManager {
@@ -79,8 +80,8 @@ export class WebSocketManager {
 
     broadcastPlayerDisconnect(gameID: string, webSocketWithID: WebSocketWithID): void {
         const server = this.getGameServer(gameID);
-        const message = { id: uuidv4(), type: "PLAYER DISCONNECTED", user: webSocketWithID.getID() };
-        emitMessage(JSON.stringify(message), server);
+        const message = { id: uuidv4(), type: GameEventType.PLAYER_DISCONNECT, user: webSocketWithID.getID() };
+        emitMessage(message, server);
     }
 
     removeGameServer(gameID: string) {
@@ -97,8 +98,8 @@ export class WebSocketManager {
 
     onUserTimeout(userID: string, gameID: string) {
         const server = this.getGameServer(gameID);
-        const message = { id: uuidv4(), type: "GAME OVER DISCONNECTION", userID };
-        emitMessage(JSON.stringify(message), server);
+        const message = { id: uuidv4(), type: GameEventType.GAME_OVER_DISCONNECT, userID };
+        emitMessage(message, server);
     }
 
     onPlayerReconnect(userID: string) {

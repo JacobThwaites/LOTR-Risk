@@ -1,8 +1,10 @@
+import { WebSocketServer } from "ws";
 import { Areas } from "./gameLogic/Enums/Areas";
 import { Area } from "./gameLogic/Models/Area";
 import { Game } from "./gameLogic/Models/Game";
+import { emitMessage } from "./webSockets";
 
-enum GameEventType {
+export enum GameEventType {
     CLEAR_SELECTED_AREAS = "CLEAR SELECTED AREAS",
     COMBAT = "COMBAT",
     COMBAT_RESULTS = "COMBAT RESULTS",
@@ -15,30 +17,44 @@ enum GameEventType {
     PLAYER_JOINED = "PLAYER JOINED",
     PLAYER_DISCONNECT = "PLAYER DISCONNECTED",
     GAME_OVER_DISCONNECT = "GAME OVER DISCONNECTION",
-    UPDATE_AREA = "UPDATE AREA"
+    UPDATE_AREA = "UPDATE AREA",
+    CHANGE_PLAYER = "CHANGE PLAYER",
+    STARTING_REINFORCEMENTS_END = "STARTING REINFORCEMENTS END"
 }
 
-type GameEventMessage = {
+export type GameEventMessage = {
     id: string,
     type: GameEventType,
     [key: string]: any;
 }
 
-export function updateGame(messageData: any, game: Game): GameEventMessage | void {
+export function updateGame(messageData: any, game: Game, wss: WebSocketServer): void {
+    const currentPlayer = game.getCurrentPlayer();
+
+    if (currentPlayer.getUserID() !== messageData.userID) {
+        console.log("message sent from incorrect player");
+        return;
+    }
+
     switch (messageData.type) {
         case GameEventType.STARTING_REINFORCEMENT: {
             const area = Areas[messageData.areaName];
-            const currentPlayer = game.getCurrentPlayer();
-            
-            if (currentPlayer.getUserID() !== messageData.userID) {
-                console.log("message sent from incorrect player");
-                return;
-            }
-
             currentPlayer.addReinforcementsToArea(area);
             const areaUpdateMessage = generateAreaUpdateMessage(messageData.id, area);
 
-            return areaUpdateMessage;
+            emitMessage(areaUpdateMessage, wss);
+
+            if (currentPlayer.getReinforcements() < 1) {
+                game.changeCurrentPlayer();
+                const newCurrentPlayer = game.getCurrentPlayer();
+                const changePlayerMessage = generateChangePlayerMessage(messageData.id, newCurrentPlayer.getColour());
+                emitMessage(changePlayerMessage, wss);
+            }
+
+            if (!game.playersHaveReinforcements()) {
+                const endOfStartingReinforcementsMessage = generateEndOfStartingReinforcementsMessage(messageData.id);
+                emitMessage(endOfStartingReinforcementsMessage, wss);
+            }
         }
     }
 }
@@ -50,5 +66,20 @@ function generateAreaUpdateMessage(id: string, area: Area): GameEventMessage {
         areaName: area.getName(),
         areaUnits: area.getUnits(),
         areaColour: area.getPlayer()?.getColour()
+    }
+}
+
+function generateChangePlayerMessage(id: string, playerColour: string): GameEventMessage {
+    return {
+        type: GameEventType.CHANGE_PLAYER,
+        id,
+        playerColour
+    }
+}
+
+function generateEndOfStartingReinforcementsMessage(id: string): GameEventMessage {
+    return {
+        type: GameEventType.STARTING_REINFORCEMENTS_END,
+        id
     }
 }
