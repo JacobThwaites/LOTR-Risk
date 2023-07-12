@@ -35,8 +35,9 @@ export default class WebSocketHandler {
         return messageUUID === this.previousMessageUUID;
     }   
 
-    sendMessage(message: any) {
+    sendMessage(message: any): void {
         message.id = uuidv4(); 
+        message.userID = getUserID();
         this.socket.send(JSON.stringify(message));
     }
 

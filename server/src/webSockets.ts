@@ -2,6 +2,9 @@ import { WebSocketServer, WebSocket } from "ws";
 import WebSocketWithID from "./WebSocketWithID";
 import PlayerDisconnectionTracker from "./PlayerDisconnectionTracker";
 import { countdownManager } from "./CountdownManager";
+import { Game } from "./gameLogic/Models/Game";
+import { Areas } from "./gameLogic/Enums/Areas";
+const gameQueries = require("./database/gameQueries");
 
 import { v4 as uuidv4 } from 'uuid';
 const ws = require('ws');
@@ -9,9 +12,19 @@ const ws = require('ws');
 export class WebSocketManager {
     private servers: { [gameID: string]: WebSocketServer };
     private clients: { [gameID: string]: { [userID: string]: WebSocket } };
+    private previousMessageID: string;
     constructor() {
         this.servers = {};
         this.clients = {};
+        this.previousMessageID = '';
+    }
+
+    public isMessageAlreadyProcessed(messageData: {[id: string]: string}): boolean {
+        return messageData.id === this.previousMessageID;
+    }
+    
+    public setPreviousMessageID(messageID: string): void {
+        this.previousMessageID = messageID;
     }
 
     public getGameServer(gameID: string) {
@@ -31,7 +44,6 @@ export class WebSocketManager {
     public removeClient(webSocketWithID: WebSocketWithID, gameID: string): void {
         webSocketWithID.getWebSocketInstance().close();
         console.log("removing client");
-        
         delete this.clients[gameID][webSocketWithID.getID()];
     }
 
@@ -98,21 +110,29 @@ export class WebSocketManager {
 }
 
 export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketManager, gameID: string) => {
+    const game = gameQueries.getByUUID(gameID);
+    
     return (ws: WebSocket) => {
         const webSocketWithID = new WebSocketWithID(ws);
         webSocketManager.checkClientHeartbeat(webSocketWithID, gameID);
 
         ws.on('message', function (data: Buffer) {
-            const messageData = processMessage(data, wss);
-            
+            const messageData = parseMessageBuffer(data);
+            if (webSocketManager.isMessageAlreadyProcessed(messageData)) {
+                return;
+            } else {
+                webSocketManager.setPreviousMessageID(messageData.id);
+            }
+
+            emitMessage(JSON.stringify(messageData), wss);
+
+            const gameUpdateMessage = updateGame(messageData, game);
+            if (gameUpdateMessage) {
+                emitMessage(JSON.stringify(gameUpdateMessage), wss);
+            }
+
             if (messageData.type === 'PLAYER JOINED') {
                 if (webSocketManager.isUserAlreadyInGame(messageData.userID, gameID)) {
-                    const test = ws.ping('',undefined, (e) => {
-                        console.log(e);
-                    })
-                    console.log('ping res');
-                    
-                    console.log(test);
                     // webSocketManager.removeClient(webSocketWithID, gameID);
                     webSocketManager.onPlayerReconnect(messageData.userID);
                 }
@@ -127,12 +147,6 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
     }
 };
 
-function processMessage(data: Buffer, wss: WebSocketServer) {
-    const messageData = parseMessageBuffer(data);
-    emitMessage(JSON.stringify(messageData), wss);
-    return messageData;
-}
-
 function parseMessageBuffer(data: Buffer) {
     const str = data.toString();
     return JSON.parse(str);
@@ -144,4 +158,55 @@ function emitMessage(message: string, wss: WebSocketServer) {
             client.send(message);
         }
     });
+}
+
+
+// Update game logic - move to separate module later
+
+enum GameEventType {
+    CLEAR_SELECTED_AREAS = "CLEAR SELECTED AREAS",
+    COMBAT = "COMBAT",
+    COMBAT_RESULTS = "COMBAT RESULTS",
+    STARTING_REINFORCEMENT = "STARTING REINFORCEMENT",
+    REINFORCEMENT = "REINFORCEMENT",
+    END_TURN = "END TURN",
+    UNIT_MANEURVRE = "UNIT MANEUVRE",
+    TROOP_TRANSFER_SETUP = "TROOP TRANSFER SETUP",
+    TROOP_TRANSFER = "TROOP TRANSFER",
+    PLAYER_JOINED = "PLAYER JOINED",
+    PLAYER_DISCONNECT = "PLAYER DISCONNECTED",
+    GAME_OVER_DISCONNECT = "GAME OVER DISCONNECTION",
+    // Use for any changes to area owner or units
+    UPDATE_AREA = "UPDATE AREA"
+}
+
+type GameEventMessage = {
+    id: string,
+    type: GameEventType
+}
+
+function updateGame(messageData: any, game: Game): GameEventMessage | void {
+    switch (messageData.type) {
+        case GameEventType.STARTING_REINFORCEMENT: {
+            const area = Areas[messageData.areaName];
+            const currentPlayer = game.getCurrentPlayer();
+            
+            if (currentPlayer.getUserID() !== messageData.userID) {
+                console.log("message sent from incorrect player");
+                return;
+            }
+
+            currentPlayer.addReinforcementsToArea(area);
+
+            const areaUpdateMessage = {
+                type: GameEventType.UPDATE_AREA,
+                id: messageData.id, 
+                areaName: area.getName(),
+                areaUnits: area.getUnits(),
+                areaColour: area.getPlayer()?.getColour()
+            }
+
+            return areaUpdateMessage;
+        }
+    }
 }

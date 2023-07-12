@@ -114,7 +114,8 @@ export default function GameDisplay() {
 
     function processWebSocketMessage(event: MessageEvent): void {
         const messageData = JSON.parse(event.data);
-
+        console.log(messageData);
+        
         if (webSocketHandler.current!.isMessageAlreadyProcessed(messageData.id)) {
             return;
         } else {
@@ -209,6 +210,7 @@ export default function GameDisplay() {
         return playerAreas;
     }
 
+    // TODO: handle on backend
     function onAreaSelect(area: Area): void {
         if (shouldHandleStartingReinforcements) {
             webSocketHandler.current!.sendStartingReinforcement(area.getName());
@@ -267,6 +269,7 @@ export default function GameDisplay() {
         }
     }
 
+    // TODO: handle on backend
     function setAreaForCombat(area: Area): void {
         if (attackingArea === area) {
             webSocketHandler.current!.sendClearAreaSelection();
@@ -287,6 +290,7 @@ export default function GameDisplay() {
         setAreaToReceiveUnits(null);
     }
 
+    // TODO: move this to backend
     function handleCombat(): void {
         const combatController = new CombatController(
             attackingArea!,

@@ -1,8 +1,7 @@
-const db = require("./db");
 import { Game } from '../gameLogic/Models/Game';
 import { activeGames } from "./ActiveGames";
 
-async function getByUUID(uuid: string) {
+function getByUUID(uuid: string): Game | boolean {
     const game = activeGames.getGameByID(uuid);
 
     if (!game) {
