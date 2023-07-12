@@ -87,6 +87,10 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
             const message = generateClearSelectedAreasMessage(messageData.id);
             emitMessage(message, wss);
         }
+        case GameEventType.TROOP_TRANSFER_SETUP: {
+            const message = generateTroopTransferMessage(messageData.id);
+            emitMessage(message, wss);
+        }
         default: {
             break;
         }
@@ -152,6 +156,13 @@ function generateCombatSetupMessage(id: string, attackingAreaName: string, defen
 function generateClearSelectedAreasMessage(id: string): GameEventMessage {
     return {
         type: GameEventType.CLEAR_SELECTED_AREAS,
+        id
+    }
+}
+
+function generateTroopTransferMessage(id: string): GameEventMessage {
+    return {
+        type: GameEventType.TROOP_TRANSFER_SETUP,
         id
     }
 }
