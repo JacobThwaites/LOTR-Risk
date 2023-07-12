@@ -1,11 +1,12 @@
 import express from 'express';
 import * as games from './games';
-import { WebSocketManager, onConnection } from './webSockets';
+import { onConnection } from './webSockets';
 import setupDatabase from './database/dbSetup';
 import { WebSocket } from 'ws';
 import { enableCORS } from './cors';
 import { parse } from 'url';
 import { IncomingMessage } from 'http';
+import { WebSocketManager } from './WebSocketManager';
 
 setupDatabase();
 
