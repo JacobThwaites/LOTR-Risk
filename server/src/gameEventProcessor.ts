@@ -80,8 +80,12 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
         case GameEventType.COMBAT_SETUP: {
             const area = Areas[messageData.areaName];
             currentPlayer.addReinforcementsToArea(area);
-            const combatMessage = generateCombatSetupMessage(messageData.id, messageData.attackingArea, messageData.defendingArea);
-            emitMessage(combatMessage, wss);
+            const combatSetupMessage = generateCombatSetupMessage(messageData.id, messageData.attackingArea, messageData.defendingArea);
+            emitMessage(combatSetupMessage, wss);
+        }
+        case GameEventType.CLEAR_SELECTED_AREAS: {
+            const message = generateClearSelectedAreasMessage(messageData.id);
+            emitMessage(message, wss);
         }
         default: {
             break;
@@ -142,5 +146,12 @@ function generateCombatSetupMessage(id: string, attackingAreaName: string, defen
         id,
         attackingAreaName,
         defendingAreaName
+    }
+}
+
+function generateClearSelectedAreasMessage(id: string): GameEventMessage {
+    return {
+        type: GameEventType.CLEAR_SELECTED_AREAS,
+        id
     }
 }
