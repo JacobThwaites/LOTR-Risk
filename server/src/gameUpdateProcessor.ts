@@ -16,6 +16,7 @@ export enum GameEventType {
     TROOP_TRANSFER = "TROOP TRANSFER",
     PLAYER_JOINED = "PLAYER JOINED",
     PLAYER_DISCONNECT = "PLAYER DISCONNECTED",
+    GAME_OVER = "GAME OVER",
     GAME_OVER_DISCONNECT = "GAME OVER DISCONNECTION",
     UPDATE_AREA = "UPDATE AREA",
     CHANGE_PLAYER = "CHANGE PLAYER",
@@ -30,11 +31,12 @@ export type GameEventMessage = {
 
 export function updateGame(messageData: any, game: Game, wss: WebSocketServer): void {
     const currentPlayer = game.getCurrentPlayer();
-
-    if (currentPlayer.getUserID() !== messageData.userID) {
-        console.log("message sent from incorrect player");
-        return;
-    }
+    
+    // TODO: re-add once end turn logic is handled
+    // if (currentPlayer.getUserID() !== messageData.userID) {
+    //     console.log("message sent from incorrect player");
+    //     return;
+    // }
 
     switch (messageData.type) {
         case GameEventType.STARTING_REINFORCEMENT: {
@@ -55,6 +57,27 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
                 const endOfStartingReinforcementsMessage = generateEndOfStartingReinforcementsMessage(messageData.id);
                 emitMessage(endOfStartingReinforcementsMessage, wss);
             }
+            
+            break;
+        }
+        case GameEventType.REINFORCEMENT: {
+            const area = Areas[messageData.areaName];
+            currentPlayer.addReinforcementsToArea(area);
+            const reinforcementUpdateMessage = generateReinforcementUpdateMessage(messageData.id, messageData.areaName);
+            emitMessage(reinforcementUpdateMessage, wss);
+        }
+        case GameEventType.END_TURN: {
+            game.handleNewTurn();
+            const endTurnMessage = generateEndTurnMessage(messageData.id);
+            emitMessage(endTurnMessage, wss);
+
+            if (game.areMaxTurnsReached()) {
+                const gameOverMessage = generateGameOverMessage(messageData.id);
+                emitMessage(gameOverMessage, wss);
+            }
+        }
+        default: {
+            break;
         }
     }
 }
@@ -80,6 +103,28 @@ function generateChangePlayerMessage(id: string, playerColour: string): GameEven
 function generateEndOfStartingReinforcementsMessage(id: string): GameEventMessage {
     return {
         type: GameEventType.STARTING_REINFORCEMENTS_END,
+        id
+    }
+}
+
+function generateReinforcementUpdateMessage(id: string, areaName: string): GameEventMessage {
+    return {
+        type: GameEventType.REINFORCEMENT,
+        id,
+        areaName
+    }
+}
+
+function generateEndTurnMessage(id: string) {
+    return {
+        type: GameEventType.END_TURN,
+        id
+    }
+}
+
+function generateGameOverMessage(id: string) {
+    return {
+        type: GameEventType.GAME_OVER,
         id
     }
 }

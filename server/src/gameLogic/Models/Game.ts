@@ -93,7 +93,7 @@ export class Game {
         this.currentTurn++;
     }
 
-    public checkMaxTurnsReached(): boolean {
+    public areMaxTurnsReached(): boolean {
         return this.maxTurns <= this.currentTurn;
     }
 

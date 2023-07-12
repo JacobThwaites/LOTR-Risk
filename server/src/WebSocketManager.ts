@@ -35,6 +35,10 @@ export class WebSocketManager {
         return this.servers[gameID];
     }
 
+    public onPlayerReconnect(userID: string) {
+        countdownManager.cancelCountdown(userID);
+    }
+
     public addClient(gameID: string, ws: WebSocketWithID) {
         this.clients[gameID][ws.getID()] = ws.getWebSocketInstance();
     }
@@ -78,31 +82,27 @@ export class WebSocketManager {
         }, 10000);
     }
 
-    broadcastPlayerDisconnect(gameID: string, webSocketWithID: WebSocketWithID): void {
+    private broadcastPlayerDisconnect(gameID: string, webSocketWithID: WebSocketWithID): void {
         const server = this.getGameServer(gameID);
         const message = { id: uuidv4(), type: GameEventType.PLAYER_DISCONNECT, user: webSocketWithID.getID() };
         emitMessage(message, server);
     }
 
-    removeGameServer(gameID: string) {
+    private removeGameServer(gameID: string) {
         const wss = this.servers[gameID];
         wss.close();
         delete this.servers[gameID];
         delete this.clients[gameID];
     }
 
-    startDisconnectTimeout(userID: string, gameID: string): void {
+    private startDisconnectTimeout(userID: string, gameID: string): void {
         const disconnectionTracker = new PlayerDisconnectionTracker(() => this.onUserTimeout(userID, gameID));
         disconnectionTracker.startDisconnectionCountdown();
     }
 
-    onUserTimeout(userID: string, gameID: string) {
+    private onUserTimeout(userID: string, gameID: string) {
         const server = this.getGameServer(gameID);
         const message = { id: uuidv4(), type: GameEventType.GAME_OVER_DISCONNECT, userID };
         emitMessage(message, server);
-    }
-
-    onPlayerReconnect(userID: string) {
-        countdownManager.cancelCountdown(userID);
     }
 }

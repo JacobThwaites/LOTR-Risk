@@ -67,18 +67,18 @@ describe('Game', () => {
     });
 
     it('should be able to check if max turns have been reached and return false when not reached', () => {
-        const maxTurnsReached = game.checkMaxTurnsReached();
+        const maxTurnsReached = game.areMaxTurnsReached();
         assert.strictEqual(maxTurnsReached, false);
     });
 
     it('should increment the current turn when all players have finished their turn', () => {
-        const firstPlayerTurn = game.checkMaxTurnsReached();
+        const firstPlayerTurn = game.areMaxTurnsReached();
         assert.strictEqual(firstPlayerTurn, false);
         game.changeCurrentPlayer();
-        const secondPlayerTurn = game.checkMaxTurnsReached();
+        const secondPlayerTurn = game.areMaxTurnsReached();
         assert.strictEqual(secondPlayerTurn, false);
         game.changeCurrentPlayer();
-        const thirdPlayerTurn = game.checkMaxTurnsReached();
+        const thirdPlayerTurn = game.areMaxTurnsReached();
         assert.strictEqual(thirdPlayerTurn, true);
     });    
 

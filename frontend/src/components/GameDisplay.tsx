@@ -352,7 +352,7 @@ export default function GameDisplay() {
     }
 
     function checkIfGameOver(): void {
-        const maxTurnsReached = game!.checkMaxTurnsReached();
+        const maxTurnsReached = game!.areMaxTurnsReached();
 
         if (maxTurnsReached) {
             setIsGameOver(true);
