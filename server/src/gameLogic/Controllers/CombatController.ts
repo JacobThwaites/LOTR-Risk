@@ -1,3 +1,4 @@
+import { Combat } from '../Enums/Combat';
 import { AreaType } from '../Models/AreaType';
 import { Game } from '../Models/Game';
 
@@ -11,7 +12,8 @@ export class CombatController {
         this.game = game;
     }
 
-    public getCombatResults(numAttackingDice: number, numDefendingDice: number) {
+    public getCombatResults(numAttackingDice: number) {
+        const numDefendingDice = this.getMaxDefendingDice(numAttackingDice);
         const results = [];
         const attackingDice = this.rollDice(numAttackingDice);
         const defendingDice = this.rollDice(numDefendingDice);
@@ -112,5 +114,10 @@ export class CombatController {
             this.defendingArea.setPlayer(attacker);
             this.game.handlePlayerCapturingArea();
         }
+    }
+
+    private getMaxDefendingDice(attackingDice: number): number {
+        const { MAX_DEFENDING_DICE } = Combat;
+        return Math.min(attackingDice, this.defendingArea.getUnits(), MAX_DEFENDING_DICE);
     }
 }

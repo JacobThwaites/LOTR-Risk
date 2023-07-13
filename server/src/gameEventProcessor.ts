@@ -1,8 +1,10 @@
 import { WebSocketServer } from "ws";
 import { Areas } from "./gameLogic/Enums/Areas";
-import { Area } from "./gameLogic/Models/Area";
 import { Game } from "./gameLogic/Models/Game";
 import { emitMessage } from "./webSockets";
+import { CombatController } from "./gameLogic/Controllers/CombatController";
+import { AreaType } from "./gameLogic/Models/AreaType";
+import { UnitManeuverController } from "./gameLogic/Controllers/UnitManeuverController";
 
 export enum GameEventType {
     CLEAR_SELECTED_AREAS = "CLEAR SELECTED AREAS",
@@ -12,7 +14,9 @@ export enum GameEventType {
     STARTING_REINFORCEMENT = "STARTING REINFORCEMENT",
     REINFORCEMENT = "REINFORCEMENT",
     END_TURN = "END TURN",
-    UNIT_MANEURVRE = "UNIT MANEUVRE",
+    UNIT_MOVE_SETUP = "UNIT MANEURVRE SETUP",
+    UNIT_MOVE = "UNIT MANEUVRE",
+    UNIT_MOVE_COMPLETE = "UNIT MOVE COMPLETE",
     TROOP_TRANSFER_SETUP = "TROOP TRANSFER SETUP",
     TROOP_TRANSFER = "TROOP TRANSFER",
     PLAYER_JOINED = "PLAYER JOINED",
@@ -66,6 +70,7 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
             currentPlayer.addReinforcementsToArea(area);
             const reinforcementUpdateMessage = generateReinforcementUpdateMessage(messageData.id, messageData.areaName);
             emitMessage(reinforcementUpdateMessage, wss);
+            break;
         }
         case GameEventType.END_TURN: {
             game.handleNewTurn();
@@ -76,20 +81,81 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
                 const gameOverMessage = generateGameOverMessage(messageData.id);
                 emitMessage(gameOverMessage, wss);
             }
+
+            break;
         }
         case GameEventType.COMBAT_SETUP: {
             const area = Areas[messageData.areaName];
             currentPlayer.addReinforcementsToArea(area);
             const combatSetupMessage = generateCombatSetupMessage(messageData.id, messageData.attackingArea, messageData.defendingArea);
             emitMessage(combatSetupMessage, wss);
+            break;
         }
         case GameEventType.CLEAR_SELECTED_AREAS: {
             const message = generateClearSelectedAreasMessage(messageData.id);
             emitMessage(message, wss);
+            break;
         }
         case GameEventType.TROOP_TRANSFER_SETUP: {
             const message = generateTroopTransferMessage(messageData.id);
             emitMessage(message, wss);
+            break;
+        }
+        case GameEventType.PLAYER_JOINED: {
+            break;
+        }
+        case GameEventType.PLAYER_DISCONNECT: {
+            break;
+        }
+        case GameEventType.COMBAT_RESULTS: {
+            const attackingArea = Areas[messageData.attackingArea];
+            const defendingArea = Areas[messageData.defendingArea];
+            const combatController = new CombatController(
+                messageData.attackingArea,
+                messageData.defendingArea,
+                game!
+            );
+            const results = combatController.getCombatResults(messageData.numAttackingDice);
+            combatController.handleResults(results);
+
+            const attackingAreaUpdateMessage = generateAreaUpdateMessage(messageData.id, attackingArea);
+            const defendingAreaUpdateMessage = generateAreaUpdateMessage(messageData.id, defendingArea);
+            emitMessage(attackingAreaUpdateMessage, wss);
+            emitMessage(defendingAreaUpdateMessage, wss);
+
+            if (defendingArea.hasNoUnitsRemaining()) {
+                const message = generateUnitMoveSetupMessage(messageData.id, attackingArea, defendingArea);
+                emitMessage(message, wss);
+            }
+            break;
+        }
+        case GameEventType.UNIT_MOVE: {
+            const origin = Areas[messageData.origin];
+            const destination = Areas[messageData.destination];
+            handleUnitMove(origin, destination, messageData.numUnits);
+
+            const originUpdateMessage = generateAreaUpdateMessage(messageData.id, origin);
+            const destinationUpdateMessage = generateAreaUpdateMessage(messageData.id, destination);
+            emitMessage(originUpdateMessage, wss);
+            emitMessage(destinationUpdateMessage, wss);
+
+            const unitMoveCompleteMessage = generateUnitMoveCompleteMessage(messageData.id);
+            emitMessage(unitMoveCompleteMessage, wss);
+            break;
+        }
+        case GameEventType.TROOP_TRANSFER: {
+            const origin = Areas[messageData.origin];
+            const destination = Areas[messageData.destination];
+            handleUnitMove(origin, destination, messageData.numUnits);
+
+            const originUpdateMessage = generateAreaUpdateMessage(messageData.id, origin);
+            const destinationUpdateMessage = generateAreaUpdateMessage(messageData.id, destination);
+            emitMessage(originUpdateMessage, wss);
+            emitMessage(destinationUpdateMessage, wss);
+            break;
+        }
+        case GameEventType.GAME_OVER_DISCONNECT: {
+            break;
         }
         default: {
             break;
@@ -97,7 +163,7 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
     }
 }
 
-function generateAreaUpdateMessage(id: string, area: Area): GameEventMessage {
+function generateAreaUpdateMessage(id: string, area: AreaType): GameEventMessage {
     return {
         type: GameEventType.UPDATE_AREA,
         id, 
@@ -165,4 +231,29 @@ function generateTroopTransferMessage(id: string): GameEventMessage {
         type: GameEventType.TROOP_TRANSFER_SETUP,
         id
     }
+}
+
+function generateUnitMoveSetupMessage(id: string, attackingArea: AreaType, defendingArea: AreaType): GameEventMessage {
+    return {
+        type: GameEventType.UNIT_MOVE_SETUP,
+        id,
+        attackingAreaName: attackingArea.getName(),
+        defendingAreaName: defendingArea.getName()
+    }
+}
+
+function generateUnitMoveCompleteMessage(id: string): GameEventMessage {
+    return {
+        type: GameEventType.UNIT_MOVE_COMPLETE,
+        id
+    }
+}
+
+function handleUnitMove(origin: AreaType, destination: AreaType, numUnits: number): void {
+    const unitManeuverController = new UnitManeuverController(
+        origin,
+        destination
+    );
+
+    unitManeuverController.moveUnits(numUnits);
 }
