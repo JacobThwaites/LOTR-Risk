@@ -156,7 +156,7 @@ export default function GameDisplay() {
                 updateAreasAfterCombat(messageData.attackingArea, messageData.defendingArea, messageData.results);
                 break;
             }
-            case GameEventType.UNIT_MANEURVRE: {
+            case GameEventType.UNIT_MOVE: {
                 const areaToMoveUnits = Areas[messageData.areaToMoveUnits];
                 const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
                 onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
@@ -314,7 +314,7 @@ export default function GameDisplay() {
 
         combatController.handleResults(results);
 
-        if (!defendingArea.hasUnitsRemaining()) {
+        if (defendingArea.hasNoUnitsRemaining()) {
             await setStateForManeuvers(attackingArea, defendingArea);
         }
 
@@ -387,7 +387,7 @@ export default function GameDisplay() {
             webSocketHandler.current!.sendTroopTransfer(areaToMoveUnits!.getName(), areaToReceiveUnits!.getName(), unitsToMove);
             webSocketHandler.current!.sendEndTurn()
         } else {
-            webSocketHandler.current!.sendUnitManeuvre(areaToMoveUnits!.getName(), areaToReceiveUnits!.getName(), unitsToMove);
+            webSocketHandler.current!.sendUnitMove(areaToMoveUnits!.getName(), areaToReceiveUnits!.getName(), unitsToMove);
         }
     }
 

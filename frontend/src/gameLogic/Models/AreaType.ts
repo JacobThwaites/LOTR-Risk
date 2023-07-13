@@ -49,7 +49,7 @@ export abstract class AreaType {
         this.hasLeader = !this.hasLeader;
     }
 
-    hasUnitsRemaining(): boolean {
+    hasNoUnitsRemaining(): boolean {
         return this.units > 0;
     }
 

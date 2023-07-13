@@ -8,7 +8,7 @@ export enum GameEventType {
     STARTING_REINFORCEMENT = "STARTING REINFORCEMENT",
     REINFORCEMENT = "REINFORCEMENT",
     END_TURN = "END TURN",
-    UNIT_MANEURVRE = "UNIT MANEUVRE",
+    UNIT_MOVE = "UNIT MANEUVRE",
     TROOP_TRANSFER_SETUP = "TROOP TRANSFER SETUP",
     TROOP_TRANSFER = "TROOP TRANSFER",
     PLAYER_JOINED = "PLAYER JOINED",
@@ -97,9 +97,9 @@ export default class WebSocketHandler {
         this.sendMessage(messageBody);
     }
 
-    sendUnitManeuvre(areaToMoveUnits: string, areaToReceiveUnits: string, numUnits: number) {
+    sendUnitMove(areaToMoveUnits: string, areaToReceiveUnits: string, numUnits: number) {
         const messageBody = {
-            type: GameEventType.UNIT_MANEURVRE,
+            type: GameEventType.UNIT_MOVE,
             areaToMoveUnits,
             areaToReceiveUnits,
             numUnits 
