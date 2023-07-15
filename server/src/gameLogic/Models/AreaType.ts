@@ -50,7 +50,7 @@ export abstract class AreaType {
     }
 
     hasNoUnitsRemaining(): boolean {
-        return this.units > 0;
+        return this.units <= 0;
     }
 
     getUnits(): number {

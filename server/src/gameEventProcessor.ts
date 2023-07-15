@@ -4,7 +4,7 @@ import { Game } from "./gameLogic/Models/Game";
 import { emitMessage } from "./webSockets";
 import { CombatController } from "./gameLogic/Controllers/CombatController";
 import { AreaType } from "./gameLogic/Models/AreaType";
-import { UnitManeuverController } from "./gameLogic/Controllers/UnitManeuverController";
+import { UnitMoveController } from "./gameLogic/Controllers/UnitMoveController";
 
 export enum GameEventType {
     CLEAR_SELECTED_AREAS = "CLEAR SELECTED AREAS",
@@ -19,6 +19,7 @@ export enum GameEventType {
     UNIT_MOVE_COMPLETE = "UNIT MOVE COMPLETE",
     TROOP_TRANSFER_SETUP = "TROOP TRANSFER SETUP",
     TROOP_TRANSFER = "TROOP TRANSFER",
+    TROOP_TRANSFER_COMPLETE = "TROOP TRANSFER COMPLETE",
     PLAYER_JOINED = "PLAYER JOINED",
     PLAYER_DISCONNECT = "PLAYER DISCONNECTED",
     GAME_OVER = "GAME OVER",
@@ -37,11 +38,11 @@ export type GameEventMessage = {
 export function updateGame(messageData: any, game: Game, wss: WebSocketServer): void {
     const currentPlayer = game.getCurrentPlayer();
     
-    // TODO: re-add once end turn logic is handled
-    // if (currentPlayer.getUserID() !== messageData.userID) {
-    //     console.log("message sent from incorrect player");
-    //     return;
-    // }
+    // TODO: don't do this if player joined or disconnected message
+    if (currentPlayer.getUserID() !== messageData.userID) {
+        console.log("message sent from incorrect player");
+        return;
+    }
 
     switch (messageData.type) {
         case GameEventType.STARTING_REINFORCEMENT: {
@@ -96,23 +97,12 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
             emitMessage(message, wss);
             break;
         }
-        case GameEventType.TROOP_TRANSFER_SETUP: {
-            const message = generateTroopTransferMessage(messageData.id);
-            emitMessage(message, wss);
-            break;
-        }
-        case GameEventType.PLAYER_JOINED: {
-            break;
-        }
-        case GameEventType.PLAYER_DISCONNECT: {
-            break;
-        }
         case GameEventType.COMBAT_RESULTS: {
             const attackingArea = Areas[messageData.attackingArea];
             const defendingArea = Areas[messageData.defendingArea];
             const combatController = new CombatController(
-                messageData.attackingArea,
-                messageData.defendingArea,
+                attackingArea,
+                defendingArea,
                 game!
             );
             const results = combatController.getCombatResults(messageData.numAttackingDice);
@@ -143,6 +133,11 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
             emitMessage(unitMoveCompleteMessage, wss);
             break;
         }
+        case GameEventType.TROOP_TRANSFER_SETUP: {
+            const message = generateTroopTransferMessage(messageData.id);
+            emitMessage(message, wss);
+            break;
+        }
         case GameEventType.TROOP_TRANSFER: {
             const origin = Areas[messageData.origin];
             const destination = Areas[messageData.destination];
@@ -152,15 +147,35 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
             const destinationUpdateMessage = generateAreaUpdateMessage(messageData.id, destination);
             emitMessage(originUpdateMessage, wss);
             emitMessage(destinationUpdateMessage, wss);
+
+            const troopTransferCompleteMessage = generateTroopTransferCompleteMessage(messageData.id);
+            emitMessage(troopTransferCompleteMessage, wss);
+            break;
+        }
+        case GameEventType.PLAYER_JOINED: {
+            break;
+        }
+        case GameEventType.PLAYER_DISCONNECT: {
             break;
         }
         case GameEventType.GAME_OVER_DISCONNECT: {
+            const gameOverMessage = generateGameOverMessage(messageData.id);
+            emitMessage(gameOverMessage, wss);
             break;
         }
         default: {
             break;
         }
     }
+}
+
+function handleUnitMove(origin: AreaType, destination: AreaType, numUnits: number): void {
+    const unitMoveController = new UnitMoveController(
+        origin,
+        destination
+    );
+
+    unitMoveController.moveUnits(numUnits);
 }
 
 function generateAreaUpdateMessage(id: string, area: AreaType): GameEventMessage {
@@ -249,11 +264,10 @@ function generateUnitMoveCompleteMessage(id: string): GameEventMessage {
     }
 }
 
-function handleUnitMove(origin: AreaType, destination: AreaType, numUnits: number): void {
-    const unitManeuverController = new UnitManeuverController(
-        origin,
-        destination
-    );
 
-    unitManeuverController.moveUnits(numUnits);
+function generateTroopTransferCompleteMessage(id: string): GameEventMessage {
+    return {
+        type: GameEventType.TROOP_TRANSFER_COMPLETE,
+        id
+    }
 }

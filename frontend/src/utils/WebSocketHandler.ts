@@ -97,11 +97,11 @@ export default class WebSocketHandler {
         this.sendMessage(messageBody);
     }
 
-    sendUnitMove(areaToMoveUnits: string, areaToReceiveUnits: string, numUnits: number) {
+    sendUnitMove(origin: string, destination: string, numUnits: number) {
         const messageBody = {
             type: GameEventType.UNIT_MOVE,
-            areaToMoveUnits,
-            areaToReceiveUnits,
+            origin,
+            destination,
             numUnits 
         }
 
@@ -116,11 +116,11 @@ export default class WebSocketHandler {
         this.sendMessage(messageBody);
     }
 
-    sendTroopTransfer(areaToMoveUnits: string, areaToReceiveUnits: string, numUnits: number) {
+    sendTroopTransfer(origin: string, destination: string, numUnits: number) {
         const messageBody = {
             type: GameEventType.TROOP_TRANSFER,
-            areaToMoveUnits,
-            areaToReceiveUnits,
+            origin,
+            destination,
             numUnits 
         }
 

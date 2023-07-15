@@ -8,7 +8,7 @@ const ws = require('ws');
 
 export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketManager, gameID: string) => {
     const game = gameQueries.getByUUID(gameID);
-    
+
     return (ws: WebSocket) => {
         const webSocketWithID = new WebSocketWithID(ws);
         webSocketManager.checkClientHeartbeat(webSocketWithID, gameID);

@@ -2,9 +2,9 @@ import React, { useEffect, useState, useRef } from "react";
 import { GameGenerator } from "../gameLogic/Controllers/GameGenerator";
 import { CombatController } from "../gameLogic/Controllers/CombatController";
 import { ReinforcementController } from "../gameLogic/Controllers/ReinforcementController";
-import { UnitManeuverController } from "../gameLogic/Controllers/UnitManeuverController";
+import { UnitMoveController } from "../gameLogic/Controllers/UnitMoveController";
 import CombatHandler from "./CombatHandler";
-import UnitManeuverHandler from "./UnitManeuverHandler";
+import UnitMoveHandler from "./UnitMoveHandler";
 import Map from "./Map";
 import EndTurnButton from "./buttons/EndTurnButton";
 import ReinforcementsModal from "./ReinforcementsModal";
@@ -38,7 +38,7 @@ export default function GameDisplay() {
     const [attackingArea, setAttackingArea] = useState<Area | null>(null);
     const [defendingArea, setDefendingArea] = useState<Area | null>(null);
     const [attackingDice, setAttackingDice] = useState<number>(1);
-    const [shouldDisplayUnitManeuverButton, setShouldDisplayUnitManeuverButton] = useState<boolean>(false);
+    const [shouldDisplayUnitMoveButton, setShouldDisplayUnitMoveButton] = useState<boolean>(false);
     const [shouldDisplayReinforcementsModal, setShouldDisplayReinforcementsModal] = useState<boolean>(false);
     const [shouldDisplayTroopTransferButton, setShouldDisplayTroopTransferButton] = useState<boolean>(false);
     const [shouldHandleStartingReinforcements, setShouldHandleStartingReinforcements] = useState<boolean>(true);
@@ -138,7 +138,7 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.CLEAR_SELECTED_AREAS: {
-                setShouldDisplayUnitManeuverButton(false);
+                setShouldDisplayUnitMoveButton(false);
                 clearSelectedAreas();
                 break;
             }
@@ -157,9 +157,9 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.UNIT_MOVE: {
-                const areaToMoveUnits = Areas[messageData.areaToMoveUnits];
-                const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
-                onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
+                const origin = Areas[messageData.origin];
+                const destination = Areas[messageData.destination];
+                onMoveUnits(origin, destination, messageData.numUnits);
                 break;
             }
             case GameEventType.TROOP_TRANSFER_SETUP: {
@@ -167,9 +167,9 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.TROOP_TRANSFER: {
-                const areaToMoveUnits = Areas[messageData.areaToMoveUnits];
-                const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
-                onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
+                const origin = Areas[messageData.origin];
+                const destination = Areas[messageData.destination];
+                onMoveUnits(origin, destination, messageData.numUnits);
                 break;
             }
             case GameEventType.END_TURN: {
@@ -263,7 +263,7 @@ export default function GameDisplay() {
             setAreaToReceiveUnits(null);
         } else if (areaToMoveUnits !== null) {
             setAreaToReceiveUnits(area);
-            setShouldDisplayUnitManeuverButton(true);
+            setShouldDisplayUnitMoveButton(true);
         } else {
             setAreaToMoveUnits(area);
         }
@@ -322,7 +322,7 @@ export default function GameDisplay() {
     }
 
     function setStateForManeuvers(attackingArea: any, defendingArea: any): void {
-        setShouldDisplayUnitManeuverButton(true);
+        setShouldDisplayUnitMoveButton(true);
         setAreaToMoveUnits(attackingArea);
         setAreaToReceiveUnits(defendingArea);
     }
@@ -379,7 +379,7 @@ export default function GameDisplay() {
     }
 
     function onMoveUnitButtonClick(): void {
-        if (!UnitManeuverController.isManeuverValid(areaToMoveUnits!, unitsToMove)) {
+        if (!UnitMoveController.isManeuverValid(areaToMoveUnits!, unitsToMove)) {
             return;
         }
 
@@ -391,18 +391,18 @@ export default function GameDisplay() {
         }
     }
 
-    function onMoveUnits(areaToMoveUnits: AreaType, areaToReceiveUnits: AreaType, numUnits: number): void {
-        const unitManeuverController = new UnitManeuverController(
-            areaToMoveUnits!,
-            areaToReceiveUnits!
+    function onMoveUnits(origin: AreaType, destination: AreaType, numUnits: number): void {
+        const unitMoveController = new UnitMoveController(
+            origin,
+            destination
         );
 
-        unitManeuverController.moveUnits(numUnits);
+        unitMoveController.moveUnits(numUnits);
         resetManeuverState();
     }
 
     function resetManeuverState(): void {
-        setShouldDisplayUnitManeuverButton(false);
+        setShouldDisplayUnitMoveButton(false);
         setAreaToMoveUnits(null);
         setAreaToReceiveUnits(null);
         setUnitsToMove(0);
@@ -440,7 +440,7 @@ export default function GameDisplay() {
 
     function isEndTurnButtonDisabled(): boolean {
         return (
-            shouldDisplayUnitManeuverButton ||
+            shouldDisplayUnitMoveButton ||
             shouldDisplayReinforcementsModal ||
             shouldHandleStartingReinforcements ||
             !isUsersTurn()
@@ -518,14 +518,14 @@ export default function GameDisplay() {
                     isUsersTurn={isUsersTurn()}
                 />
             )}
-            {(shouldDisplayUnitManeuverButton || shouldDisplayTroopTransferButton) && (
-                <UnitManeuverHandler
+            {(shouldDisplayUnitMoveButton || shouldDisplayTroopTransferButton) && (
+                <UnitMoveHandler
                     max={areaToMoveUnits ? areaToMoveUnits.getUnits() - 1 : 0}
                     unitsToMove={unitsToMove}
                     onMoveUnits={onMoveUnitButtonClick}
                     setUnitsToMove={setUnitsToMove}
                     isInputDisabled={isUnitManeouvreInputDisabled()}
-                    isInputEnabled={(shouldDisplayUnitManeuverButton) || (shouldDisplayTroopTransferButton && areaToMoveUnits !== null)}
+                    isInputEnabled={(shouldDisplayUnitMoveButton) || (shouldDisplayTroopTransferButton && areaToMoveUnits !== null)}
                     label={shouldDisplayTroopTransferButton ? "Troop Transfers: " : "Unit Maneuvers: "}
                 />
             )}

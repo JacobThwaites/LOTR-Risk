@@ -1,6 +1,6 @@
 import { AreaType } from '../Models/AreaType';
 
-export class UnitManeuverController {
+export class UnitMoveController {
     private origin: AreaType;
     private destination: AreaType;
     constructor(origin: AreaType, destination: AreaType) {

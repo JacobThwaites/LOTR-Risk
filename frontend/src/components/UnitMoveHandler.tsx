@@ -12,7 +12,7 @@ type Props = {
   isInputEnabled: boolean
 }
 
-export default function UnitManeuverHandler(props: Props) {
+export default function UnitMoveHandler(props: Props) {
   return (
     <div className="unit-maneuver-handler">
       <div className="unit-maneuver-handler--input">
