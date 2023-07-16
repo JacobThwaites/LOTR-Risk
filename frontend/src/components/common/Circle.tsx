@@ -1,11 +1,7 @@
 import React from "react";
 import SvgCircle from '../svgPaths/SvgCircle';
 import { Colour } from "../../gameLogic/Enums/Colours";
-
-type Coordinates = {
-  x: number, 
-  y: number
-}
+import { Coordinates } from "../../utils/Coordinates";
 
 type Props = {
   centroid: Coordinates, 

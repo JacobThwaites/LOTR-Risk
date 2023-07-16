@@ -2,12 +2,13 @@ import React from "react";
 import Circle from './common/Circle';
 import "../sass/main.scss";
 import { AreaType } from "../gameLogic/Models/AreaType";
+import { Coordinates } from "../utils/Coordinates";
 
 type Props = {
   className: string,
   id: string,
   path: string,
-  centroid: {x: number, y: number}
+  centroid: Coordinates
   onClick: any,
   areaLogic: AreaType,
   isRendered: boolean,
