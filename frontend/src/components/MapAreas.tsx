@@ -1,11 +1,12 @@
 import React from "react";
 import MapArea from "./MapArea";
 import areaDetails from './svgPaths/AreaDetails';
+import { AreaType } from "../gameLogic/Models/AreaType";
 
 type Props = {
   generateAreaClassName: any,
   onClick: any,
-  isAreaClickable: any,
+  isAreaClickable: (area: AreaType) => boolean,
   isRendered: boolean
 }
 

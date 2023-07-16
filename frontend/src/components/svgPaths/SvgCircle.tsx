@@ -9,7 +9,7 @@ type Props = {
   areaUnits: number
 }
 
-export default function Circle(props: Props) {
+export default function SvgCircle(props: Props) {
   return (
     <>
       <circle

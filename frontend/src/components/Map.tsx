@@ -9,8 +9,8 @@ import { Player } from "../gameLogic/Models/Player";
 import AreaSelectValidator from "../utils/AreaSelectValidator";
 
 type Props = {
-  attackingArea: any,
-  defendingArea: any,
+  attackingArea: AreaType | null,
+  defendingArea: AreaType | null,
   troopTransferStart: AreaType | null,
   troopTransferEnd: AreaType | null,
   attackingDice: number,
@@ -22,7 +22,6 @@ type Props = {
 
 export default function Map(props: Props): JSX.Element {
   const [isRendered, setIsRendered] = useState(false);
-  // TODO: useRef?
   const areaSelectValidator = new AreaSelectValidator(props.isUsersTurn, props.isCombatPhase, props.attackingArea, props.troopTransferStart, props.currentPlayer);
 
   useEffect(() => {

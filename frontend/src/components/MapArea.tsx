@@ -1,6 +1,7 @@
 import React from "react";
-import CircleGenerator from '../utils/CircleGenerator';
+import Circle from './common/Circle';
 import "../sass/main.scss";
+import { AreaType } from "../gameLogic/Models/AreaType";
 
 type Props = {
   className: string,
@@ -8,14 +9,12 @@ type Props = {
   path: string,
   centroid: {x: number, y: number}
   onClick: any,
-  areaLogic: any,
+  areaLogic: AreaType,
   isRendered: boolean,
   clickable: boolean
 }
 
 export default function MapArea(props: Props) {
-  const circleGenerator = new CircleGenerator(props);  
-
   return (
     <>
       <path
@@ -26,7 +25,11 @@ export default function MapArea(props: Props) {
         onClick={props.onClick}
         />
       {props.isRendered &&
-        circleGenerator.addCircleToMap(props.centroid, props.areaLogic)
+        <Circle 
+          centroid={props.centroid} 
+          colour={props.areaLogic.getPlayer()!.getColour()}
+          units={props.areaLogic.getUnits()}
+        />
       }
     </>
   );
