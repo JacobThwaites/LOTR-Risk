@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import WebSocketWithID from "./WebSocketWithID";
 import PlayerDisconnectionTracker from "./PlayerDisconnectionTracker";
 import { emitMessage } from "./webSockets";
-import { GameEventType } from "./gameEventProcessor";
+import { GameEventType } from "./GameEventMessageFactory";
 const ws = require('ws');
 
 export class WebSocketManager {

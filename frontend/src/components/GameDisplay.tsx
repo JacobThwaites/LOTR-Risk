@@ -127,7 +127,7 @@ export default function GameDisplay() {
                 const attackingArea = Areas[messageData.attackingArea];
                 const defendingArea = Areas[messageData.defendingArea];
                 setAttackingArea(attackingArea);
-                setDefendingArea(defendingArea);
+                setDefendingArea(defendingArea);        
                 break;
             }
             case GameEventType.PLAYER_JOINED: {
@@ -315,13 +315,13 @@ export default function GameDisplay() {
         combatController.handleResults(results);
 
         if (defendingArea.hasNoUnitsRemaining()) {
-            await setStateForManeuvers(attackingArea, defendingArea);
+            await setStateForUnitMove(attackingArea, defendingArea);
         }
 
         resetCombatState();
     }
 
-    function setStateForManeuvers(attackingArea: any, defendingArea: any): void {
+    function setStateForUnitMove(attackingArea: any, defendingArea: any): void {
         setShouldDisplayUnitMoveButton(true);
         setAreaToMoveUnits(attackingArea);
         setAreaToReceiveUnits(defendingArea);
@@ -379,7 +379,7 @@ export default function GameDisplay() {
     }
 
     function onMoveUnitButtonClick(): void {
-        if (!UnitMoveController.isManeuverValid(areaToMoveUnits!, unitsToMove)) {
+        if (!UnitMoveController.isMoveValid(areaToMoveUnits!, unitsToMove)) {
             return;
         }
 
@@ -398,10 +398,10 @@ export default function GameDisplay() {
         );
 
         unitMoveController.moveUnits(numUnits);
-        resetManeuverState();
+        resetUnitMoveState();
     }
 
-    function resetManeuverState(): void {
+    function resetUnitMoveState(): void {
         setShouldDisplayUnitMoveButton(false);
         setAreaToMoveUnits(null);
         setAreaToReceiveUnits(null);
@@ -426,7 +426,7 @@ export default function GameDisplay() {
         return CombatValidator.isCombatValid(attackingArea!, attackingDice);
     }
 
-    function isUnitManeouvreInputDisabled(): boolean {
+    function isUnitMoveInputDisabled(): boolean {
         if (!isUsersTurn()) {
             return true;
         }
@@ -524,7 +524,7 @@ export default function GameDisplay() {
                     unitsToMove={unitsToMove}
                     onMoveUnits={onMoveUnitButtonClick}
                     setUnitsToMove={setUnitsToMove}
-                    isInputDisabled={isUnitManeouvreInputDisabled()}
+                    isInputDisabled={isUnitMoveInputDisabled()}
                     isInputEnabled={(shouldDisplayUnitMoveButton) || (shouldDisplayTroopTransferButton && areaToMoveUnits !== null)}
                     label={shouldDisplayTroopTransferButton ? "Troop Transfers: " : "Unit Maneuvers: "}
                 />

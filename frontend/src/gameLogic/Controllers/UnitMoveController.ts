@@ -8,7 +8,7 @@ export class UnitMoveController {
         this.destination = destination;
     }
 
-    static isManeuverValid(origin: AreaType, units: number) {
+    static isMoveValid(origin: AreaType, units: number) {
         return units < origin.getUnits() && units > 0;
     }
 

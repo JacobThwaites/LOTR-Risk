@@ -1,7 +1,8 @@
 import { WebSocketServer, WebSocket } from "ws";
 import WebSocketWithID from "./WebSocketWithID";
-import { GameEventMessage, updateGame } from "./gameEventProcessor";
+import { updateGame } from "./gameEventProcessor";
 import { WebSocketManager } from "./WebSocketManager";
+import { GameEventMessage } from "./GameEventMessageFactory";
 const gameQueries = require("./database/gameQueries");
 const ws = require('ws');
 
