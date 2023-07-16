@@ -4,28 +4,28 @@ import areaDetails from './svgPaths/AreaDetails';
 import { AreaType } from "../gameLogic/Models/AreaType";
 
 type Props = {
-  generateAreaClassName: any,
+  generateAreaClassName: (areaInfo: any) => string,
   onClick: any,
   isAreaClickable: (area: AreaType) => boolean,
   isRendered: boolean
 }
 
 const MapAreas: Function = (props: Props): JSX.Element[] => {
-  const areas = areaDetails.map(function(a) {
-    return (
+  const areas = Object.entries(areaDetails).map(
+    ([areaName, areaInfo]) => (
       <MapArea 
-        className={props.generateAreaClassName(a)}
-        id={a.area.getName()}
-        key={a.area.getName()}
-        path={a.path}
-        centroid={a.centroid}
-        onClick={() => props.onClick(a.area)}
-        clickable={props.isAreaClickable(a.area)}
-        areaLogic={a.area}
+        className={props.generateAreaClassName(areaInfo)}
+        id={areaName}
+        key={areaName}
+        path={areaInfo.path}
+        centroid={areaInfo.centroid}
+        onClick={() => props.onClick(areaInfo.area)}
+        clickable={props.isAreaClickable(areaInfo.area)}
+        areaLogic={areaInfo.area}
         isRendered={props.isRendered}
       />
     )
-  });
+  );
   
   return areas;
 };
