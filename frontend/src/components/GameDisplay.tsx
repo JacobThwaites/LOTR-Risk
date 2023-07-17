@@ -31,6 +31,8 @@ import NotFound from "./NotFound";
 import { getUserID } from "../utils/userIDManager";
 import PlayerDisconnectModal from "./PlayerDisconnectModal";
 import { Colour } from "../gameLogic/Enums/Colours";
+import areaDetails from "./svgPaths/AreaDetails";
+import { AreaName } from "../gameLogic/Enums/AreaNames";
 
 export default function GameDisplay() {
     const { gameID } = useParams<{ gameID: string }>();
@@ -191,6 +193,16 @@ export default function GameDisplay() {
             }
             case GameEventType.GAME_OVER_DISCONNECT: {
                 setIsGameOver(true);
+                break;
+            }
+            case GameEventType.UPDATE_AREA: {
+                const areaName: keyof typeof AreaName = messageData.areaName;
+                const areaColour: Colour = messageData.areaColour as Colour;
+                const area = areaDetails[areaName];
+                area.units = messageData.areaUnits;
+                area.colour = areaColour;
+                console.log(area);
+                
                 break;
             }
             default:
