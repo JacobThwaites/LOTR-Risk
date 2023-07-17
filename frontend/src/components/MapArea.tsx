@@ -1,14 +1,12 @@
 import React from "react";
 import Circle from './common/Circle';
-import "../sass/main.scss";
 import { AreaType } from "../gameLogic/Models/AreaType";
-import { Coordinates } from "../utils/Coordinates";
+import areaDetails from "./svgPaths/AreaDetails";
+import { AreaName } from "../gameLogic/Enums/AreaNames";
 
 type Props = {
   className: string,
-  id: string,
-  path: string,
-  centroid: Coordinates
+  areaName: string,
   onClick: any,
   areaLogic: AreaType,
   isRendered: boolean,
@@ -16,20 +14,22 @@ type Props = {
 }
 
 export default function MapArea(props: Props) {
+  const areaDetail = areaDetails[props.areaName as AreaName];
+
   return (
     <>
       <path
         className={'area ' + props.className}
         data-cy={props.clickable ? 'area-clickable' : 'area'}
-        id={props.id}
-        d={props.path}
+        id={props.areaName}
+        d={areaDetail.path}
         onClick={props.onClick}
         />
       {props.isRendered &&
         <Circle 
-          centroid={props.centroid} 
-          colour={props.areaLogic.getPlayer()!.getColour()}
-          units={props.areaLogic.getUnits()}
+          centroid={areaDetail.centroid} 
+          colour={areaDetail.colour!}
+          units={areaDetail.units}
         />
       }
     </>

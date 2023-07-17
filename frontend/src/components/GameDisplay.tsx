@@ -72,6 +72,7 @@ export default function GameDisplay() {
             const playerIDs = json.data.players.map((p: any) => { return p.id });
             const userIDs = json.data.players.map((p: any) => { return p.userID });
             const game = GameGenerator.generateGame(areas, playerIDs, userIDs);
+            setupStartingAreaColours(areas);
             setGame(game);
             setShouldDisplayReinforcementsModal(true);
             setIsGameLoaded(true);
@@ -196,17 +197,23 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.UPDATE_AREA: {
-                const areaName: keyof typeof AreaName = messageData.areaName;
-                const areaColour: Colour = messageData.areaColour as Colour;
-                const area = areaDetails[areaName];
-                area.units = messageData.areaUnits;
-                area.colour = areaColour;
-                console.log(area);
-                
+                updateAreaDetails(messageData);
                 break;
             }
             default:
                 break;
+        }
+    }
+
+    function setupStartingAreaColours(areas: any) {
+        for (let i = 0; i < areas.length; i++) {
+            const playerAreas = areas[i];
+            for (let j = 0; j < playerAreas.length; j++) {
+                const areaName = playerAreas[j].name;
+                const colour = playerAreas[j].player.colour;
+                const area = areaDetails[areaName as AreaName];
+                area.colour = colour;
+            }
         }
     }
 
@@ -397,6 +404,14 @@ export default function GameDisplay() {
         }
 
         return null;
+    }
+
+    function updateAreaDetails(messageData: any): void {
+        const areaName: keyof typeof AreaName = messageData.areaName;
+        const areaColour: Colour = messageData.areaColour as Colour;
+        const area = areaDetails[areaName];
+        area.units = messageData.areaUnits;
+        area.colour = areaColour;
     }
 
     function onMoveUnitButtonClick(): void {
