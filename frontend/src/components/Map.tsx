@@ -7,6 +7,7 @@ import Strongholds from "./svgPaths/Strongholds";
 import { AreaType } from "../gameLogic/Models/AreaType";
 import { Player } from "../gameLogic/Models/Player";
 import AreaSelectValidator from "../utils/AreaSelectValidator";
+import { Colour } from "../gameLogic/Enums/Colours";
 
 type Props = {
   attackingArea: AreaType | null,
@@ -17,12 +18,20 @@ type Props = {
   currentPlayer: Player,
   onAreaSelect: any,
   isUsersTurn: boolean,
-  isCombatPhase: boolean
+  isCombatPhase: boolean,
+  userColour: Colour
 }
 
 export default function Map(props: Props): JSX.Element {
   const [isRendered, setIsRendered] = useState(false);
-  const areaSelectValidator = new AreaSelectValidator(props.isUsersTurn, props.isCombatPhase, props.attackingArea, props.troopTransferStart, props.currentPlayer);
+  const areaSelectValidator = new AreaSelectValidator(
+    props.isUsersTurn, 
+    props.isCombatPhase, 
+    props.attackingArea, 
+    props.troopTransferStart, 
+    props.currentPlayer,
+    props.userColour
+  );
 
   useEffect(() => {
     setIsRendered(true);

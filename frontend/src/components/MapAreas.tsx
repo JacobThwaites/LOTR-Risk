@@ -5,7 +5,7 @@ import { AreaType } from "../gameLogic/Models/AreaType";
 
 type Props = {
   generateAreaClassName: (areaInfo: any) => string,
-  onClick: any,
+  onClick: (area: AreaType) => void,
   isAreaClickable: (area: AreaType) => boolean,
   isRendered: boolean
 }

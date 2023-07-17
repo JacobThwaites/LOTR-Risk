@@ -1,28 +1,32 @@
 import { getConnectedAreasForTroopTransfer } from "../gameLogic/Controllers/TroopTransferConnections";
+import { Colour } from "../gameLogic/Enums/Colours";
 import { AreaType } from "../gameLogic/Models/AreaType";
 import { Player } from "../gameLogic/Models/Player";
 import { areAreasConnected } from "../utils/areAreasConnected";
 
-// TODO: can probably use factory pattern
+
 export default class AreaSelectValidator {
     private isUsersTurn: boolean;
     private isCombatPhase: boolean;
     private attackingArea: AreaType | null;
     private troopTransferStart: AreaType | null;
     private currentPlayer: Player;
+    private userColour: Colour;
 
     constructor(
         isUsersTurn: boolean,
         isCombatPhase: boolean,
         attackingArea: AreaType | null,
         troopTransferStart: AreaType | null,
-        currentPlayer: Player
+        currentPlayer: Player,
+        userColour: Colour
     ) {
         this.isUsersTurn = isUsersTurn;
         this.isCombatPhase = isCombatPhase;
         this.attackingArea = attackingArea;
         this.currentPlayer = currentPlayer;
         this.troopTransferStart = troopTransferStart;
+        this.userColour = userColour;
     }
 
     public isAreaClickable(area: AreaType): boolean {
@@ -37,14 +41,14 @@ export default class AreaSelectValidator {
 
     private isCombatSelectionValid(area: AreaType): boolean {
         if (this.isAttackingAreaSelected(area)) {
-            return this.isAttackingAreaClickable(area);
+            return this.isAttackingAreaClickable(this.userColour, area.getPlayer()!.getColour());
         } else {
             return this.isDefendingAreaClickable(area);
         }
     }
 
-    private isAttackingAreaClickable(area: AreaType): boolean {
-        return this.currentPlayer.ownsArea(area);
+    private isAttackingAreaClickable(userColour: Colour, areaColour: Colour): boolean {
+        return userColour === areaColour;
     }
 
     private isAttackingAreaSelected(area: AreaType): boolean {

@@ -30,6 +30,7 @@ import TerritoryCardsButton from "./TerritoryCardsButton";
 import NotFound from "./NotFound";
 import { getUserID } from "../utils/userIDManager";
 import PlayerDisconnectModal from "./PlayerDisconnectModal";
+import { Colour } from "../gameLogic/Enums/Colours";
 
 export default function GameDisplay() {
     const { gameID } = useParams<{ gameID: string }>();
@@ -53,6 +54,7 @@ export default function GameDisplay() {
     const isWebSocketConnected = useRef<boolean>(); 
     const location: { state: { gameType?: string } } = useLocation();
     const gameType = location.state ? location.state.gameType : "online";
+    const [userColour, setUserColour] = useState<Colour>();
 
     useEffect(() => {
         async function setupGame() {
@@ -71,6 +73,13 @@ export default function GameDisplay() {
             setGame(game);
             setShouldDisplayReinforcementsModal(true);
             setIsGameLoaded(true);
+            
+            const players = game.getPlayers();
+            for (let i = 0; i < players.length; i++) {
+                if (players[i].getUserID() === getUserID()) {
+                    setUserColour(players[i].getColour());
+                }
+            }
         }
 
         setupGame();
@@ -502,6 +511,7 @@ export default function GameDisplay() {
                 onAreaSelect={onAreaSelect}
                 isUsersTurn={isUsersTurn()}
                 isCombatPhase={!shouldDisplayTroopTransferButton}
+                userColour={userColour!}
             />
             <TurnInformation
                 turnsRemaining={game!.getTurnsRemaining()}
