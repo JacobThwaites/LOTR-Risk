@@ -1,11 +1,12 @@
-import { AreaType } from '../Models/AreaType';
+import areaDetails from '../../components/svgPaths/AreaDetails';
+import { AreaName } from '../Enums/AreaNames';
 import { Game } from '../Models/Game';
 
 export class CombatController {
-    private attackingArea: AreaType;
-    private defendingArea: AreaType;
+    private attackingArea: AreaName;
+    private defendingArea: AreaName;
     private game: Game;
-    constructor(attackingArea: AreaType, defendingArea: AreaType, game: Game) {
+    constructor(attackingArea: AreaName, defendingArea: AreaName, game: Game) {
         this.attackingArea = attackingArea;
         this.defendingArea = defendingArea;
         this.game = game;
@@ -61,7 +62,9 @@ export class CombatController {
         }
     }
 
-    private removeUnitsFromLoser(losingArea: AreaType) {
+    private removeUnitsFromLoser(losingAreaName: AreaName) {
+        const losingArea = areaDetails[losingAreaName].area;
+
         const losingPlayer = losingArea.getPlayer();
         losingPlayer!.removeUnits(1);
         losingArea.removeUnits(1);
@@ -82,7 +85,10 @@ export class CombatController {
         return numberRolled;
     }
 
-    private getDefenderDiceBonus(defendingArea: AreaType): number {
+    private getDefenderDiceBonus(defendingAreaName: AreaName): number {
+        const areaDetail = areaDetails[defendingAreaName];
+        const defendingArea = areaDetail.area;
+
         let bonus = 0;
         bonus += defendingArea.getDefendingBonus();
 
@@ -92,7 +98,9 @@ export class CombatController {
         return bonus;
     }
 
-    private getAttackerDiceBonus(attackingArea: AreaType): number {
+    private getAttackerDiceBonus(attackingAreaName: AreaName): number {
+        const attackingArea = areaDetails[attackingAreaName].area;
+
         let bonus = 0;
         if (attackingArea.getHasLeader()) {
             bonus += 1;
@@ -101,15 +109,19 @@ export class CombatController {
     }
 
     private checkDefendingUnitsRemaining() {
-        const attacker = this.attackingArea.getPlayer();
+        const areaDetail = areaDetails[this.attackingArea];
+        const attackingArea = areaDetail.area;
+        const attacker = attackingArea.getPlayer();
 
         if (!attacker) {
             return;
         }
 
-        if (this.defendingArea.getUnits() < 1) {
-            attacker.addArea(this.defendingArea);
-            this.defendingArea.setPlayer(attacker);
+        const defendingAreaDetail = areaDetails[this.defendingArea];
+
+        if (defendingAreaDetail.units < 1) {
+            attacker.addArea(defendingAreaDetail.area);
+            defendingAreaDetail.area.setPlayer(attacker);
             this.game.handlePlayerCapturingArea();
         }
     }

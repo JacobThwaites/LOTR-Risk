@@ -1,6 +1,5 @@
 import React from "react";
 import Circle from './common/Circle';
-import { AreaType } from "../gameLogic/Models/AreaType";
 import areaDetails from "./svgPaths/AreaDetails";
 import { AreaName } from "../gameLogic/Enums/AreaNames";
 
@@ -8,7 +7,6 @@ type Props = {
   className: string,
   areaName: string,
   onClick: any,
-  areaLogic: AreaType,
   isRendered: boolean,
   clickable: boolean
 }

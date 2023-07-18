@@ -1,19 +1,28 @@
-import { AreaType } from '../Models/AreaType';
+import areaDetails from '../../components/svgPaths/AreaDetails';
+import { AreaName } from '../Enums/AreaNames';
 
 export class UnitMoveController {
-    private origin: AreaType;
-    private destination: AreaType;
-    constructor(origin: AreaType, destination: AreaType) {
+    private origin: AreaName;
+    private destination: AreaName;
+    constructor(origin: AreaName, destination: AreaName) {
         this.origin = origin;
         this.destination = destination;
     }
 
-    static isMoveValid(origin: AreaType, units: number) {
-        return units < origin.getUnits() && units > 0;
+    static isMoveValid(origin: AreaName, units: number) {
+        const areaDetail = areaDetails[origin];
+        return units < areaDetail.units && units > 0;
     }
 
     moveUnits(units: number) {
-        this.origin.removeUnits(units);
-        this.destination.addUnits(units);
+        // New
+        const origin = areaDetails[this.origin];
+        const destination = areaDetails[this.destination];
+        origin.units -= units;
+        destination.units += units;
+
+        // Old
+        origin.area.removeUnits(units);
+        destination.area.addUnits(units);
     }
 }

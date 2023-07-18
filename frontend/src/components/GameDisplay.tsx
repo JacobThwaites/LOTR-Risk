@@ -19,7 +19,6 @@ import { addUserIDToGame } from "../gameLogic/Controllers/requests";
 import { getAreas } from "../utils/playerAreaParser";
 import WebSocketHandler, { GameEventType } from "../utils/WebSocketHandler";
 import { Areas } from "../gameLogic/Enums/Areas";
-import { AreaType } from "../gameLogic/Models/AreaType";
 import WaitingForPlayers from "./WaitingForPlayers";
 import Leaderboard from "./Leaderboard";
 import RegionBonusInfo from "./RegionBonusInfo";
@@ -38,16 +37,16 @@ export default function GameDisplay() {
     const { gameID } = useParams<{ gameID: string }>();
     const [game, setGame] = useState<Game | null>(null);
     const [isGameLoaded, setIsGameLoaded] = useState(false);
-    const [attackingArea, setAttackingArea] = useState<Area | null>(null);
-    const [defendingArea, setDefendingArea] = useState<Area | null>(null);
+    const [attackingArea, setAttackingArea] = useState<AreaName | null>(null);
+    const [defendingArea, setDefendingArea] = useState<AreaName | null>(null);
     const [attackingDice, setAttackingDice] = useState<number>(1);
     const [shouldDisplayUnitMoveButton, setShouldDisplayUnitMoveButton] = useState<boolean>(false);
     const [shouldDisplayReinforcementsModal, setShouldDisplayReinforcementsModal] = useState<boolean>(false);
     const [shouldDisplayTroopTransferButton, setShouldDisplayTroopTransferButton] = useState<boolean>(false);
     const [shouldHandleStartingReinforcements, setShouldHandleStartingReinforcements] = useState<boolean>(true);
     const [shouldDisplayTerritoryCards, setShouldDisplayTerritoryCards] = useState<boolean>(false);
-    const [areaToMoveUnits, setAreaToMoveUnits] = useState<Area | null>(null);
-    const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<Area | null>(null);
+    const [areaToMoveUnits, setAreaToMoveUnits] = useState<AreaName | null>(null);
+    const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<AreaName | null>(null);
     const [unitsToMove, setUnitsToMove] = useState<number>(0);
     const [isGameOver, setIsGameOver] = useState<boolean>(false);
     const [disconnectedPlayers, setDisconnectedPlayers] = useState<Player[]>([]);
@@ -136,10 +135,8 @@ export default function GameDisplay() {
 
         switch (messageData.type) {
             case GameEventType.COMBAT_SETUP: {
-                const attackingArea = Areas[messageData.attackingArea];
-                const defendingArea = Areas[messageData.defendingArea];
-                setAttackingArea(attackingArea);
-                setDefendingArea(defendingArea);        
+                setAttackingArea(messageData.attackingArea);
+                setDefendingArea(messageData.defendingArea);        
                 break;
             }
             case GameEventType.PLAYER_JOINED: {
@@ -169,9 +166,7 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.UNIT_MOVE: {
-                const origin = Areas[messageData.origin];
-                const destination = Areas[messageData.destination];
-                onMoveUnits(origin, destination, messageData.numUnits);
+                onMoveUnits(messageData.origin, messageData.destination, messageData.numUnits);
                 break;
             }
             case GameEventType.TROOP_TRANSFER_SETUP: {
@@ -179,9 +174,7 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.TROOP_TRANSFER: {
-                const origin = Areas[messageData.origin];
-                const destination = Areas[messageData.destination];
-                onMoveUnits(origin, destination, messageData.numUnits);
+                onMoveUnits(messageData.origin, messageData.destination, messageData.numUnits);
                 break;
             }
             case GameEventType.END_TURN: {
@@ -239,15 +232,15 @@ export default function GameDisplay() {
     }
 
     // TODO: handle on backend
-    function onAreaSelect(area: Area): void {
+    function onAreaSelect(areaName: AreaName): void {
         if (shouldHandleStartingReinforcements) {
-            webSocketHandler.current!.sendStartingReinforcement(area.getName());
+            webSocketHandler.current!.sendStartingReinforcement(areaName);
         } else if (shouldDisplayReinforcementsModal) {
-            webSocketHandler.current!.sendReinforcement(area.getName());
+            webSocketHandler.current!.sendReinforcement(areaName);
         } else if (shouldDisplayTroopTransferButton) {
-            setAreaForTroopTransfer(area);
+            setAreaForTroopTransfer(areaName);
         } else {
-            setAreaForCombat(area);
+            setAreaForCombat(areaName);
         }
     }
 
@@ -284,30 +277,30 @@ export default function GameDisplay() {
         return reinforcementController;
     }
 
-    function setAreaForTroopTransfer(area: Area): void {
-        if (areaToMoveUnits === area) {
+    function setAreaForTroopTransfer(areaName: AreaName): void {
+        if (areaToMoveUnits === areaName) {
             webSocketHandler.current!.sendClearAreaSelection();
-        } else if (areaToReceiveUnits === area) {
+        } else if (areaToReceiveUnits === areaName) {
             setAreaToReceiveUnits(null);
         } else if (areaToMoveUnits !== null) {
-            setAreaToReceiveUnits(area);
+            setAreaToReceiveUnits(areaName);
             setShouldDisplayUnitMoveButton(true);
         } else {
-            setAreaToMoveUnits(area);
+            setAreaToMoveUnits(areaName);
         }
     }
 
     // TODO: handle on backend
-    function setAreaForCombat(area: Area): void {
-        if (attackingArea === area) {
+    function setAreaForCombat(areaName: AreaName): void {
+        if (attackingArea === areaName) {
             webSocketHandler.current!.sendClearAreaSelection();
-        } else if (defendingArea === area) {
+        } else if (defendingArea === areaName) {
             setDefendingArea(null);
         } else if (attackingArea !== null) {
-            setDefendingArea(area);
-            webSocketHandler.current!.sendCombatInfo(attackingArea.getName(), area.getName());
+            setDefendingArea(areaName);
+            webSocketHandler.current!.sendCombatInfo(attackingArea, areaName);
         } else {
-            setAttackingArea(area);
+            setAttackingArea(areaName);
         }
     }
 
@@ -328,12 +321,10 @@ export default function GameDisplay() {
 
         const defendingDice = getMaxDefendingDice();
         const results = combatController.getCombatResults(attackingDice, defendingDice);
-        webSocketHandler.current!.sendCombatResults(attackingArea!.getName(), defendingArea!.getName(), results);
+        webSocketHandler.current!.sendCombatResults(attackingArea!, defendingArea!, results);
     }
 
-    async function updateAreasAfterCombat(attackingAreaName: string, defendingAreaName: string, results: string[]) {
-        const attackingArea = Areas[attackingAreaName];
-        const defendingArea = Areas[defendingAreaName];
+    async function updateAreasAfterCombat(attackingArea: AreaName, defendingArea: AreaName, results: string[]) {
         const combatController = new CombatController(
             attackingArea,
             defendingArea,
@@ -342,14 +333,17 @@ export default function GameDisplay() {
 
         combatController.handleResults(results);
 
-        if (defendingArea.hasNoUnitsRemaining()) {
+
+        const defendingAreaDetail = areaDetails[defendingArea];
+
+        if (defendingAreaDetail.units <= 0) {
             await setStateForUnitMove(attackingArea, defendingArea);
         }
 
         resetCombatState();
     }
 
-    function setStateForUnitMove(attackingArea: any, defendingArea: any): void {
+    function setStateForUnitMove(attackingArea: AreaName, defendingArea: AreaName): void {
         setShouldDisplayUnitMoveButton(true);
         setAreaToMoveUnits(attackingArea);
         setAreaToReceiveUnits(defendingArea);
@@ -409,7 +403,7 @@ export default function GameDisplay() {
     function updateAreaDetails(messageData: any): void {
         const areaName: keyof typeof AreaName = messageData.areaName;
         const areaColour: Colour = messageData.areaColour as Colour;
-        const area = areaDetails[areaName];
+        const area = areaDetails[areaName as AreaName];
         area.units = messageData.areaUnits;
         area.colour = areaColour;
     }
@@ -420,14 +414,14 @@ export default function GameDisplay() {
         }
 
         if (shouldDisplayTroopTransferButton) {
-            webSocketHandler.current!.sendTroopTransfer(areaToMoveUnits!.getName(), areaToReceiveUnits!.getName(), unitsToMove);
+            webSocketHandler.current!.sendTroopTransfer(areaToMoveUnits!, areaToReceiveUnits!, unitsToMove);
             webSocketHandler.current!.sendEndTurn()
         } else {
-            webSocketHandler.current!.sendUnitMove(areaToMoveUnits!.getName(), areaToReceiveUnits!.getName(), unitsToMove);
+            webSocketHandler.current!.sendUnitMove(areaToMoveUnits!, areaToReceiveUnits!, unitsToMove);
         }
     }
 
-    function onMoveUnits(origin: AreaType, destination: AreaType, numUnits: number): void {
+    function onMoveUnits(origin: AreaName, destination: AreaName, numUnits: number): void {
         const unitMoveController = new UnitMoveController(
             origin,
             destination
@@ -446,12 +440,15 @@ export default function GameDisplay() {
 
     function getMaxAttackingDice(): number {
         const { MAX_ATTACKING_DICE } = Combat;
-        return Math.min(MAX_ATTACKING_DICE, attackingArea!.getUnits() - 1);
+        const attackingAreaDetail = areaDetails[attackingArea!];
+
+        return Math.min(MAX_ATTACKING_DICE, attackingAreaDetail.units - 1);
     }
 
     function getMaxDefendingDice(): number {
         const { MAX_DEFENDING_DICE } = Combat;
-        return Math.min(attackingDice, defendingArea!.getUnits(), MAX_DEFENDING_DICE);
+        const defendingAreaDetail = areaDetails[defendingArea!];
+        return Math.min(attackingDice, defendingAreaDetail.units, MAX_DEFENDING_DICE);
     }
 
     function isCombatButtonClickable(): boolean {
@@ -557,7 +554,7 @@ export default function GameDisplay() {
             )}
             {(shouldDisplayUnitMoveButton || shouldDisplayTroopTransferButton) && (
                 <UnitMoveHandler
-                    max={areaToMoveUnits ? areaToMoveUnits.getUnits() - 1 : 0}
+                    areaToMoveUnits={areaToMoveUnits}
                     unitsToMove={unitsToMove}
                     onMoveUnits={onMoveUnitButtonClick}
                     setUnitsToMove={setUnitsToMove}

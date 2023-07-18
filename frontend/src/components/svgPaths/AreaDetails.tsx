@@ -4,7 +4,7 @@ import { Colour } from '../../gameLogic/Enums/Colours';
 import { AreaType } from '../../gameLogic/Models/AreaType';
 import { Coordinates } from '../../utils/Coordinates';
 
-type areaDetail = {
+export type AreaDetail = {
     region: string,
     area: AreaType,
     path: string,
@@ -13,7 +13,7 @@ type areaDetail = {
     centroid: Coordinates
 }
 
-const areaDetails: {[name in AreaName]: areaDetail} = {
+const areaDetails: {[name in AreaName]: AreaDetail} = {
     [AreaName.FORLINDON]: {
         region: 'eriador',
         area: Areas.FORLINDON,
