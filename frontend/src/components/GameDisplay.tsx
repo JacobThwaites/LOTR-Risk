@@ -13,12 +13,10 @@ import TurnInformation from "./TurnInformation";
 import { Combat } from '../gameLogic/Enums/Combat';
 import { CombatValidator } from "../gameLogic/Controllers/CombatValidator";
 import { Game } from "../gameLogic/Models/Game";
-import { Area } from "../gameLogic/Models/Area";
 import { useParams, useLocation } from "react-router";
 import { addUserIDToGame } from "../gameLogic/Controllers/requests";
 import { getAreas } from "../utils/playerAreaParser";
 import WebSocketHandler, { GameEventType } from "../utils/WebSocketHandler";
-import { Areas } from "../gameLogic/Enums/Areas";
 import WaitingForPlayers from "./WaitingForPlayers";
 import Leaderboard from "./Leaderboard";
 import RegionBonusInfo from "./RegionBonusInfo";
@@ -49,7 +47,7 @@ export default function GameDisplay() {
     const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<AreaName | null>(null);
     const [unitsToMove, setUnitsToMove] = useState<number>(0);
     const [isGameOver, setIsGameOver] = useState<boolean>(false);
-    const [disconnectedPlayers, setDisconnectedPlayers] = useState<Player[]>([]);
+    const [disconnectedPlayers, setDisconnectedPlayers] = useState<Colour[]>([]);
     const ws = useRef<WebSocket | null>();
     const webSocketHandler = useRef<WebSocketHandler | null>();
     const isWebSocketConnected = useRef<boolean>(); 
@@ -66,11 +64,14 @@ export default function GameDisplay() {
             }
 
             const json = await res.json();
+
+            // TODO: remove
             const areaNames = getPlayerAreaNames(json.data.players);
             const areas = getAreas(areaNames);
             const playerIDs = json.data.players.map((p: any) => { return p.id });
             const userIDs = json.data.players.map((p: any) => { return p.userID });
             const game = GameGenerator.generateGame(areas, playerIDs, userIDs);
+
             setupStartingAreaColours(areas);
             setGame(game);
             setShouldDisplayReinforcementsModal(true);
@@ -125,7 +126,6 @@ export default function GameDisplay() {
 
     function processWebSocketMessage(event: MessageEvent): void {
         const messageData = JSON.parse(event.data);
-        console.log(messageData);
         
         if (webSocketHandler.current!.isMessageAlreadyProcessed(messageData.id)) {
             return;
@@ -140,7 +140,7 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.PLAYER_JOINED: {
-                const newDisconnectedPlayers = disconnectedPlayers.filter(p => p.getUserID() !== messageData.userID)
+                const newDisconnectedPlayers = disconnectedPlayers.filter(playerColour => playerColour !== messageData.colour)
                 setDisconnectedPlayers(newDisconnectedPlayers);
                 game!.addUserIDToPlayer(messageData.userID);
                 updateGameState(game!);
@@ -152,13 +152,11 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.STARTING_REINFORCEMENT: {
-                const area = Areas[messageData.areaName];
-                handleStartingReinforcements(area);
+                handleStartingReinforcements(messageData.areaName);
                 break;
             }
             case GameEventType.REINFORCEMENT: {
-                const area = Areas[messageData.areaName];
-                addReinforcements(area);
+                addReinforcements(messageData.areaName);
                 break;
             }
             case GameEventType.COMBAT_RESULTS: {
@@ -182,7 +180,7 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.PLAYER_DISCONNECT: {
-                handlePlayerDisconnect(messageData.user);
+                handlePlayerDisconnect(messageData.userColour);
                 break;
             }
             case GameEventType.GAME_OVER_DISCONNECT: {
@@ -244,10 +242,11 @@ export default function GameDisplay() {
         }
     }
 
-    function handleStartingReinforcements(area: Area): void {
+    // TODO: fix this; currently not updating player reinforcements
+    function handleStartingReinforcements(areaName: AreaName): void {
         const currentPlayer = game!.getCurrentPlayer();
 
-        addReinforcements(area);
+        addReinforcements(areaName);
 
         if (currentPlayer!.getReinforcements() < 1) {
             game!.changeCurrentPlayer();
@@ -261,9 +260,9 @@ export default function GameDisplay() {
         }
     }
 
-    function addReinforcements(area: Area): void {
+    function addReinforcements(areaName: AreaName): void {
         const reinforcementController = createReinforcementController();
-        reinforcementController.addReinforcements(area);
+        reinforcementController.addReinforcements(areaName);
         updateGameState(game!);
 
         if (!game!.playersHaveReinforcements()) {
@@ -381,23 +380,9 @@ export default function GameDisplay() {
         }
     }
 
-    function handlePlayerDisconnect(userID: string): void {
-        const player = getPlayerByUserID(userID);
-
-        if (player) {
-            const newDisconnectedPlayers = [...disconnectedPlayers, player];
-            setDisconnectedPlayers(newDisconnectedPlayers);
-        }
-    }
-
-    function getPlayerByUserID(userID: string): Player | null {
-        for (const player of game!.getPlayers()) {
-            if (player.getUserID() === userID) {
-                return player;
-            }
-        }
-
-        return null;
+    function handlePlayerDisconnect(userColour: Colour): void {
+        const newDisconnectedPlayers = [...disconnectedPlayers, userColour];
+        setDisconnectedPlayers(newDisconnectedPlayers);
     }
 
     function updateAreaDetails(messageData: any): void {
@@ -585,8 +570,8 @@ export default function GameDisplay() {
                 />
             )}
             {disconnectedPlayers.length > 0 && (
-                disconnectedPlayers.map(player =>
-                    <PlayerDisconnectModal key={player.getID()} playerColour={player.getColour()} />
+                disconnectedPlayers.map(colour =>
+                    <PlayerDisconnectModal key={colour} playerColour={colour} />
                 )
             )}
             {isGameOver && (

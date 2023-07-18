@@ -1,5 +1,6 @@
 import { Player } from '../Models/Player';
-import { AreaType } from '../Models/AreaType';
+import { AreaName } from '../Enums/AreaNames';
+import areaDetails from '../../components/svgPaths/AreaDetails';
 
 export class ReinforcementController {
     private player: Player;
@@ -7,7 +8,11 @@ export class ReinforcementController {
         this.player = player;
     }
 
-    addReinforcements(area: AreaType) {
-        this.player.addReinforcementsToArea(area);
+    addReinforcements(areaName: AreaName) {
+        const areaDetail = areaDetails[areaName];
+        areaDetail.units++;
+
+        // Old
+        this.player.removeReinforcement();
     }
 }

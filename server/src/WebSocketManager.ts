@@ -84,7 +84,8 @@ export class WebSocketManager {
 
     private broadcastPlayerDisconnect(gameID: string, webSocketWithID: WebSocketWithID): void {
         const server = this.getGameServer(gameID);
-        const message = { id: uuidv4(), type: GameEventType.PLAYER_DISCONNECT, user: webSocketWithID.getID() };
+        // TODO: get user colour and send that in message
+        const message = { id: uuidv4(), type: GameEventType.PLAYER_DISCONNECT, userColour: webSocketWithID.getID() };
         emitMessage(message, server);
     }
 

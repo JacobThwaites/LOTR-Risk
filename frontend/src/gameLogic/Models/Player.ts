@@ -151,6 +151,10 @@ export class Player {
         }
     }
 
+    removeReinforcement() {
+        this.reinforcements--;
+    }
+
     addStartingUnits() {
         for (let i = 0; i < this.areas.length; i++) {   
             this.addReinforcementsToArea(this.areas[i]);
