@@ -1,9 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { getUserID } from './userIDManager';
+import { AreaName } from '../gameLogic/Enums/AreaNames';
 
 export enum GameEventType {
     CLEAR_SELECTED_AREAS = "CLEAR SELECTED AREAS",
     COMBAT_SETUP = "COMBAT SETUP",
+    COMBAT = "COMBAT",
     COMBAT_RESULTS = "COMBAT RESULTS",
     STARTING_REINFORCEMENT = "STARTING REINFORCEMENT",
     REINFORCEMENT = "REINFORCEMENT",
@@ -14,7 +16,8 @@ export enum GameEventType {
     PLAYER_JOINED = "PLAYER JOINED",
     PLAYER_DISCONNECT = "PLAYER DISCONNECTED",
     GAME_OVER_DISCONNECT = "GAME OVER DISCONNECTION",
-    UPDATE_AREA = "UPDATE AREA"
+    UPDATE_AREA = "UPDATE AREA",
+    CHANGE_PLAYER = "CHANGE PLAYER"
 }
 
 export default class WebSocketHandler {
@@ -132,6 +135,18 @@ export default class WebSocketHandler {
         const messageBody = {
             type: GameEventType.PLAYER_JOINED,
             userID: getUserID()
+        }
+
+        this.sendMessage(messageBody);
+    }
+
+    sendCombat(attackingArea: AreaName, defendingArea: AreaName, numAttackingDice: number) {     
+        const messageBody = {
+            type: GameEventType.COMBAT,
+            userID: getUserID(),
+            attackingArea,
+            defendingArea,
+            numAttackingDice
         }
 
         this.sendMessage(messageBody);

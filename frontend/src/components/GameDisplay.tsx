@@ -53,6 +53,8 @@ export default function GameDisplay() {
     const isWebSocketConnected = useRef<boolean>(); 
     const location: { state: { gameType?: string } } = useLocation();
     const gameType = location.state ? location.state.gameType : "online";
+    const [reinforcementsAvailable, setReinforcementsAvailable] = useState<number>(0);
+    const [currentPlayerColour, setCurrentPlayerColour] = useState<Colour>(Colour.BLACK);
     const [userColour, setUserColour] = useState<Colour>();
 
     useEffect(() => {
@@ -64,8 +66,10 @@ export default function GameDisplay() {
             }
 
             const json = await res.json();
-
-            // TODO: remove
+            const { players } = json.data;
+            setCurrentPlayerColour(players[0].colour);
+            
+            // TODO: old
             const areaNames = getPlayerAreaNames(json.data.players);
             const areas = getAreas(areaNames);
             const playerIDs = json.data.players.map((p: any) => { return p.id });
@@ -77,10 +81,9 @@ export default function GameDisplay() {
             setShouldDisplayReinforcementsModal(true);
             setIsGameLoaded(true);
             
-            const players = game.getPlayers();
             for (let i = 0; i < players.length; i++) {
-                if (players[i].getUserID() === getUserID()) {
-                    setUserColour(players[i].getColour());
+                if (players[i].userID === getUserID()) {
+                    setUserColour(players[i].colour);
                 }
             }
         }
@@ -180,7 +183,7 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.PLAYER_DISCONNECT: {
-                handlePlayerDisconnect(messageData.userColour);
+                setDisconnectedPlayers([...disconnectedPlayers, messageData.userColour]);
                 break;
             }
             case GameEventType.GAME_OVER_DISCONNECT: {
@@ -189,6 +192,12 @@ export default function GameDisplay() {
             }
             case GameEventType.UPDATE_AREA: {
                 updateAreaDetails(messageData);
+                break;
+            }
+            case GameEventType.CHANGE_PLAYER: {
+                setCurrentPlayerColour(messageData.playerColour);
+                console.log("changed player");
+                
                 break;
             }
             default:
@@ -323,6 +332,10 @@ export default function GameDisplay() {
         webSocketHandler.current!.sendCombatResults(attackingArea!, defendingArea!, results);
     }
 
+    function onCombatButtonClick(): void {
+        webSocketHandler.current!.sendCombat(attackingArea!, defendingArea!, attackingDice);
+    }
+
     async function updateAreasAfterCombat(attackingArea: AreaName, defendingArea: AreaName, results: string[]) {
         const combatController = new CombatController(
             attackingArea,
@@ -378,11 +391,6 @@ export default function GameDisplay() {
         if (maxTurnsReached) {
             setIsGameOver(true);
         }
-    }
-
-    function handlePlayerDisconnect(userColour: Colour): void {
-        const newDisconnectedPlayers = [...disconnectedPlayers, userColour];
-        setDisconnectedPlayers(newDisconnectedPlayers);
     }
 
     function updateAreaDetails(messageData: any): void {
@@ -524,14 +532,14 @@ export default function GameDisplay() {
             />
             <TurnInformation
                 turnsRemaining={game!.getTurnsRemaining()}
-                playerName={`${currentPlayer!.getColour()} Player`}
+                playerName={`${currentPlayerColour} Player`}
             />
             <RegionBonusInfo />
             {attackingArea && defendingArea && (
                 <CombatHandler
                     attackingDice={attackingDice}
                     maxAttackingDice={getMaxAttackingDice()}
-                    onCombatButtonClick={handleCombat}
+                    onCombatButtonClick={onCombatButtonClick}
                     setAttackingDice={setAttackingDice}
                     isCombatButtonClickable={isCombatButtonClickable()}
                     isUsersTurn={isUsersTurn()}

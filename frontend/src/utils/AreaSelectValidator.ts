@@ -2,7 +2,6 @@ import areaDetails from "../components/svgPaths/AreaDetails";
 import { getConnectedAreasForTroopTransfer } from "../gameLogic/Controllers/TroopTransferConnections";
 import { AreaName } from "../gameLogic/Enums/AreaNames";
 import { Colour } from "../gameLogic/Enums/Colours";
-import { AreaType } from "../gameLogic/Models/AreaType";
 import { Player } from "../gameLogic/Models/Player";
 import { areAreasConnected } from "../utils/areAreasConnected";
 
@@ -37,14 +36,13 @@ export default class AreaSelectValidator {
         if (!areaDetail) {
             return false;
         }
-        const { area } = areaDetail;
 
         if (!this.isUsersTurn) {
             return false;
         } else if (this.isCombatPhase) {
             return this.isCombatSelectionValid(areaName);
         } else {
-            return this.isTroopTransferSelectionValid(area);
+            return this.isTroopTransferSelectionValid(areaName);
         }
     }
 
@@ -72,32 +70,32 @@ export default class AreaSelectValidator {
     private isDefendingAreaClickable(areaName: AreaName): boolean {
         const areaDetail = areaDetails[areaName as AreaName];
         const { area } = areaDetail;
+        
 
         const attackingAreaDetail = areaDetails[this.attackingArea as AreaName];
-        const attackingArea = attackingAreaDetail.area;
+        const attackingArea = attackingAreaDetail?.area;
 
         if (!this.attackingArea) {
             return false;
         }
-
+        
         const defendingPlayer = area.getPlayer();
         return (
-            (areAreasConnected(attackingArea, area) && this.currentPlayer !== defendingPlayer) ||
+            (areAreasConnected(this.attackingArea, areaName) && this.currentPlayer !== defendingPlayer) ||
             attackingArea === area
         );
     }
 
-    private isTroopTransferSelectionValid(area: AreaType): boolean {
-        const troopTransferStartDetail = areaDetails[this.troopTransferStart as AreaName];
-        const troopTransferStart = troopTransferStartDetail.area;
+    private isTroopTransferSelectionValid(areaName: AreaName): boolean {
+        const areaDetail = areaDetails[areaName];
 
         if (!this.troopTransferStart) {
-            return this.currentPlayer.ownsArea(area);
-        } else if (troopTransferStart === area) {
+            return areaDetail.colour === this.currentPlayer.getColour();
+        } else if (this.troopTransferStart === areaName) {
             return true;
         } else {
-            const validAreas = getConnectedAreasForTroopTransfer(troopTransferStart, this.currentPlayer);
-            return validAreas.includes(area);
+            const validAreas = getConnectedAreasForTroopTransfer(this.troopTransferStart, this.currentPlayer);
+            return validAreas.includes(areaName);
         }
     }
 }
