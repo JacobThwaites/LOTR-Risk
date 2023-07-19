@@ -173,8 +173,8 @@ export default function GameDisplay() {
                 resetCombatState();
                 break;
             }
-            case GameEventType.UNIT_MOVE: {
-                onMoveUnits(messageData.origin, messageData.destination, messageData.numUnits);
+            case GameEventType.UNIT_MOVE_COMPLETE: {
+                resetUnitMoveState();
                 break;
             }
             case GameEventType.TROOP_TRANSFER_SETUP: {
@@ -362,6 +362,7 @@ export default function GameDisplay() {
     function updateAreaDetails(areaName: AreaName, areaColour: Colour, areaUnits: number): void {
         const area = areaDetails[areaName as AreaName];
         area.units = areaUnits;
+        // area.colour = areaColour as Colour;
         area.colour = areaColour;
     }
 

@@ -48,10 +48,9 @@ export default class AreaSelectValidator {
 
     private isCombatSelectionValid(areaName: AreaName): boolean {
         const areaDetail = areaDetails[areaName as AreaName];
-        const { area } = areaDetail;
 
         if (this.isAttackingAreaSelected(areaName)) {
-            return this.isAttackingAreaClickable(this.userColour, area.getPlayer()!.getColour());
+            return this.isAttackingAreaClickable(this.userColour, areaDetail.colour!);
         } else {
             return this.isDefendingAreaClickable(areaName);
         }
