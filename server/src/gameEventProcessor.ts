@@ -12,7 +12,7 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
     const currentPlayer = game.getCurrentPlayer();
     
     // TODO: don't do this if player joined or disconnected message
-    if (currentPlayer.getUserID() !== messageData.userID) {
+    if (currentPlayer.getUserID() !== messageData.userID && messageData.type !== GameEventType.PLAYER_JOINED) {
         console.log("message sent from incorrect player");
         return;
     }
@@ -58,19 +58,12 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
 
             break;
         }
-        case GameEventType.COMBAT_SETUP: {
-            const area = Areas[messageData.areaName];
-            currentPlayer.addReinforcementsToArea(area);
-            const combatSetupMessage = GameEventMessageFactory.generateCombatSetupMessage(messageData.attackingArea, messageData.defendingArea);
-            emitMessage(combatSetupMessage, wss);
-            break;
-        }
         case GameEventType.CLEAR_SELECTED_AREAS: {
             const message = GameEventMessageFactory.generateClearSelectedAreasMessage();
             emitMessage(message, wss);
             break;
         }
-        case GameEventType.COMBAT_RESULTS: {
+        case GameEventType.COMBAT: {
             const attackingArea = Areas[messageData.attackingArea];
             const defendingArea = Areas[messageData.defendingArea];
             const combatController = new CombatController(
@@ -81,10 +74,8 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
             const results = combatController.getCombatResults(messageData.numAttackingDice);
             combatController.handleResults(results);
 
-            const attackingAreaUpdateMessage = GameEventMessageFactory.generateAreaUpdateMessage(attackingArea);
-            const defendingAreaUpdateMessage = GameEventMessageFactory.generateAreaUpdateMessage(defendingArea);
-            emitMessage(attackingAreaUpdateMessage, wss);
-            emitMessage(defendingAreaUpdateMessage, wss);
+            const combatResultsMessage = GameEventMessageFactory.generateCombatResultsMessage(attackingArea, defendingArea);
+            emitMessage(combatResultsMessage, wss);
 
             if (defendingArea.hasNoUnitsRemaining()) {
                 const message = GameEventMessageFactory.generateUnitMoveSetupMessage(attackingArea, defendingArea);

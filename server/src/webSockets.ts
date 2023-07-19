@@ -23,7 +23,6 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
                 webSocketManager.setPreviousMessageID(messageData.id);
             }
 
-            emitMessage(messageData, wss);
 
             updateGame(messageData, game, wss);
 
@@ -34,6 +33,7 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
                 }
                 webSocketWithID.setID(messageData.userID);
                 webSocketManager.addClient(gameID, webSocketWithID);
+                emitMessage(messageData, wss);
             }
         });
 

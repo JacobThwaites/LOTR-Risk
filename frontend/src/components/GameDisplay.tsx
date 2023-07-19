@@ -129,7 +129,7 @@ export default function GameDisplay() {
 
     function processWebSocketMessage(event: MessageEvent): void {
         const messageData = JSON.parse(event.data);
-        
+
         if (webSocketHandler.current!.isMessageAlreadyProcessed(messageData.id)) {
             return;
         } else {
@@ -137,11 +137,6 @@ export default function GameDisplay() {
         }
 
         switch (messageData.type) {
-            case GameEventType.COMBAT_SETUP: {
-                setAttackingArea(messageData.attackingArea);
-                setDefendingArea(messageData.defendingArea);        
-                break;
-            }
             case GameEventType.PLAYER_JOINED: {
                 const newDisconnectedPlayers = disconnectedPlayers.filter(playerColour => playerColour !== messageData.colour)
                 setDisconnectedPlayers(newDisconnectedPlayers);
@@ -155,7 +150,7 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.STARTING_REINFORCEMENT: {
-                handleStartingReinforcements(messageData.areaName);
+                addReinforcements(messageData.areaName);
                 break;
             }
             case GameEventType.REINFORCEMENT: {
@@ -163,7 +158,19 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.COMBAT_RESULTS: {
-                updateAreasAfterCombat(messageData.attackingArea, messageData.defendingArea, messageData.results);
+                const { 
+                    attackingAreaName, 
+                    attackingAreaUnits, 
+                    attackingAreaColour,
+                    defendingAreaName,
+                    defendingAreaUnits, 
+                    defendingAreaColour
+                } = messageData;
+
+                updateAreaDetails(attackingAreaName, attackingAreaColour, attackingAreaUnits);
+                updateAreaDetails(defendingAreaName, defendingAreaColour, defendingAreaUnits);
+                
+                resetCombatState();
                 break;
             }
             case GameEventType.UNIT_MOVE: {
@@ -171,6 +178,8 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.TROOP_TRANSFER_SETUP: {
+                setAttackingArea(null);
+                setDefendingArea(null);
                 setShouldDisplayTroopTransferButton(true);
                 break;
             }
@@ -191,13 +200,21 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.UPDATE_AREA: {
-                updateAreaDetails(messageData);
+                const { areaName, areaColour, areaUnits } = messageData;
+                updateAreaDetails(areaName, areaColour, areaUnits);
                 break;
             }
             case GameEventType.CHANGE_PLAYER: {
-                setCurrentPlayerColour(messageData.playerColour);
-                console.log("changed player");
-                
+                setCurrentPlayerColour(messageData.playerColour);   
+                break;
+            }
+            case GameEventType.STARTING_REINFORCEMENTS_END: {
+                setShouldDisplayReinforcementsModal(false);
+                setShouldHandleStartingReinforcements(false);
+                break;
+            }
+            case GameEventType.UNIT_MOVE_SETUP: {
+                setStateForUnitMove(messageData.attackingArea, messageData.defendingArea);
                 break;
             }
             default:
@@ -251,24 +268,6 @@ export default function GameDisplay() {
         }
     }
 
-    // TODO: fix this; currently not updating player reinforcements
-    function handleStartingReinforcements(areaName: AreaName): void {
-        const currentPlayer = game!.getCurrentPlayer();
-
-        addReinforcements(areaName);
-
-        if (currentPlayer!.getReinforcements() < 1) {
-            game!.changeCurrentPlayer();
-        }
-
-        updateGameState(game!);
-
-        if (!game!.playersHaveReinforcements()) {
-            setShouldDisplayReinforcementsModal(false);
-            setShouldHandleStartingReinforcements(false)
-        }
-    }
-
     function addReinforcements(areaName: AreaName): void {
         const reinforcementController = createReinforcementController();
         reinforcementController.addReinforcements(areaName);
@@ -306,7 +305,6 @@ export default function GameDisplay() {
             setDefendingArea(null);
         } else if (attackingArea !== null) {
             setDefendingArea(areaName);
-            webSocketHandler.current!.sendCombatInfo(attackingArea, areaName);
         } else {
             setAttackingArea(areaName);
         }
@@ -319,40 +317,8 @@ export default function GameDisplay() {
         setAreaToReceiveUnits(null);
     }
 
-    // TODO: move this to backend
-    function handleCombat(): void {
-        const combatController = new CombatController(
-            attackingArea!,
-            defendingArea!,
-            game!
-        );
-
-        const defendingDice = getMaxDefendingDice();
-        const results = combatController.getCombatResults(attackingDice, defendingDice);
-        webSocketHandler.current!.sendCombatResults(attackingArea!, defendingArea!, results);
-    }
-
     function onCombatButtonClick(): void {
         webSocketHandler.current!.sendCombat(attackingArea!, defendingArea!, attackingDice);
-    }
-
-    async function updateAreasAfterCombat(attackingArea: AreaName, defendingArea: AreaName, results: string[]) {
-        const combatController = new CombatController(
-            attackingArea,
-            defendingArea,
-            game!
-        );
-
-        combatController.handleResults(results);
-
-
-        const defendingAreaDetail = areaDetails[defendingArea];
-
-        if (defendingAreaDetail.units <= 0) {
-            await setStateForUnitMove(attackingArea, defendingArea);
-        }
-
-        resetCombatState();
     }
 
     function setStateForUnitMove(attackingArea: AreaName, defendingArea: AreaName): void {
@@ -393,11 +359,9 @@ export default function GameDisplay() {
         }
     }
 
-    function updateAreaDetails(messageData: any): void {
-        const areaName: keyof typeof AreaName = messageData.areaName;
-        const areaColour: Colour = messageData.areaColour as Colour;
+    function updateAreaDetails(areaName: AreaName, areaColour: Colour, areaUnits: number): void {
         const area = areaDetails[areaName as AreaName];
-        area.units = messageData.areaUnits;
+        area.units = areaUnits;
         area.colour = areaColour;
     }
 
@@ -438,12 +402,6 @@ export default function GameDisplay() {
         return Math.min(MAX_ATTACKING_DICE, attackingAreaDetail.units - 1);
     }
 
-    function getMaxDefendingDice(): number {
-        const { MAX_DEFENDING_DICE } = Combat;
-        const defendingAreaDetail = areaDetails[defendingArea!];
-        return Math.min(attackingDice, defendingAreaDetail.units, MAX_DEFENDING_DICE);
-    }
-
     function isCombatButtonClickable(): boolean {
         if (!isUsersTurn()) {
             return false;
@@ -482,7 +440,7 @@ export default function GameDisplay() {
             return true;
         }
 
-        return currentPlayer.getUserID() === getUserID();
+        return currentPlayerColour === userColour;
     }
 
     function getUserCards() {

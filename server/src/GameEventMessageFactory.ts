@@ -9,14 +9,13 @@ export type GameEventMessage = {
 
 export enum GameEventType {
     CLEAR_SELECTED_AREAS = "CLEAR SELECTED AREAS",
-    COMBAT_SETUP = "COMBAT SETUP",
     COMBAT = "COMBAT",
     COMBAT_RESULTS = "COMBAT RESULTS",
     STARTING_REINFORCEMENT = "STARTING REINFORCEMENT",
     REINFORCEMENT = "REINFORCEMENT",
     END_TURN = "END TURN",
-    UNIT_MOVE_SETUP = "UNIT MANEURVRE SETUP",
-    UNIT_MOVE = "UNIT MANEUVRE",
+    UNIT_MOVE_SETUP = "UNIT MOVE SETUP",
+    UNIT_MOVE = "UNIT MOVE",
     UNIT_MOVE_COMPLETE = "UNIT MOVE COMPLETE",
     TROOP_TRANSFER_SETUP = "TROOP TRANSFER SETUP",
     TROOP_TRANSFER = "TROOP TRANSFER",
@@ -39,6 +38,19 @@ export default class GameEventMessageFactory {
             areaName: area.getName(),
             areaUnits: area.getUnits(),
             areaColour: area.getPlayer()?.getColour()
+        }
+    }
+
+    public static generateCombatResultsMessage(attackingArea: AreaType, defendingArea: AreaType): GameEventMessage {
+        return {
+            type: GameEventType.COMBAT_RESULTS,
+            id: uuidv4(), 
+            attackingAreaName: attackingArea.getName(),
+            attackingAreaUnits: attackingArea.getUnits(),
+            attackingAreaColour: attackingArea.getPlayer()?.getColour(),
+            defendingAreaName: defendingArea.getName(),
+            defendingAreaUnits: defendingArea.getUnits(),
+            defendingAreaColour: defendingArea.getPlayer()?.getColour(),
         }
     }
 
@@ -79,15 +91,6 @@ export default class GameEventMessageFactory {
         }
     }
 
-    public static generateCombatSetupMessage(attackingAreaName: string, defendingAreaName: string): GameEventMessage {
-        return {
-            type: GameEventType.COMBAT_SETUP,
-            id: uuidv4(),
-            attackingAreaName,
-            defendingAreaName
-        }
-    }
-
     public static generateClearSelectedAreasMessage(): GameEventMessage {
         return {
             type: GameEventType.CLEAR_SELECTED_AREAS,
@@ -106,8 +109,8 @@ export default class GameEventMessageFactory {
         return {
             type: GameEventType.UNIT_MOVE_SETUP,
             id: uuidv4(),
-            attackingAreaName: attackingArea.getName(),
-            defendingAreaName: defendingArea.getName()
+            attackingArea: attackingArea.getName(),
+            defendingArea: defendingArea.getName()
         }
     }
 

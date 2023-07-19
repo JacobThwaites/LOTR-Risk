@@ -15,11 +15,11 @@ type Props = {
 }
 
 export default function UnitMoveHandler(props: Props) {
-  const [max, setMax] = useState<number>(0);
-
+  let maxUnits = 0;
+  
   if (props.areaToMoveUnits) {
     const areaDetail = areaDetails[props.areaToMoveUnits];
-    setMax(areaDetail.units - 1);
+    maxUnits = areaDetail.units - 1;
   }
 
   return (
@@ -28,7 +28,7 @@ export default function UnitMoveHandler(props: Props) {
         <label>{props.label}</label>
         <UnitInput
           name="unitsToMove"
-          max={max}
+          max={maxUnits}
           onChange={(num: number) => props.setUnitsToMove(num)}
           value={props.unitsToMove}
           disabled={props.isInputDisabled}

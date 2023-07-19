@@ -4,20 +4,24 @@ import { AreaName } from '../gameLogic/Enums/AreaNames';
 
 export enum GameEventType {
     CLEAR_SELECTED_AREAS = "CLEAR SELECTED AREAS",
-    COMBAT_SETUP = "COMBAT SETUP",
     COMBAT = "COMBAT",
     COMBAT_RESULTS = "COMBAT RESULTS",
     STARTING_REINFORCEMENT = "STARTING REINFORCEMENT",
     REINFORCEMENT = "REINFORCEMENT",
     END_TURN = "END TURN",
-    UNIT_MOVE = "UNIT MANEUVRE",
+    UNIT_MOVE_SETUP = "UNIT MOVE SETUP",
+    UNIT_MOVE = "UNIT MOVE",
+    UNIT_MOVE_COMPLETE = "UNIT MOVE COMPLETE",
     TROOP_TRANSFER_SETUP = "TROOP TRANSFER SETUP",
     TROOP_TRANSFER = "TROOP TRANSFER",
+    TROOP_TRANSFER_COMPLETE = "TROOP TRANSFER COMPLETE",
     PLAYER_JOINED = "PLAYER JOINED",
     PLAYER_DISCONNECT = "PLAYER DISCONNECTED",
+    GAME_OVER = "GAME OVER",
     GAME_OVER_DISCONNECT = "GAME OVER DISCONNECTION",
     UPDATE_AREA = "UPDATE AREA",
-    CHANGE_PLAYER = "CHANGE PLAYER"
+    CHANGE_PLAYER = "CHANGE PLAYER",
+    STARTING_REINFORCEMENTS_END = "STARTING REINFORCEMENTS END"
 }
 
 export default class WebSocketHandler {
@@ -44,16 +48,6 @@ export default class WebSocketHandler {
         message.id = uuidv4(); 
         message.userID = getUserID();
         this.socket.send(JSON.stringify(message));
-    }
-
-    sendCombatInfo(attackingArea: string, defendingArea: string) {
-        const messageBody = {
-            type: GameEventType.COMBAT_SETUP,
-            attackingArea,
-            defendingArea
-        }
-
-        this.sendMessage(messageBody);
     }
 
     sendCombatResults(attackingArea: string, defendingArea: string, results: string[]) {
