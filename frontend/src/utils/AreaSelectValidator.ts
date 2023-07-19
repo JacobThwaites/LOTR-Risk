@@ -89,11 +89,11 @@ export default class AreaSelectValidator {
         const areaDetail = areaDetails[areaName];
 
         if (!this.troopTransferStart) {
-            return areaDetail.colour === this.currentPlayer.getColour();
+            return areaDetail.colour as Colour === this.userColour as Colour;
         } else if (this.troopTransferStart === areaName) {
             return true;
         } else {
-            const validAreas = getConnectedAreasForTroopTransfer(this.troopTransferStart, this.currentPlayer);
+            const validAreas = getConnectedAreasForTroopTransfer(this.troopTransferStart, this.userColour);
             return validAreas.includes(areaName);
         }
     }
