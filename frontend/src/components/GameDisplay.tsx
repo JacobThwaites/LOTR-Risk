@@ -1,7 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import { GameGenerator } from "../gameLogic/Controllers/GameGenerator";
-import { CombatController } from "../gameLogic/Controllers/CombatController";
-import { ReinforcementController } from "../gameLogic/Controllers/ReinforcementController";
 import { UnitMoveController } from "../gameLogic/Controllers/UnitMoveController";
 import CombatHandler from "./CombatHandler";
 import UnitMoveHandler from "./UnitMoveHandler";
@@ -12,16 +9,13 @@ import GameOverModal from "./GameOverModal";
 import TurnInformation from "./TurnInformation";
 import { Combat } from '../gameLogic/Enums/Combat';
 import { CombatValidator } from "../gameLogic/Controllers/CombatValidator";
-import { Game } from "../gameLogic/Models/Game";
 import { useParams, useLocation } from "react-router";
 import { addUserIDToGame } from "../gameLogic/Controllers/requests";
-import { getAreas } from "../utils/playerAreaParser";
 import WebSocketHandler, { GameEventType } from "../utils/WebSocketHandler";
 import WaitingForPlayers from "./WaitingForPlayers";
 import Leaderboard from "./Leaderboard";
 import RegionBonusInfo from "./RegionBonusInfo";
 import TerritoryCardsDialog from "./TerritoryCardsDialog";
-import { Player } from "../gameLogic/Models/Player";
 import makeWebSocketHandler from "../utils/makeWebSocketHandler";
 import TerritoryCardsButton from "./TerritoryCardsButton";
 import NotFound from "./NotFound";
@@ -31,9 +25,10 @@ import { Colour } from "../gameLogic/Enums/Colours";
 import areaDetails from "./svgPaths/AreaDetails";
 import { AreaName } from "../gameLogic/Enums/AreaNames";
 
+// TODO: handle change player turn after end turn
+// get number of players left to join from websocket message
 export default function GameDisplay() {
     const { gameID } = useParams<{ gameID: string }>();
-    const [game, setGame] = useState<Game | null>(null);
     const [isGameLoaded, setIsGameLoaded] = useState(false);
     const [attackingArea, setAttackingArea] = useState<AreaName | null>(null);
     const [defendingArea, setDefendingArea] = useState<AreaName | null>(null);
@@ -54,8 +49,12 @@ export default function GameDisplay() {
     const location: { state: { gameType?: string } } = useLocation();
     const gameType = location.state ? location.state.gameType : "online";
     const [reinforcementsAvailable, setReinforcementsAvailable] = useState<number>(0);
+    const [playerColours, setPlayerColours] = useState<Colour[]>([]);
     const [currentPlayerColour, setCurrentPlayerColour] = useState<Colour>(Colour.BLACK);
     const [userColour, setUserColour] = useState<Colour>();
+    const [turnsRemaining, setTurnsRemaining] = useState<number>(1);
+    const [isGameFound, setIsGameFound] = useState<boolean>(false);
+    const [playersLeftToJoin, setPlayersLeftToJoin] = useState<number>(1);
 
     useEffect(() => {
         async function setupGame() {
@@ -65,19 +64,13 @@ export default function GameDisplay() {
                 return;
             }
 
+            setIsGameFound(true);
             const json = await res.json();
             const { players } = json.data;
-            setCurrentPlayerColour(players[0].colour);
-            
-            // TODO: old
-            const areaNames = getPlayerAreaNames(json.data.players);
-            const areas = getAreas(areaNames);
-            const playerIDs = json.data.players.map((p: any) => { return p.id });
-            const userIDs = json.data.players.map((p: any) => { return p.userID });
-            const game = GameGenerator.generateGame(areas, playerIDs, userIDs);
 
-            setupStartingAreaColours(areas);
-            setGame(game);
+            setTurnsRemaining(json.data.maxTurns)
+            setCurrentPlayerColour(players[0].colour);            
+            setupStartingAreaColours(players);
             setShouldDisplayReinforcementsModal(true);
             setIsGameLoaded(true);
             
@@ -140,8 +133,7 @@ export default function GameDisplay() {
             case GameEventType.PLAYER_JOINED: {
                 const newDisconnectedPlayers = disconnectedPlayers.filter(playerColour => playerColour !== messageData.colour)
                 setDisconnectedPlayers(newDisconnectedPlayers);
-                game!.addUserIDToPlayer(messageData.userID);
-                updateGameState(game!);
+                setPlayersLeftToJoin(messageData.playersLeftToJoin)
                 break;
             }
             case GameEventType.CLEAR_SELECTED_AREAS: {
@@ -187,8 +179,13 @@ export default function GameDisplay() {
                 onMoveUnits(messageData.origin, messageData.destination, messageData.numUnits);
                 break;
             }
+            case GameEventType.TROOP_TRANSFER_COMPLETE: {
+                resetUnitMoveState();
+                break;
+            }
             case GameEventType.END_TURN: {
-                handleEndTurn();
+                const { newCurrentPlayerColour } = messageData;
+                handleEndTurn(newCurrentPlayerColour as Colour);
                 break;
             }
             case GameEventType.PLAYER_DISCONNECT: {
@@ -222,37 +219,17 @@ export default function GameDisplay() {
         }
     }
 
-    function setupStartingAreaColours(areas: any) {
-        for (let i = 0; i < areas.length; i++) {
-            const playerAreas = areas[i];
+    function setupStartingAreaColours(players: any) {
+        for (let i = 0; i < players.length; i++) {
+            const playerColour = players[i].colour;
+            setPlayerColours([...playerColours, playerColour]);
+            const playerAreas = players[i].areas;
             for (let j = 0; j < playerAreas.length; j++) {
                 const areaName = playerAreas[j].name;
-                const colour = playerAreas[j].player.colour;
-                const area = areaDetails[areaName as AreaName];
-                area.colour = colour;
+                const areaDetail = areaDetails[areaName as AreaName];
+                areaDetail.colour = playerColour;
             }
         }
-    }
-
-    // Required as React doesn't see changes in useState if it's an Object.
-    function updateGameState(game: Game) {
-        const newGame = new Game([], 30);
-        Object.assign(newGame, game);
-        setGame(newGame);
-    }
-
-    function getPlayerAreaNames(players: any): Array<Array<string>> {
-        const playerAreas: any = [];
-
-        for (let i = 0; i < players.length; i++) {
-            playerAreas.push([]);
-            const { areas } = players[i];
-            for (let j = 0; j < areas.length; j++) {
-                playerAreas[i].push(areas[j].name);       
-            }
-        }
-
-        return playerAreas;
     }
 
     // TODO: handle on backend
@@ -269,19 +246,8 @@ export default function GameDisplay() {
     }
 
     function addReinforcements(areaName: AreaName): void {
-        const reinforcementController = createReinforcementController();
-        reinforcementController.addReinforcements(areaName);
-        updateGameState(game!);
-
-        if (!game!.playersHaveReinforcements()) {
-            setShouldDisplayReinforcementsModal(false);
-        }
-    }
-
-    function createReinforcementController(): ReinforcementController {
-        const currentPlayer = game!.getCurrentPlayer();
-        const reinforcementController = new ReinforcementController(currentPlayer!);
-        return reinforcementController;
+        const areaDetail = areaDetails[areaName];
+        areaDetail.units++;
     }
 
     function setAreaForTroopTransfer(areaName: AreaName): void {
@@ -342,27 +308,16 @@ export default function GameDisplay() {
         }
     }
 
-    function handleEndTurn(): void {
-        game!.handleNewTurn();
-        updateGameState(game!);
+    function handleEndTurn(newCurrentPlayerColour: Colour): void {
+        setCurrentPlayerColour(newCurrentPlayerColour)
         setShouldDisplayTroopTransferButton(false);
         setShouldDisplayReinforcementsModal(true);
         resetCombatState();
-        checkIfGameOver();
-    }
-
-    function checkIfGameOver(): void {
-        const maxTurnsReached = game!.areMaxTurnsReached();
-
-        if (maxTurnsReached) {
-            setIsGameOver(true);
-        }
     }
 
     function updateAreaDetails(areaName: AreaName, areaColour: Colour, areaUnits: number): void {
         const area = areaDetails[areaName as AreaName];
         area.units = areaUnits;
-        // area.colour = areaColour as Colour;
         area.colour = areaColour;
     }
 
@@ -433,7 +388,7 @@ export default function GameDisplay() {
     }
 
     function isUsersTurn(): boolean {
-        if (!game) {
+        if (!isGameFound) {
             return false;
         }
 
@@ -445,36 +400,19 @@ export default function GameDisplay() {
     }
 
     function getUserCards() {
-        const player = getUserPlayer();
-        return player!.getTerritoryCards();
+        // const player = getUserPlayer();
+        // return player!.getTerritoryCards();
+        return [];
     }
 
-    function getUserPlayer(): Player {
-        if (gameType === 'local') {
-            return game!.getCurrentPlayer();
-        }
-
-        const players = game!.getPlayers();
-        for (let i = 0; i < players.length; i++) {
-            if (players[i].getUserID() === getUserID()) {
-                return players[i];
-            }
-        }
-
-        return players[0];
-    }
-
-    if (!game) {
+    if (!isGameFound) {
         return (<NotFound />);
     }
-
-    if (game.waitingForUsersToJoin() && gameType === 'online') {
-        const totalPlayersConnected = game!.getPlayers().reduce((acc, cur) => cur.getUserID() ? ++acc : acc, 0);
-        const playersLeftToJoin = game!.getPlayers().length - totalPlayersConnected;
+    
+    if (playersLeftToJoin && gameType === 'online') {
         return <WaitingForPlayers playersLeftToJoin={playersLeftToJoin} />
     }
 
-    const currentPlayer = game!.getCurrentPlayer();
     return (
         <div id='game-display'>
             <Map
@@ -483,14 +421,14 @@ export default function GameDisplay() {
                 attackingDice={attackingDice}
                 troopTransferStart={areaToMoveUnits}
                 troopTransferEnd={areaToReceiveUnits}
-                currentPlayer={currentPlayer!}
+                currentPlayerColour={currentPlayerColour}
                 onAreaSelect={onAreaSelect}
                 isUsersTurn={isUsersTurn()}
                 isCombatPhase={!shouldDisplayTroopTransferButton}
                 userColour={userColour!}
             />
             <TurnInformation
-                turnsRemaining={game!.getTurnsRemaining()}
+                turnsRemaining={turnsRemaining}
                 playerName={`${currentPlayerColour} Player`}
             />
             <RegionBonusInfo />
@@ -517,7 +455,7 @@ export default function GameDisplay() {
             )}
             {shouldDisplayReinforcementsModal && (
                 <ReinforcementsModal
-                    reinforcementsAvailable={currentPlayer!.getReinforcements()}
+                    reinforcementsAvailable={reinforcementsAvailable}
                 />
             )}
             <EndTurnButton
@@ -525,15 +463,12 @@ export default function GameDisplay() {
                 isDisabled={isEndTurnButtonDisabled()}
                 shouldDisplayTroopTransferButton={shouldDisplayTroopTransferButton}
             />
-            <Leaderboard game={game} />
+            <Leaderboard playerColours={playerColours} />
             <TerritoryCardsButton onClick={() => setShouldDisplayTerritoryCards(true)} numCards={getUserCards().length} />
             {shouldDisplayTerritoryCards && (
                 <TerritoryCardsDialog
                     onClose={() => setShouldDisplayTerritoryCards(false)}
                     cards={getUserCards()}
-                    player={getUserPlayer()}
-                    updateGameState={() => updateGameState(game!)}
-
                 />
             )}
             {disconnectedPlayers.length > 0 && (
@@ -542,7 +477,7 @@ export default function GameDisplay() {
                 )
             )}
             {isGameOver && (
-                <GameOverModal game={game} />
+                <GameOverModal playerColours={playerColours} />
             )}
         </div>
     );

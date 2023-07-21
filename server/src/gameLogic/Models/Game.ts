@@ -108,6 +108,17 @@ export class Game {
         }
     }
 
+    public getNumPlayersLeftToJoin(): number {
+        let total = 0;
+        for (const player of this.players) {
+            if (!player.getUserID()) {
+                total++;
+            }
+        }
+
+        return total;
+    }
+
     public waitingForUsersToJoin(): boolean {
         for (let i = 0; i < this.players.length; i++) {
             if (!this.players[i].getUserID()) {

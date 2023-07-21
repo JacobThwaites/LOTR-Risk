@@ -1,3 +1,4 @@
+import { Colour } from "./gameLogic/Enums/Colours";
 import { AreaType } from "./gameLogic/Models/AreaType";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -77,10 +78,12 @@ export default class GameEventMessageFactory {
         }
     }
 
-    public static generateEndTurnMessage(): GameEventMessage {
+    // TODO: send message to previous player with territory card if they get one
+    public static generateEndTurnMessage(newCurrentPlayerColour: Colour): GameEventMessage {
         return {
             type: GameEventType.END_TURN,
             id: uuidv4(),
+            newCurrentPlayerColour,
         }
     }
 

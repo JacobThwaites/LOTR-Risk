@@ -2,7 +2,6 @@ import areaDetails from "../components/svgPaths/AreaDetails";
 import { getConnectedAreasForTroopTransfer } from "../gameLogic/Controllers/TroopTransferConnections";
 import { AreaName } from "../gameLogic/Enums/AreaNames";
 import { Colour } from "../gameLogic/Enums/Colours";
-import { Player } from "../gameLogic/Models/Player";
 import { areAreasConnected } from "../utils/areAreasConnected";
 
 
@@ -11,7 +10,7 @@ export default class AreaSelectValidator {
     private isCombatPhase: boolean;
     private attackingArea: AreaName | null;
     private troopTransferStart: AreaName | null;
-    private currentPlayer: Player;
+    private currentPlayerColour: Colour;
     private userColour: Colour;
 
     constructor(
@@ -19,13 +18,13 @@ export default class AreaSelectValidator {
         isCombatPhase: boolean,
         attackingArea: AreaName | null,
         troopTransferStart: AreaName | null,
-        currentPlayer: Player,
+        currentPlayerColour: Colour,
         userColour: Colour
     ) {
         this.isUsersTurn = isUsersTurn;
         this.isCombatPhase = isCombatPhase;
         this.attackingArea = attackingArea;
-        this.currentPlayer = currentPlayer;
+        this.currentPlayerColour = currentPlayerColour;
         this.troopTransferStart = troopTransferStart;
         this.userColour = userColour;
     }
@@ -78,9 +77,9 @@ export default class AreaSelectValidator {
             return false;
         }
         
-        const defendingPlayer = area.getPlayer();
+        const defendingPlayerColour = area.getPlayer()?.getColour();
         return (
-            (areAreasConnected(this.attackingArea, areaName) && this.currentPlayer !== defendingPlayer) ||
+            (areAreasConnected(this.attackingArea, areaName) && this.currentPlayerColour !== defendingPlayerColour) ||
             attackingArea === area
         );
     }

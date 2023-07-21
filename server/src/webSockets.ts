@@ -30,7 +30,12 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
                 if (webSocketManager.isUserAlreadyInGame(messageData.userID, gameID)) {
                     // webSocketManager.removeClient(webSocketWithID, gameID);
                     webSocketManager.onPlayerReconnect(messageData.userID);
+                } else {
+                    game.addUserIDToPlayer(messageData.userID);
                 }
+
+                messageData.playersLeftToJoin = game.getNumPlayersLeftToJoin();
+                
                 webSocketWithID.setID(messageData.userID);
                 webSocketManager.addClient(gameID, webSocketWithID);
                 emitMessage(messageData, wss);

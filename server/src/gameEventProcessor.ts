@@ -48,7 +48,7 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
         }
         case GameEventType.END_TURN: {
             game.handleNewTurn();
-            const endTurnMessage = GameEventMessageFactory.generateEndTurnMessage();
+            const endTurnMessage = GameEventMessageFactory.generateEndTurnMessage(game.getCurrentPlayer().getColour());
             emitMessage(endTurnMessage, wss);
 
             if (game.areMaxTurnsReached()) {

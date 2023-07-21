@@ -4,7 +4,6 @@ import Mountains from "./svgPaths/Mountains";
 import Bridges from "./svgPaths/Bridges";
 import Islands from "./svgPaths/Islands";
 import Strongholds from "./svgPaths/Strongholds";
-import { Player } from "../gameLogic/Models/Player";
 import AreaSelectValidator from "../utils/AreaSelectValidator";
 import { Colour } from "../gameLogic/Enums/Colours";
 import { AreaName } from "../gameLogic/Enums/AreaNames";
@@ -16,7 +15,7 @@ type Props = {
   troopTransferStart: AreaName | null,
   troopTransferEnd: AreaName | null,
   attackingDice: number,
-  currentPlayer: Player,
+  currentPlayerColour: Colour,
   onAreaSelect: any,
   isUsersTurn: boolean,
   isCombatPhase: boolean,
@@ -30,7 +29,7 @@ export default function Map(props: Props): JSX.Element {
     props.isCombatPhase, 
     props.attackingArea, 
     props.troopTransferStart, 
-    props.currentPlayer,
+    props.currentPlayerColour,
     props.userColour
   );
 
