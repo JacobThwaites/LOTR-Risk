@@ -23,7 +23,6 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
                 webSocketManager.setPreviousMessageID(messageData.id);
             }
 
-
             updateGame(messageData, game, wss, webSocketManager);
 
             if (messageData.type === 'PLAYER JOINED') {
@@ -38,7 +37,7 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
                 
                 webSocketWithID.setID(messageData.userID);
                 webSocketManager.addClient(gameID, webSocketWithID);
-                emitMessage(messageData, wss);
+                broadcastMessage(messageData, wss);
             }
         });
 
@@ -53,7 +52,7 @@ function parseMessageBuffer(data: Buffer) {
     return JSON.parse(str);
 }
 
-export function emitMessage(message: GameEventMessage, wss: WebSocketServer) {
+export function broadcastMessage(message: GameEventMessage, wss: WebSocketServer) {
     const formattedMessage = JSON.stringify(message);
     wss.clients.forEach((client: WebSocket) => {
         if (client.readyState === ws.OPEN) {

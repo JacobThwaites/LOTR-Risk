@@ -3,8 +3,10 @@ import { countdownManager } from "./CountdownManager";
 import { v4 as uuidv4 } from 'uuid';
 import WebSocketWithID from "./WebSocketWithID";
 import PlayerDisconnectionTracker from "./PlayerDisconnectionTracker";
-import { emitMessage } from "./webSockets";
+import { broadcastMessage } from "./webSockets";
 import { GameEventMessage, GameEventType } from "./GameEventMessageFactory";
+import { activeGames } from "./database/ActiveGames";
+import { Player } from "./gameLogic/Models/Player";
 const ws = require('ws');
 
 export class WebSocketManager {
@@ -45,7 +47,6 @@ export class WebSocketManager {
 
     public removeClient(webSocketWithID: WebSocketWithID, gameID: string): void {
         webSocketWithID.getWebSocketInstance().close();
-        console.log("removing client");
         delete this.clients[gameID][webSocketWithID.getID()];
     }
 
@@ -99,9 +100,14 @@ export class WebSocketManager {
 
     private broadcastPlayerDisconnect(gameID: string, webSocketWithID: WebSocketWithID): void {
         const server = this.getGameServer(gameID);
-        // TODO: get user colour and send that in message
-        const message = { id: uuidv4(), type: GameEventType.PLAYER_DISCONNECT, userColour: webSocketWithID.getID() };
-        emitMessage(message, server);
+        const disconnectedPlayer = this.getDisconnectedPlayer(gameID, webSocketWithID);
+        const message = { id: uuidv4(), type: GameEventType.PLAYER_DISCONNECT, userColour: disconnectedPlayer?.getColour() };
+        broadcastMessage(message, server);
+    }
+
+    private getDisconnectedPlayer(gameID: string, webSocketWithID: WebSocketWithID): Player | null {
+        const userID = webSocketWithID.getID();
+        return activeGames.getPlayerByUserID(gameID, userID);
     }
 
     private removeGameServer(gameID: string) {
@@ -119,6 +125,6 @@ export class WebSocketManager {
     private onUserTimeout(userID: string, gameID: string) {
         const server = this.getGameServer(gameID);
         const message = { id: uuidv4(), type: GameEventType.GAME_OVER_DISCONNECT, userID };
-        emitMessage(message, server);
+        broadcastMessage(message, server);
     }
 }

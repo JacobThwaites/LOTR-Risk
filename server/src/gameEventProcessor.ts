@@ -1,7 +1,7 @@
 import { WebSocketServer } from "ws";
 import { Areas } from "./gameLogic/Enums/Areas";
 import { Game } from "./gameLogic/Models/Game";
-import { emitMessage } from "./webSockets";
+import { broadcastMessage } from "./webSockets";
 import { CombatController } from "./gameLogic/Controllers/CombatController";
 import { AreaType } from "./gameLogic/Models/AreaType";
 import { UnitMoveController } from "./gameLogic/Controllers/UnitMoveController";
@@ -24,22 +24,22 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
             currentPlayer.addReinforcementsToArea(area);
             const areaUpdateMessage = GameEventMessageFactory.generateAreaUpdateMessage(area);
 
-            emitMessage(areaUpdateMessage, wss);
+            broadcastMessage(areaUpdateMessage, wss);
 
             if (currentPlayer.getReinforcements() < 1) {
                 game.changeCurrentPlayer();
                 currentPlayer = game.getCurrentPlayer();
                 const changePlayerMessage = GameEventMessageFactory.generateChangePlayerMessage(currentPlayer.getColour());
-                emitMessage(changePlayerMessage, wss);
+                broadcastMessage(changePlayerMessage, wss);
             }
 
             const reinforcementsAvailable = currentPlayer.getReinforcements();
             const reinforcementsAvailableMessage = GameEventMessageFactory.generateReinforcementsAvailableMessage(reinforcementsAvailable);
-            emitMessage(reinforcementsAvailableMessage, wss);
+            broadcastMessage(reinforcementsAvailableMessage, wss);
 
             if (!game.playersHaveReinforcements()) {
                 const endOfStartingReinforcementsMessage = GameEventMessageFactory.generateEndOfStartingReinforcementsMessage();
-                emitMessage(endOfStartingReinforcementsMessage, wss);
+                broadcastMessage(endOfStartingReinforcementsMessage, wss);
             }
             
             break;
@@ -48,11 +48,11 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
             const area = Areas[messageData.areaName];
             currentPlayer.addReinforcementsToArea(area);
             const reinforcementUpdateMessage = GameEventMessageFactory.generateReinforcementUpdateMessage(messageData.areaName);
-            emitMessage(reinforcementUpdateMessage, wss);
+            broadcastMessage(reinforcementUpdateMessage, wss);
 
             const reinforcementsAvailable = currentPlayer.getReinforcements();
             const reinforcementsAvailableMessage = GameEventMessageFactory.generateReinforcementsAvailableMessage(reinforcementsAvailable);
-            emitMessage(reinforcementsAvailableMessage, wss);
+            broadcastMessage(reinforcementsAvailableMessage, wss);
             break;
         }
         case GameEventType.END_TURN: {
@@ -64,22 +64,22 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
 
             const newCurrentPlayer = game.getCurrentPlayer();
             const endTurnMessage = GameEventMessageFactory.generateEndTurnMessage(newCurrentPlayer.getColour());
-            emitMessage(endTurnMessage, wss);
+            broadcastMessage(endTurnMessage, wss);
 
             const reinforcementsAvailable = newCurrentPlayer.getReinforcements();
             const reinforcementsAvailableMessage = GameEventMessageFactory.generateReinforcementsAvailableMessage(reinforcementsAvailable);
-            emitMessage(reinforcementsAvailableMessage, wss);
+            broadcastMessage(reinforcementsAvailableMessage, wss);
 
             if (game.areMaxTurnsReached()) {
                 const gameOverMessage = GameEventMessageFactory.generateGameOverMessage();
-                emitMessage(gameOverMessage, wss);
+                broadcastMessage(gameOverMessage, wss);
             }
 
             break;
         }
         case GameEventType.CLEAR_SELECTED_AREAS: {
             const message = GameEventMessageFactory.generateClearSelectedAreasMessage();
-            emitMessage(message, wss);
+            broadcastMessage(message, wss);
             break;
         }
         case GameEventType.COMBAT: {
@@ -94,11 +94,11 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
             combatController.handleResults(results);
 
             const combatResultsMessage = GameEventMessageFactory.generateCombatResultsMessage(attackingArea, defendingArea);
-            emitMessage(combatResultsMessage, wss);
+            broadcastMessage(combatResultsMessage, wss);
 
             if (defendingArea.hasNoUnitsRemaining()) {
                 const message = GameEventMessageFactory.generateUnitMoveSetupMessage(attackingArea, defendingArea);
-                emitMessage(message, wss);
+                broadcastMessage(message, wss);
             }
             break;
         }
@@ -109,16 +109,16 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
 
             const originUpdateMessage = GameEventMessageFactory.generateAreaUpdateMessage(origin);
             const destinationUpdateMessage = GameEventMessageFactory.generateAreaUpdateMessage(destination);
-            emitMessage(originUpdateMessage, wss);
-            emitMessage(destinationUpdateMessage, wss);
+            broadcastMessage(originUpdateMessage, wss);
+            broadcastMessage(destinationUpdateMessage, wss);
 
             const unitMoveCompleteMessage = GameEventMessageFactory.generateUnitMoveCompleteMessage();
-            emitMessage(unitMoveCompleteMessage, wss);
+            broadcastMessage(unitMoveCompleteMessage, wss);
             break;
         }
         case GameEventType.TROOP_TRANSFER_SETUP: {
             const message = GameEventMessageFactory.generateTroopTransferMessage();
-            emitMessage(message, wss);
+            broadcastMessage(message, wss);
             break;
         }
         case GameEventType.TROOP_TRANSFER: {
@@ -128,11 +128,11 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
 
             const originUpdateMessage = GameEventMessageFactory.generateAreaUpdateMessage(origin);
             const destinationUpdateMessage = GameEventMessageFactory.generateAreaUpdateMessage(destination);
-            emitMessage(originUpdateMessage, wss);
-            emitMessage(destinationUpdateMessage, wss);
+            broadcastMessage(originUpdateMessage, wss);
+            broadcastMessage(destinationUpdateMessage, wss);
 
             const troopTransferCompleteMessage = GameEventMessageFactory.generateTroopTransferCompleteMessage();
-            emitMessage(troopTransferCompleteMessage, wss);
+            broadcastMessage(troopTransferCompleteMessage, wss);
             break;
         }
         case GameEventType.PLAYER_JOINED: {
@@ -143,7 +143,7 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
         }
         case GameEventType.GAME_OVER_DISCONNECT: {
             const gameOverMessage = GameEventMessageFactory.generateGameOverMessage();
-            emitMessage(gameOverMessage, wss);
+            broadcastMessage(gameOverMessage, wss);
             break;
         }
         default: {

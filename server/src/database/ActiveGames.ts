@@ -1,6 +1,7 @@
 import { setupAreaAssignments } from "../gameLogic/Controllers/AreaAssigner";
 import { GameGenerator } from "../gameLogic/Controllers/GameGenerator";
 import { Game } from "../gameLogic/Models/Game";
+import { Player } from "../gameLogic/Models/Player";
 
 class ActiveGames {
     private gamesInProgress: {[gameID: string]: Game};
@@ -17,6 +18,19 @@ class ActiveGames {
 
     public getGameByID(id: string): Game {
         return this.gamesInProgress[id];
+    }
+
+    public getPlayerByUserID(gameID: string, userID: string): Player | null {
+        const game = this.getGameByID(gameID);
+        const players = game.getPlayers();
+
+        for (const player of players) {
+            if (player.getUserID() === userID) {
+                return player;
+            }
+        }
+
+        return null;
     }
 
     public deleteGame(id: string): void {
