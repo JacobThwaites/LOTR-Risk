@@ -24,9 +24,9 @@ import PlayerDisconnectModal from "./PlayerDisconnectModal";
 import { Colour } from "../gameLogic/Enums/Colours";
 import areaDetails from "./svgPaths/AreaDetails";
 import { AreaName } from "../gameLogic/Enums/AreaNames";
+import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
 
 // TODO: handle change player turn after end turn
-// get number of players left to join from websocket message
 export default function GameDisplay() {
     const { gameID } = useParams<{ gameID: string }>();
     const [isGameLoaded, setIsGameLoaded] = useState(false);
@@ -53,8 +53,8 @@ export default function GameDisplay() {
     const [currentPlayerColour, setCurrentPlayerColour] = useState<Colour>(Colour.BLACK);
     const [userColour, setUserColour] = useState<Colour>();
     const [turnsRemaining, setTurnsRemaining] = useState<number>(1);
-    const [isGameFound, setIsGameFound] = useState<boolean>(false);
     const [playersLeftToJoin, setPlayersLeftToJoin] = useState<number>(1);
+    const [territoryCards, setTerritoryCards] = useState<TerritoryCard[]>([]);
 
     useEffect(() => {
         async function setupGame() {
@@ -64,12 +64,13 @@ export default function GameDisplay() {
                 return;
             }
 
-            setIsGameFound(true);
             const json = await res.json();
             const { players } = json.data;
+            const startingPlayer = players[0];
 
+            setCurrentPlayerColour(startingPlayer.colour);  
+            setReinforcementsAvailable(startingPlayer.reinforcements);          
             setTurnsRemaining(json.data.maxTurns)
-            setCurrentPlayerColour(players[0].colour);            
             setupStartingAreaColours(players);
             setShouldDisplayReinforcementsModal(true);
             setIsGameLoaded(true);
@@ -143,10 +144,15 @@ export default function GameDisplay() {
             }
             case GameEventType.STARTING_REINFORCEMENT: {
                 addReinforcements(messageData.areaName);
+                setReinforcementsAvailable(messageData.reinforcementsAvailable);
                 break;
             }
             case GameEventType.REINFORCEMENT: {
                 addReinforcements(messageData.areaName);
+                break;
+            }
+            case GameEventType.REINFORCEMENTS_AVAILABLE: {
+                setReinforcementsAvailable(messageData.reinforcementsAvailable);
                 break;
             }
             case GameEventType.COMBAT_RESULTS: {
@@ -184,8 +190,8 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.END_TURN: {
-                const { newCurrentPlayerColour } = messageData;
-                handleEndTurn(newCurrentPlayerColour as Colour);
+                const { newCurrentPlayerColour, reinforcementsAvailable } = messageData;
+                handleEndTurn(newCurrentPlayerColour as Colour, reinforcementsAvailable);
                 break;
             }
             case GameEventType.PLAYER_DISCONNECT: {
@@ -212,6 +218,10 @@ export default function GameDisplay() {
             }
             case GameEventType.UNIT_MOVE_SETUP: {
                 setStateForUnitMove(messageData.attackingArea, messageData.defendingArea);
+                break;
+            }
+            case GameEventType.TERRITORY_CARDS: {
+                updateTerritoryCards(messageData.cards);
                 break;
             }
             default:
@@ -276,6 +286,18 @@ export default function GameDisplay() {
         }
     }
 
+    function updateTerritoryCards(cards: [{[symbol: string]: any}]) {
+        const newCards = [];
+
+        for (const card of cards) {
+            const { symbol } = card;
+            const territoryCardInstance = new TerritoryCard(symbol);
+            newCards.push(territoryCardInstance);
+        }
+
+        setTerritoryCards(newCards);
+    }
+
     function clearSelectedAreas() {
         setAttackingArea(null);
         setDefendingArea(null);
@@ -308,10 +330,11 @@ export default function GameDisplay() {
         }
     }
 
-    function handleEndTurn(newCurrentPlayerColour: Colour): void {
-        setCurrentPlayerColour(newCurrentPlayerColour)
+    function handleEndTurn(newCurrentPlayerColour: Colour, reinforcementsAvailable: number): void {
+        setCurrentPlayerColour(newCurrentPlayerColour);
         setShouldDisplayTroopTransferButton(false);
         setShouldDisplayReinforcementsModal(true);
+        setReinforcementsAvailable(reinforcementsAvailable);
         resetCombatState();
     }
 
@@ -388,7 +411,7 @@ export default function GameDisplay() {
     }
 
     function isUsersTurn(): boolean {
-        if (!isGameFound) {
+        if (!isGameLoaded) {
             return false;
         }
 
@@ -399,13 +422,7 @@ export default function GameDisplay() {
         return currentPlayerColour === userColour;
     }
 
-    function getUserCards() {
-        // const player = getUserPlayer();
-        // return player!.getTerritoryCards();
-        return [];
-    }
-
-    if (!isGameFound) {
+    if (!isGameLoaded) {
         return (<NotFound />);
     }
     
@@ -464,11 +481,11 @@ export default function GameDisplay() {
                 shouldDisplayTroopTransferButton={shouldDisplayTroopTransferButton}
             />
             <Leaderboard playerColours={playerColours} />
-            <TerritoryCardsButton onClick={() => setShouldDisplayTerritoryCards(true)} numCards={getUserCards().length} />
+            <TerritoryCardsButton onClick={() => setShouldDisplayTerritoryCards(true)} numCards={territoryCards.length} />
             {shouldDisplayTerritoryCards && (
                 <TerritoryCardsDialog
                     onClose={() => setShouldDisplayTerritoryCards(false)}
-                    cards={getUserCards()}
+                    cards={territoryCards}
                 />
             )}
             {disconnectedPlayers.length > 0 && (

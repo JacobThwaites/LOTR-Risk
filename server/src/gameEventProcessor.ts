@@ -6,10 +6,11 @@ import { CombatController } from "./gameLogic/Controllers/CombatController";
 import { AreaType } from "./gameLogic/Models/AreaType";
 import { UnitMoveController } from "./gameLogic/Controllers/UnitMoveController";
 import GameEventMessageFactory, { GameEventType } from "./GameEventMessageFactory";
+import { WebSocketManager } from "./WebSocketManager";
 
 
-export function updateGame(messageData: any, game: Game, wss: WebSocketServer): void {
-    const currentPlayer = game.getCurrentPlayer();
+export function updateGame(messageData: any, game: Game, wss: WebSocketServer, webSocketManager: WebSocketManager): void {
+    let currentPlayer = game.getCurrentPlayer();
     
     // TODO: don't do this if player joined or disconnected message
     if (currentPlayer.getUserID() !== messageData.userID && messageData.type !== GameEventType.PLAYER_JOINED) {
@@ -27,10 +28,14 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
 
             if (currentPlayer.getReinforcements() < 1) {
                 game.changeCurrentPlayer();
-                const newCurrentPlayer = game.getCurrentPlayer();
-                const changePlayerMessage = GameEventMessageFactory.generateChangePlayerMessage(newCurrentPlayer.getColour());
+                currentPlayer = game.getCurrentPlayer();
+                const changePlayerMessage = GameEventMessageFactory.generateChangePlayerMessage(currentPlayer.getColour());
                 emitMessage(changePlayerMessage, wss);
             }
+
+            const reinforcementsAvailable = currentPlayer.getReinforcements();
+            const reinforcementsAvailableMessage = GameEventMessageFactory.generateReinforcementsAvailableMessage(reinforcementsAvailable);
+            emitMessage(reinforcementsAvailableMessage, wss);
 
             if (!game.playersHaveReinforcements()) {
                 const endOfStartingReinforcementsMessage = GameEventMessageFactory.generateEndOfStartingReinforcementsMessage();
@@ -44,12 +49,26 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer): 
             currentPlayer.addReinforcementsToArea(area);
             const reinforcementUpdateMessage = GameEventMessageFactory.generateReinforcementUpdateMessage(messageData.areaName);
             emitMessage(reinforcementUpdateMessage, wss);
+
+            const reinforcementsAvailable = currentPlayer.getReinforcements();
+            const reinforcementsAvailableMessage = GameEventMessageFactory.generateReinforcementsAvailableMessage(reinforcementsAvailable);
+            emitMessage(reinforcementsAvailableMessage, wss);
             break;
         }
         case GameEventType.END_TURN: {
+            const previousCurrentPlayer = game.getCurrentPlayer();
             game.handleNewTurn();
-            const endTurnMessage = GameEventMessageFactory.generateEndTurnMessage(game.getCurrentPlayer().getColour());
+
+            const territoryCardMessage = GameEventMessageFactory.generateTerritoryCardMessage(previousCurrentPlayer);
+            webSocketManager.messageIndividualClient(game.getUUID(), previousCurrentPlayer.getUserID(), territoryCardMessage);
+
+            const newCurrentPlayer = game.getCurrentPlayer();
+            const endTurnMessage = GameEventMessageFactory.generateEndTurnMessage(newCurrentPlayer.getColour());
             emitMessage(endTurnMessage, wss);
+
+            const reinforcementsAvailable = newCurrentPlayer.getReinforcements();
+            const reinforcementsAvailableMessage = GameEventMessageFactory.generateReinforcementsAvailableMessage(reinforcementsAvailable);
+            emitMessage(reinforcementsAvailableMessage, wss);
 
             if (game.areMaxTurnsReached()) {
                 const gameOverMessage = GameEventMessageFactory.generateGameOverMessage();

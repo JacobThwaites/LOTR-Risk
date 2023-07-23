@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import WebSocketWithID from "./WebSocketWithID";
 import PlayerDisconnectionTracker from "./PlayerDisconnectionTracker";
 import { emitMessage } from "./webSockets";
-import { GameEventType } from "./GameEventMessageFactory";
+import { GameEventMessage, GameEventType } from "./GameEventMessageFactory";
 const ws = require('ws');
 
 export class WebSocketManager {
@@ -47,6 +47,21 @@ export class WebSocketManager {
         webSocketWithID.getWebSocketInstance().close();
         console.log("removing client");
         delete this.clients[gameID][webSocketWithID.getID()];
+    }
+
+    public messageIndividualClient(gameID: string, userID: string, messageData: GameEventMessage): void {
+        const gameClients = this.clients[gameID];
+        if (!gameClients) {
+            return;
+        }
+
+        const client = gameClients[userID];
+
+        if (!client) {
+            return;
+        }
+
+        client.send(JSON.stringify(messageData));
     }
 
     public isUserAlreadyInGame(userID: string, gameID: string): boolean {

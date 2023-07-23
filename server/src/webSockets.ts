@@ -24,7 +24,7 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
             }
 
 
-            updateGame(messageData, game, wss);
+            updateGame(messageData, game, wss, webSocketManager);
 
             if (messageData.type === 'PLAYER JOINED') {
                 if (webSocketManager.isUserAlreadyInGame(messageData.userID, gameID)) {

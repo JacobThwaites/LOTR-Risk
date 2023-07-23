@@ -1,6 +1,7 @@
 import { Colour } from "./gameLogic/Enums/Colours";
 import { AreaType } from "./gameLogic/Models/AreaType";
 import { v4 as uuidv4 } from 'uuid';
+import { Player } from "./gameLogic/Models/Player";
 
 export type GameEventMessage = {
     id: string,
@@ -14,6 +15,7 @@ export enum GameEventType {
     COMBAT_RESULTS = "COMBAT RESULTS",
     STARTING_REINFORCEMENT = "STARTING REINFORCEMENT",
     REINFORCEMENT = "REINFORCEMENT",
+    REINFORCEMENTS_AVAILABLE = "REINFORCEMENTS AVAILABLE",
     END_TURN = "END TURN",
     UNIT_MOVE_SETUP = "UNIT MOVE SETUP",
     UNIT_MOVE = "UNIT MOVE",
@@ -27,7 +29,8 @@ export enum GameEventType {
     GAME_OVER_DISCONNECT = "GAME OVER DISCONNECTION",
     UPDATE_AREA = "UPDATE AREA",
     CHANGE_PLAYER = "CHANGE PLAYER",
-    STARTING_REINFORCEMENTS_END = "STARTING REINFORCEMENTS END"
+    STARTING_REINFORCEMENTS_END = "STARTING REINFORCEMENTS END",
+    TERRITORY_CARDS = "TERRITORY CARDS"
 }
 
 
@@ -78,12 +81,20 @@ export default class GameEventMessageFactory {
         }
     }
 
+    public static generateReinforcementsAvailableMessage(reinforcementsAvailable: number): GameEventMessage {
+        return {
+            type: GameEventType.REINFORCEMENTS_AVAILABLE,
+            id: uuidv4(),
+            reinforcementsAvailable
+        }
+    }
+
     // TODO: send message to previous player with territory card if they get one
     public static generateEndTurnMessage(newCurrentPlayerColour: Colour): GameEventMessage {
         return {
             type: GameEventType.END_TURN,
             id: uuidv4(),
-            newCurrentPlayerColour,
+            newCurrentPlayerColour
         }
     }
 
@@ -128,6 +139,14 @@ export default class GameEventMessageFactory {
         return {
             type: GameEventType.TROOP_TRANSFER_COMPLETE,
             id: uuidv4(),
+        }
+    }
+
+    public static generateTerritoryCardMessage(player: Player): GameEventMessage {
+        return {
+            type: GameEventType.TERRITORY_CARDS,
+            id: uuidv4(),
+            cards: player.getTerritoryCards()
         }
     }
 }
