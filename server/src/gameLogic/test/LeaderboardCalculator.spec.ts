@@ -30,7 +30,7 @@ describe('LeaderboardCalculator', () => {
         area4 = new Area(AreaName.ITHILIEN);
         area5 = new Area(AreaName.ITHILIEN);
         area6 = new Area(AreaName.ITHILIEN);
-        game = new Game(playersList, 1);
+        game = new Game(playersList, {}, 1);
     })
 
     it('should return players firstly ordered by total areas controlled', () => {

@@ -3,6 +3,7 @@ import { Game } from '../Models/Game';
 import { AreaAssigner } from './AreaAssigner';
 import { PlayerGenerator } from './PlayerGenerator';
 import { AreaType } from '../Models/AreaType';
+import convertAreasArrayToHashmap from '../utils/convertAreasArrayToHashmap';
 
 export class GameGenerator {
     public static generateGame(areaLists: Array<AreaType[]>, numberOfPlayers: number, gameCreatorUserID: string): Game {
@@ -10,7 +11,8 @@ export class GameGenerator {
         const players = this.generatePlayers(numberOfPlayers, gameCreatorUserID);
         const areaAssigner = new AreaAssigner(players);
         areaAssigner.assignAreas(areaLists);
-        const game = new Game(players, MAX_TURNS)
+        const gameAreas = convertAreasArrayToHashmap(areaLists);
+        const game = new Game(players, gameAreas, MAX_TURNS)
         game.assignStartingUnits();
         
         return game;

@@ -3,9 +3,9 @@ import { AreaName } from '../Enums/AreaNames';
 import { Colour } from '../Enums/Colours';
 import { Player } from '../Models/Player';
 import { Game } from '../Models/Game';
+import { CombatController } from '../Controllers/CombatController';
 import { assert } from 'chai';
 import 'mocha';
-import { CombatController } from '../Controllers/CombatController';
 
 describe('Game', () => {
     let player1: Player;
@@ -24,7 +24,7 @@ describe('Game', () => {
         player2.addArea(area2);
         area1.setPlayer(player1);
         area2.setPlayer(player2);
-        game = new Game(playersList, 1);
+        game = new Game(playersList, {}, 1);
 
         area1.addUnits(2);
         area2.addUnits(1);

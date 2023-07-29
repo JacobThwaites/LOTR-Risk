@@ -1,5 +1,6 @@
 import TerritoryCardManager from '../Controllers/TerritoryCardManager';
 import { getAreas } from '../Enums/Areas';
+import { GameAreas } from '../utils/types';
 import { AreaType } from './AreaType';
 import { Player } from './Player';
 import { v4 as uuidv4 } from 'uuid';
@@ -11,15 +12,15 @@ export class Game {
     private currentTurn: number;
     private currentPlayersTurn: number;
     private hasPlayerCapturedAreaThisTurn: boolean;
-    private areas: {[key: string]: AreaType};
-    constructor(players: Array<Player>, maxTurns: number) {
+    private areas: GameAreas;
+    constructor(players: Array<Player>, areaLists: GameAreas, maxTurns: number) {
         this.uuid = generateGameUUID();
         this.players = players;
         this.maxTurns = maxTurns;
         this.currentTurn = 0;
         this.currentPlayersTurn = 0;
         this.hasPlayerCapturedAreaThisTurn = false;
-        this.areas = getAreas();
+        this.areas = areaLists;
     }
 
     public getUUID(): string {

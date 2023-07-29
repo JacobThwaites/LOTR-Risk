@@ -22,13 +22,9 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
     switch (messageData.type) {
         case GameEventType.STARTING_REINFORCEMENT: {
             const area = gameAreas[messageData.areaName as AreaName];
-            console.log(area);
             
             currentPlayer.addReinforcementsToArea(area);
             const areaUpdateMessage = GameEventMessageFactory.generateAreaUpdateMessage(area);
-            console.log(areaUpdateMessage);
-            
-
             broadcastMessage(areaUpdateMessage, wss);
 
             if (currentPlayer.getReinforcements() < 1) {

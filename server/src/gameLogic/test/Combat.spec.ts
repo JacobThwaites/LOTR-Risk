@@ -1,9 +1,9 @@
+import { assert } from 'chai';
 import { CombatController } from '../Controllers/CombatController';
 import { Area } from '../Models/Area';
 import { AreaName } from '../Enums/AreaNames';
 import { Player } from '../Models/Player';
 import { Colour } from '../Enums/Colours';
-import { assert } from 'chai';
 import { Stronghold } from '../Models/Stronghold';
 import { Game } from '../Models/Game';
 
@@ -19,7 +19,7 @@ describe('Combat', () => {
         defendingArea = new Stronghold(AreaName.EVENDIM_HILLS);
         attacker = new Player(Colour.GREEN, 'userID');
         defender = new Player(Colour.RED, 'userID');
-        game = new Game([attacker, defender], 1);
+        game = new Game([attacker, defender], {}, 1);
         attacker.addUnits(10);
         defender.addUnits(10);
         attackingArea.setPlayer(attacker);
