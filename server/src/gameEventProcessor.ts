@@ -1,5 +1,5 @@
 import { WebSocketServer } from "ws";
-import { Areas } from "./gameLogic/Enums/Areas";
+import { getAreas } from "./gameLogic/Enums/Areas";
 import { Game } from "./gameLogic/Models/Game";
 import { broadcastMessage } from "./webSockets";
 import { CombatController } from "./gameLogic/Controllers/CombatController";
@@ -7,10 +7,11 @@ import { AreaType } from "./gameLogic/Models/AreaType";
 import { UnitMoveController } from "./gameLogic/Controllers/UnitMoveController";
 import GameEventMessageFactory, { GameEventType } from "./GameEventMessageFactory";
 import { WebSocketManager } from "./WebSocketManager";
-
+import { AreaName } from "./gameLogic/Enums/AreaNames";
 
 export function updateGame(messageData: any, game: Game, wss: WebSocketServer, webSocketManager: WebSocketManager): void {
     let currentPlayer = game.getCurrentPlayer();
+    const gameAreas = game.getAreas();
     
     // TODO: don't do this if player joined or disconnected message
     if (currentPlayer.getUserID() !== messageData.userID && messageData.type !== GameEventType.PLAYER_JOINED) {
@@ -20,9 +21,13 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
 
     switch (messageData.type) {
         case GameEventType.STARTING_REINFORCEMENT: {
-            const area = Areas[messageData.areaName];
+            const area = gameAreas[messageData.areaName as AreaName];
+            console.log(area);
+            
             currentPlayer.addReinforcementsToArea(area);
             const areaUpdateMessage = GameEventMessageFactory.generateAreaUpdateMessage(area);
+            console.log(areaUpdateMessage);
+            
 
             broadcastMessage(areaUpdateMessage, wss);
 
@@ -45,7 +50,7 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
             break;
         }
         case GameEventType.REINFORCEMENT: {
-            const area = Areas[messageData.areaName];
+            const area = gameAreas[messageData.areaName as AreaName];
             currentPlayer.addReinforcementsToArea(area);
             const reinforcementUpdateMessage = GameEventMessageFactory.generateReinforcementUpdateMessage(messageData.areaName);
             broadcastMessage(reinforcementUpdateMessage, wss);
@@ -83,8 +88,8 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
             break;
         }
         case GameEventType.COMBAT: {
-            const attackingArea = Areas[messageData.attackingArea];
-            const defendingArea = Areas[messageData.defendingArea];
+            const attackingArea = gameAreas[messageData.attackingArea as AreaName];
+            const defendingArea = gameAreas[messageData.defendingArea as AreaName];
             const combatController = new CombatController(
                 attackingArea,
                 defendingArea,
@@ -103,8 +108,8 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
             break;
         }
         case GameEventType.UNIT_MOVE: {
-            const origin = Areas[messageData.origin];
-            const destination = Areas[messageData.destination];
+            const origin = gameAreas[messageData.origin as AreaName];
+            const destination = gameAreas[messageData.destination as AreaName];
             handleUnitMove(origin, destination, messageData.numUnits);
 
             const originUpdateMessage = GameEventMessageFactory.generateAreaUpdateMessage(origin);
@@ -122,8 +127,8 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
             break;
         }
         case GameEventType.TROOP_TRANSFER: {
-            const origin = Areas[messageData.origin];
-            const destination = Areas[messageData.destination];
+            const origin = gameAreas[messageData.origin as AreaName];
+            const destination = gameAreas[messageData.destination as AreaName];
             handleUnitMove(origin, destination, messageData.numUnits);
 
             const originUpdateMessage = GameEventMessageFactory.generateAreaUpdateMessage(origin);

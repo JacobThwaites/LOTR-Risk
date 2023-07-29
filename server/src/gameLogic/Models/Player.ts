@@ -3,6 +3,7 @@ import { Colour } from '../Enums/Colours';
 import { getRegionForArea } from '../utils/getRegionForArea';
 import { AreaType } from './AreaType';
 import { TerritoryCard } from './TerritoryCard';
+import { AreaName } from '../Enums/AreaNames';
 
 export class Player {
     private userID: string;
@@ -150,19 +151,30 @@ export class Player {
         }
     }
 
-    ownsArea(area: AreaType): boolean {
+    public ownsArea(area: AreaType): boolean {
         return this.areas.includes(area);
     }
 
-    ownsRegion(region: Region): boolean {
-        const regionAreas = region.getAreas();
+    private ownsRegion(region: Region): boolean {
+        const regionAreas = region.getAreaNames();
     
         for (let i = 0; i < regionAreas.length; i++) {
-            if (!this.areas.includes(regionAreas[i])) {
+            const areaName = regionAreas[i];
+            if (!this.isAreaNameInAreas(areaName)) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    private isAreaNameInAreas(areaName: AreaName): boolean {
+        for (let i = 0; i < this.areas.length; i++) {
+            if (this.areas[i].getName() === areaName) {
+                return true;
+            }            
+        }
+
+        return false;
     }
 }

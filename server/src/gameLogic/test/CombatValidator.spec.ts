@@ -1,5 +1,5 @@
 import { Area } from '../Models/Area';
-import { Areas } from '../Enums/Areas'; 
+import { getAreas } from '../Enums/Areas'; 
 import { CombatValidator } from '../Controllers/CombatValidator';
 import { assert } from 'chai';
 import 'mocha';
@@ -7,7 +7,8 @@ import 'mocha';
 describe('CombatValidator', () => {
     let attackingArea: Area;
     beforeAll(function() {
-        attackingArea = Areas.FORLINDON;
+        const areas = getAreas();
+        attackingArea = areas.FORLINDON;
         attackingArea.addUnits(3);
     })
 

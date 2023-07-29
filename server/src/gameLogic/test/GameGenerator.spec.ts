@@ -1,6 +1,6 @@
 import { GameGenerator } from '../Controllers/GameGenerator';
 import { AreaType } from '../Models/AreaType';
-import { Areas } from '../Enums/Areas';
+import { getAreas } from '../Enums/Areas';
 import { assert } from 'chai';
 import 'mocha';
 
@@ -8,8 +8,9 @@ describe('Game Generator', () => {
     let areaLists: Array<AreaType[]>;
     let userID: string;
     beforeEach(function () {
+        const areas = getAreas();
         userID = 'user1'
-        areaLists = [[Areas.FANGORN], [Areas.FORLINDON]];
+        areaLists = [[areas.FANGORN], [areas.FORLINDON]];
     })
 
     it('should be able to generate a game with the arguments provided', () => {

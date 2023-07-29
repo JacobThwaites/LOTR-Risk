@@ -2,7 +2,7 @@ import { Player } from "../Models/Player";
 import { Colour } from "../Enums/Colours";
 import { AreaAssigner } from "../Controllers/AreaAssigner";
 import { AreaType } from "../Models/AreaType";
-import { Areas } from "../Enums/Areas";
+import { getAreas } from "../Enums/Areas";
 import { assert } from "chai";
 import "mocha";
 
@@ -12,9 +12,10 @@ describe("AreaAssigner", () => {
   let player2: Player;
   let areaLists: Array<AreaType[]>;
   beforeEach(function() {
+    const areas = getAreas();
     player1 = new Player(Colour.GREEN, 'userID');
     player2 = new Player(Colour.GREEN, 'userID');
-    areaLists = [[Areas.FANGORN], [Areas.FORLINDON]];
+    areaLists = [[areas.FANGORN], [areas.FORLINDON]];
 
     const players = [player1, player2];
     assigner = new AreaAssigner(players);

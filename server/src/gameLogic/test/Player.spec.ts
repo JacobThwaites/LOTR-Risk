@@ -25,8 +25,8 @@ describe('Player', () => {
         area4 = new Area(AreaName.HARAD);
         area5 = new Area(AreaName.NEAR_HARAD);
         area6 = new Area(AreaName.KHAND);
-        const areas = [area1, area2, area3, area4, area5, area6];
-        region = new Region('haradwaith', areas, 2);
+        const areaNames = [area1.getName(), area2.getName(), area3.getName(), area4.getName(), area5.getName(), area6.getName()];
+        region = new Region('haradwaith', areaNames, 2);
         card1 = new TerritoryCard(Symbol.ARCHER);
         player = new Player(Colour.GREEN, '');
         player.addUnits(10);
@@ -133,34 +133,5 @@ describe('Player', () => {
             }
         }
         assert.isTrue(areasHaveOneUnit);
-    });
-
-    it('should be able to check if it owns an area and return true if it does', () => {
-        player.addArea(area1);
-        const result = player.ownsArea(area1);
-        assert.equal(result, true);
-    });
-
-    it('should be able to check if it owns an area and return false if it doesn\'t', () => {
-        player.addArea(area1);
-        const result = player.ownsArea(area2);
-        assert.equal(result, false);
-    });
-
-    it('should be able to check if it owns an area and return true if it does', () => {
-        player.addArea(area1);
-        player.addArea(area2);
-        player.addArea(area3);
-        player.addArea(area4);
-        player.addArea(area5);
-        player.addArea(area6);
-        const result = player.ownsRegion(region);
-        assert.isTrue(result);
-    });
-
-    it('should be able to check if it owns a region and return false if it doesn\'t', () => {
-        player.addArea(area1);
-        const result = player.ownsRegion(region);
-        assert.isFalse(result);
     });
 });

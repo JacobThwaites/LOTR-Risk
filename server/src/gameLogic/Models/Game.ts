@@ -1,4 +1,6 @@
 import TerritoryCardManager from '../Controllers/TerritoryCardManager';
+import { getAreas } from '../Enums/Areas';
+import { AreaType } from './AreaType';
 import { Player } from './Player';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,6 +11,7 @@ export class Game {
     private currentTurn: number;
     private currentPlayersTurn: number;
     private hasPlayerCapturedAreaThisTurn: boolean;
+    private areas: {[key: string]: AreaType};
     constructor(players: Array<Player>, maxTurns: number) {
         this.uuid = generateGameUUID();
         this.players = players;
@@ -16,6 +19,7 @@ export class Game {
         this.currentTurn = 0;
         this.currentPlayersTurn = 0;
         this.hasPlayerCapturedAreaThisTurn = false;
+        this.areas = getAreas();
     }
 
     public getUUID(): string {
@@ -33,6 +37,10 @@ export class Game {
 
     public getTurnsRemaining(): number {
         return this.maxTurns - this.currentTurn;
+    }
+
+    public getAreas(): {[key: string]: AreaType} {
+        return this.areas;
     }
 
     public handlePlayerCapturingArea(): void {

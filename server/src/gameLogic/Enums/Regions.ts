@@ -1,15 +1,15 @@
 import { Region } from '../Models/Region';
-import { Areas } from './Areas';
+import { AreaName } from './AreaNames';
 
-const eriadorAreas = [Areas.FORLINDON, Areas.MITHLOND, Areas.HARLINDON, Areas.TOWER_HILLS, Areas.EVENDIM_HILLS, Areas.LUNE_VALLEY, Areas.THE_SHIRE];
-const arnorAreas = [Areas.FORODWAITH, Areas.ANGMAR, Areas.EASTERN_ANGMAR, Areas.BORDERLANDS, Areas.NORTH_DOWNS, Areas.RHUDAUR, Areas.FORNOST, Areas.WEATHER_HILLS, Areas.BUCKLAND, Areas.OLD_FOREST, Areas.SOUTH_DOWNS];
-const rhunAreas = [Areas.NORTH_RHUN, Areas.WITHERED_HEATH, Areas.ESGAROTH, Areas.SOUTH_RHUN];
-const mirkwoodAreas = [Areas.CARROCK, Areas.NORTH_MIRKWOOD, Areas.ANDUIN_VALLEY, Areas.EASTERN_MIRKWOOD, Areas.SOUTH_MIRKWOOD];
-const rohanAreas = [Areas.EREGION, Areas.MINHIRIATH, Areas.DUNLAND, Areas.ENEDWAITH, Areas.FANGORN, Areas.WEST_ROHAN, Areas.GAP_OF_ROHAN];
-const rhovanionAreas = [Areas.MORIA, Areas.GLADDEN_FIELDS, Areas.LORIEN, Areas.EMYN_MUIL, Areas.BROWNLANDS, Areas.RHUN_HILLS, Areas.THE_WOLD, Areas.DEAD_MARSHES];
-const gondorAreas = [Areas.DRUWAITH_IAUR, Areas.ANDRAST, Areas.ANFALAS, Areas.VALE_OF_ERECH, Areas.LAMEDON, Areas.BELFALAS, Areas.LEBENNIN, Areas.MINAS_TIRITH, Areas.ITHILIEN, Areas.SOUTH_ITHILIEN];
-const mordorAreas = [Areas.UDUN_VALE, Areas.MOUNT_DOOM, Areas.BARAD_DUR, Areas.MINAS_MORGUL, Areas.GORGOROTH, Areas.NURN];
-const haradwaithAreas = [Areas.HARONDOR, Areas.UMBAR, Areas.DEEP_HARAD, Areas.HARAD, Areas.NEAR_HARAD, Areas.KHAND];
+const eriadorAreas = [AreaName.FORLINDON, AreaName.MITHLOND, AreaName.HARLINDON, AreaName.TOWER_HILLS, AreaName.EVENDIM_HILLS, AreaName.LUNE_VALLEY, AreaName.THE_SHIRE];
+const arnorAreas = [AreaName.FORODWAITH, AreaName.ANGMAR, AreaName.EASTERN_ANGMAR, AreaName.BORDERLANDS, AreaName.NORTH_DOWNS, AreaName.RHUDAUR, AreaName.FORNOST, AreaName.WEATHER_HILLS, AreaName.BUCKLAND, AreaName.OLD_FOREST, AreaName.SOUTH_DOWNS];
+const rhunAreas = [AreaName.NORTH_RHUN, AreaName.WITHERED_HEATH, AreaName.ESGAROTH, AreaName.SOUTH_RHUN];
+const mirkwoodAreas = [AreaName.CARROCK, AreaName.NORTH_MIRKWOOD, AreaName.ANDUIN_VALLEY, AreaName.EASTERN_MIRKWOOD, AreaName.SOUTH_MIRKWOOD];
+const rohanAreas = [AreaName.EREGION, AreaName.MINHIRIATH, AreaName.DUNLAND, AreaName.ENEDWAITH, AreaName.FANGORN, AreaName.WEST_ROHAN, AreaName.GAP_OF_ROHAN];
+const rhovanionAreas = [AreaName.MORIA, AreaName.GLADDEN_FIELDS, AreaName.LORIEN, AreaName.EMYN_MUIL, AreaName.BROWNLANDS, AreaName.RHUN_HILLS, AreaName.THE_WOLD, AreaName.DEAD_MARSHES];
+const gondorAreas = [AreaName.DRUWAITH_IAUR, AreaName.ANDRAST, AreaName.ANFALAS, AreaName.VALE_OF_ERECH, AreaName.LAMEDON, AreaName.BELFALAS, AreaName.LEBENNIN, AreaName.MINAS_TIRITH, AreaName.ITHILIEN, AreaName.SOUTH_ITHILIEN];
+const mordorAreas = [AreaName.UDUN_VALE, AreaName.MOUNT_DOOM, AreaName.BARAD_DUR, AreaName.MINAS_MORGUL, AreaName.GORGOROTH, AreaName.NURN];
+const haradwaithAreas = [AreaName.HARONDOR, AreaName.UMBAR, AreaName.DEEP_HARAD, AreaName.HARAD, AreaName.NEAR_HARAD, AreaName.KHAND];
 
 interface ListOfRegions { 
     [key: string]: Region

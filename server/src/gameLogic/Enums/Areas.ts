@@ -3,8 +3,10 @@ import { Stronghold } from '../Models/Stronghold';
 import { SiteOfPower } from '../Models/SiteOfPower';
 import { AreaName } from './AreaNames';
 import { AreaType } from '../Models/AreaType';
+import { Player } from '../Models/Player';
 
-export const Areas: {[key: string]: AreaType} = {
+export const getAreas = () =>  { 
+    return {
     FORLINDON: new Area(AreaName.FORLINDON),
     MITHLOND: new SiteOfPower(AreaName.MITHLOND),
     EVENDIM_HILLS: new Stronghold(AreaName.EVENDIM_HILLS),
@@ -69,4 +71,5 @@ export const Areas: {[key: string]: AreaType} = {
     HARAD: new Area(AreaName.HARAD),
     NEAR_HARAD: new Area(AreaName.NEAR_HARAD),
     KHAND: new SiteOfPower(AreaName.KHAND),
+    }
 }

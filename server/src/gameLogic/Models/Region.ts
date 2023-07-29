@@ -1,12 +1,13 @@
+import { AreaName } from '../Enums/AreaNames';
 import { AreaType } from './AreaType';
 
 export class Region {
     private name: string;
-    private areas: Array<AreaType>;
+    private areaNames: Array<AreaName>;
     private bonusUnits: number;
-    constructor(name: string, areas: Array<AreaType>, bonusUnits: number) {
+    constructor(name: string, areaNames: Array<AreaName>, bonusUnits: number) {
         this.name = name;
-        this.areas = areas;
+        this.areaNames = areaNames;
         this.bonusUnits = bonusUnits;
     }
 
@@ -14,8 +15,8 @@ export class Region {
         return this.name;
     }
 
-    getAreas(): Array<AreaType> {
-        return this.areas;
+    getAreaNames(): Array<AreaName> {
+        return this.areaNames;
     }
 
     getBonusUnits(): number {

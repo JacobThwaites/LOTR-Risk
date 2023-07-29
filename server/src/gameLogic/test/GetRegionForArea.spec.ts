@@ -1,5 +1,5 @@
 import { Area } from '../Models/Area';
-import { Areas } from '../Enums/Areas'; 
+import { getAreas } from '../Enums/Areas'; 
 import { Region } from '../Models/Region';
 import { Regions } from '../Enums/Regions';
 import { getRegionForArea } from '../utils/getRegionForArea';
@@ -10,7 +10,8 @@ describe('getRegionForArea method', () => {
     let area: Area;
     let region: Region;
     beforeEach(function () {
-        area = Areas.FORLINDON;
+        const areas = getAreas();
+        area = areas.FORLINDON;
         region = Regions.ERIADOR;
     })
 

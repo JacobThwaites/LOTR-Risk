@@ -1,6 +1,6 @@
 import { Player } from "../Models/Player";
 import { AreaType } from "../Models/AreaType";
-import { Areas } from "../Enums/Areas";
+import { getAreas } from "../Enums/Areas";
 import shuffle from "../utils/Shuffle";
 
 export class AreaAssigner {
@@ -14,7 +14,6 @@ export class AreaAssigner {
       for (let j = 0; j < areaLists[i].length; j++) {
         this.addAreaToPlayer(areaLists[i][j], this.players[i]);
       }
-      
     }
   }
 
@@ -25,9 +24,10 @@ export class AreaAssigner {
 }
 
 export function setupAreaAssignments(numPlayers: number): Array<AreaType[]> {
+  const areaInfo = getAreas();
   const playerAreas: Array<Array<AreaType>> = create2DArray(numPlayers);
 
-  const areas = Object.values(Areas);
+  const areas = Object.values(areaInfo);
   const shuffledAreas: AreaType[] = shuffle(areas);
   let playerIndex = 0;
 
