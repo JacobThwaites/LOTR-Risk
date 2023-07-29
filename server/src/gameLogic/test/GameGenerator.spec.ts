@@ -1,6 +1,7 @@
 import { GameGenerator } from '../Controllers/GameGenerator';
 import { AreaType } from '../Models/AreaType';
 import { getAreas } from '../Enums/Areas';
+import { AreaName } from '../Enums/AreaNames';
 import { assert } from 'chai';
 import 'mocha';
 
@@ -18,12 +19,7 @@ describe('Game Generator', () => {
         const players = game.getPlayers();
         assert.equal(2, players.length);
         assert.equal(players[0].getUserID(), userID);
-    });
-
-    it('should generate a game with all areas', () => {
-        const game = GameGenerator.generateGame(areaLists, 2, userID);
-        const players = game.getPlayers();
-        assert.equal(2, players.length);
-        assert.equal(players[0].getUserID(), userID);
+        const gameAreas = game.getAreas();
+        assert.containsAllKeys(gameAreas, [AreaName.FANGORN, AreaName.FORLINDON])
     });
 });
