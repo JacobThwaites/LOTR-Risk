@@ -5,7 +5,7 @@ import WebSocketWithID from "./WebSocketWithID";
 import PlayerDisconnectionTracker from "./PlayerDisconnectionTracker";
 import { broadcastMessage } from "./webSockets";
 import { GameEventMessage, GameEventType } from "./GameEventMessageFactory";
-import { activeGames } from "./database/ActiveGames";
+import { activeGames } from "./data/ActiveGames";
 import { Player } from "./gameLogic/Models/Player";
 const ws = require('ws');
 

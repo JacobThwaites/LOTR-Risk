@@ -1,7 +1,7 @@
 import express from 'express';
 import * as games from './games';
 import { onConnection } from './webSockets';
-import setupDatabase from './database/dbSetup';
+import setupDatabase from './data/dbSetup';
 import { WebSocket } from 'ws';
 import { enableCORS } from './cors';
 import { parse } from 'url';

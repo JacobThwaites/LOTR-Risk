@@ -19,4 +19,11 @@ describe('Game Generator', () => {
         assert.equal(2, players.length);
         assert.equal(players[0].getUserID(), userID);
     });
+
+    it('should generate a game with all areas', () => {
+        const game = GameGenerator.generateGame(areaLists, 2, userID);
+        const players = game.getPlayers();
+        assert.equal(2, players.length);
+        assert.equal(players[0].getUserID(), userID);
+    });
 });

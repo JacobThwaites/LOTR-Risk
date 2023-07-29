@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { Game } from './gameLogic/Models/Game';
 import { Player } from './gameLogic/Models/Player';
-const gameQueries = require("./database/gameQueries");
-const playerQueries = require("./database/playerQueries");
+const gameQueries = require("./data/gameQueries");
+const playerQueries = require("./data/playerQueries");
 
 export const getGameByUUID = async function (req: Request, res: Response) {
     const game = await gameQueries.getByUUID(req.params.uuid);

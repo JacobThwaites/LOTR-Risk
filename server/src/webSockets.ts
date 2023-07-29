@@ -3,7 +3,7 @@ import WebSocketWithID from "./WebSocketWithID";
 import { updateGame } from "./gameEventProcessor";
 import { WebSocketManager } from "./WebSocketManager";
 import { GameEventMessage } from "./GameEventMessageFactory";
-const gameQueries = require("./database/gameQueries");
+const gameQueries = require("./data/gameQueries");
 const ws = require('ws');
 
 

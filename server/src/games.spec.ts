@@ -1,4 +1,4 @@
-const gameQueries = require("./database/gameQueries");
+const gameQueries = require("./data/gameQueries");
 const app = require('./index');
 import { Game } from './gameLogic/Models/Game';
 import { Player } from './gameLogic/Models/Player';

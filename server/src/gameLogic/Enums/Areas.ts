@@ -2,8 +2,6 @@ import { Area } from '../Models/Area';
 import { Stronghold } from '../Models/Stronghold';
 import { SiteOfPower } from '../Models/SiteOfPower';
 import { AreaName } from './AreaNames';
-import { AreaType } from '../Models/AreaType';
-import { Player } from '../Models/Player';
 
 export const getAreas = () =>  { 
     return {
