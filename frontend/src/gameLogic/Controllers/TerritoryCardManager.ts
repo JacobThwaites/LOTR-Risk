@@ -24,12 +24,6 @@ export default class TerritoryCardManager {
         return cardBonus > 0;
     }
 
-    public static exchangeCards(player: Player, cards: TradableCards): void {
-        const bonus = this.getBonusForCards(cards);
-        player.addReinforcements(bonus);
-        this.removeCardsFromPlayer(cards, player);
-    }
-
     private static getBonusForCards(cards: TradableCards): number {
         const cardCounts = this.getCardCounts(cards);
 

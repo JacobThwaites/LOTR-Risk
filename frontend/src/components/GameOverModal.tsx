@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from "react-router-dom";
 import { Dialog } from '@mui/material';
-import { LeaderboardEntry } from '../gameLogic/Controllers/Leaderboard/LeaderboardCalculator';
+import { LeaderboardEntry } from '../gameLogic/Enums/LeaderboardEntry';
 import Leaderboard from './Leaderboard';
 
 export default function GameOverModal(props: { leaderboardData: LeaderboardEntry[] }) {

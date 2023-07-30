@@ -1,5 +1,5 @@
 import React from "react";
-import { LeaderboardEntry, LeaderboardEntry as LeaderboardEntryData } from "../gameLogic/Controllers/Leaderboard/LeaderboardCalculator";
+import { LeaderboardEntry, LeaderboardEntry as LeaderboardEntryData } from "../gameLogic/Enums/LeaderboardEntry";
 
 type Props = {
     leaderboardData: LeaderboardEntry[]

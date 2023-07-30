@@ -25,7 +25,7 @@ import { Colour } from "../gameLogic/Enums/Colours";
 import areaDetails from "./svgPaths/AreaDetails";
 import { AreaName } from "../gameLogic/Enums/AreaNames";
 import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
-import { LeaderboardEntry } from "../gameLogic/Controllers/Leaderboard/LeaderboardCalculator";
+import { LeaderboardEntry } from "../gameLogic/Enums/LeaderboardEntry";
 
 export default function GameDisplay() {
     const { gameID } = useParams<{ gameID: string }>();
