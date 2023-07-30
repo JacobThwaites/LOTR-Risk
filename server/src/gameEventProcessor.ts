@@ -67,6 +67,9 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
             const reinforcementsAvailableMessage = GameEventMessageFactory.generateReinforcementsAvailableMessage(reinforcementsAvailable);
             broadcastMessage(reinforcementsAvailableMessage, wss);
 
+            const leaderboardUpdate = GameEventMessageFactory.generateLeaderboardUpdateMessage(game);
+            broadcastMessage(leaderboardUpdate, wss);
+
             if (game.areMaxTurnsReached()) {
                 const gameOverMessage = GameEventMessageFactory.generateGameOverMessage();
                 broadcastMessage(gameOverMessage, wss);
@@ -158,6 +161,8 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
             break;
         }
         case GameEventType.PLAYER_JOINED: {
+            const leaderboardUpdate = GameEventMessageFactory.generateLeaderboardUpdateMessage(game);
+            broadcastMessage(leaderboardUpdate, wss);
             break;
         }
         case GameEventType.PLAYER_DISCONNECT: {
