@@ -26,7 +26,6 @@ import areaDetails from "./svgPaths/AreaDetails";
 import { AreaName } from "../gameLogic/Enums/AreaNames";
 import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
 
-// TODO: handle change player turn after end turn
 export default function GameDisplay() {
     const { gameID } = useParams<{ gameID: string }>();
     const [isGameLoaded, setIsGameLoaded] = useState(false);
@@ -246,7 +245,6 @@ export default function GameDisplay() {
         }
     }
 
-    // TODO: handle on backend
     function onAreaSelect(areaName: AreaName): void {
         if (shouldHandleStartingReinforcements) {
             webSocketHandler.current!.sendStartingReinforcement(areaName);
@@ -277,7 +275,6 @@ export default function GameDisplay() {
         }
     }
 
-    // TODO: handle on backend
     function setAreaForCombat(areaName: AreaName): void {
         if (attackingArea === areaName) {
             webSocketHandler.current!.sendClearAreaSelection();

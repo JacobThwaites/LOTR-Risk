@@ -10,8 +10,7 @@ export default class PlayerDisconnectionTracker {
     startDisconnectionCountdown() {
         this.disconnectionCountdown = setTimeout(() => {
             this.countdownCallback();
-            // TODO: change to 60000
-        }, 5000)
+        }, 60000)
     }
 
     cancelDisconnectionCountdown() {

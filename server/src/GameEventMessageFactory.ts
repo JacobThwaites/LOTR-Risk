@@ -89,7 +89,6 @@ export default class GameEventMessageFactory {
         }
     }
 
-    // TODO: send message to previous player with territory card if they get one
     public static generateEndTurnMessage(newCurrentPlayerColour: Colour): GameEventMessage {
         return {
             type: GameEventType.END_TURN,

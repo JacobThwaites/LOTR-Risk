@@ -10,8 +10,8 @@ type Props = {
 
 
 export default function PlayerDisconnectModal(props: Props): JSX.Element {
-    // TODO: change to 60000
-    const [timeRemaining, setTimeRemaining] = useState(5);
+    const SIXTY_SECONDS_IN_MILLISECONDS = 60000;
+    const [timeRemaining, setTimeRemaining] = useState(SIXTY_SECONDS_IN_MILLISECONDS);
     const countdownInterval = setInterval(() => {
         setTimeRemaining(timeRemaining - 1);
     }, 1000)
