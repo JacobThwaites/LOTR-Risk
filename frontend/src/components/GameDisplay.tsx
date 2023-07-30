@@ -153,6 +153,10 @@ export default function GameDisplay() {
             }
             case GameEventType.REINFORCEMENTS_AVAILABLE: {
                 setReinforcementsAvailable(messageData.reinforcementsAvailable);
+
+                if (!messageData.reinforcementsAvailable) {
+                    setShouldDisplayReinforcementsModal(false);
+                }
                 break;
             }
             case GameEventType.COMBAT_RESULTS: {
