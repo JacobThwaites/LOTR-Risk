@@ -66,21 +66,16 @@ export default class AreaSelectValidator {
     }
 
     private isDefendingAreaClickable(areaName: AreaName): boolean {
-        const areaDetail = areaDetails[areaName as AreaName];
-        const { area } = areaDetail;
-        
-
-        const attackingAreaDetail = areaDetails[this.attackingArea as AreaName];
-        const attackingArea = attackingAreaDetail?.area;
-
         if (!this.attackingArea) {
             return false;
         }
+
+        const areaDetail = areaDetails[areaName as AreaName];
+        const { colour } = areaDetail;
         
-        const defendingPlayerColour = area.getPlayer()?.getColour();
         return (
-            (areAreasConnected(this.attackingArea, areaName) && this.currentPlayerColour !== defendingPlayerColour) ||
-            attackingArea === area
+            (areAreasConnected(this.attackingArea, areaName) && this.currentPlayerColour !== colour) ||
+            this.attackingArea === areaName
         );
     }
 
