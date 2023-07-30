@@ -15,14 +15,9 @@ export class UnitMoveController {
     }
 
     moveUnits(units: number) {
-        // New
         const origin = areaDetails[this.origin];
         const destination = areaDetails[this.destination];
         origin.units -= units;
         destination.units += units;
-
-        // Old
-        origin.area.removeUnits(units);
-        destination.area.addUnits(units);
     }
 }
