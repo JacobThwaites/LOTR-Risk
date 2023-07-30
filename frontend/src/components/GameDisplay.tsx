@@ -25,6 +25,7 @@ import { Colour } from "../gameLogic/Enums/Colours";
 import areaDetails from "./svgPaths/AreaDetails";
 import { AreaName } from "../gameLogic/Enums/AreaNames";
 import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
+import { LeaderboardEntry } from "../gameLogic/Controllers/Leaderboard/LeaderboardCalculator";
 
 export default function GameDisplay() {
     const { gameID } = useParams<{ gameID: string }>();
@@ -54,6 +55,7 @@ export default function GameDisplay() {
     const [turnsRemaining, setTurnsRemaining] = useState<number>(1);
     const [playersLeftToJoin, setPlayersLeftToJoin] = useState<number>(1);
     const [territoryCards, setTerritoryCards] = useState<TerritoryCard[]>([]);
+    const [leaderboardData, setLeadboardData] = useState<LeaderboardEntry[]>([]);
 
     useEffect(() => {
         async function setupGame() {
@@ -148,6 +150,10 @@ export default function GameDisplay() {
             }
             case GameEventType.REINFORCEMENT: {
                 addReinforcements(messageData.areaName);
+                break;
+            }
+            case GameEventType.LEADERBOARD_UPDATE: {
+                setLeadboardData(messageData.leaderboardData);
                 break;
             }
             case GameEventType.REINFORCEMENTS_AVAILABLE: {
@@ -485,7 +491,7 @@ export default function GameDisplay() {
                 isDisabled={isEndTurnButtonDisabled()}
                 shouldDisplayTroopTransferButton={shouldDisplayTroopTransferButton}
             />
-            <Leaderboard playerColours={playerColours} />
+            <Leaderboard leaderboardData={leaderboardData}/>
             <TerritoryCardsButton onClick={() => setShouldDisplayTerritoryCards(true)} numCards={territoryCards.length} />
             {shouldDisplayTerritoryCards && (
                 <TerritoryCardsDialog
@@ -500,7 +506,7 @@ export default function GameDisplay() {
                 )
             )}
             {isGameOver && (
-                <GameOverModal playerColours={playerColours} />
+                <GameOverModal leaderboardData={leaderboardData} />
             )}
         </div>
     );

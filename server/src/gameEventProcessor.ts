@@ -119,6 +119,9 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
                 const message = GameEventMessageFactory.generateUnitMoveSetupMessage(attackingArea, defendingArea);
                 broadcastMessage(message, wss);
             }
+
+            const leaderboardUpdate = GameEventMessageFactory.generateLeaderboardUpdateMessage(game);
+            broadcastMessage(leaderboardUpdate, wss);
             break;
         }
         case GameEventType.UNIT_MOVE: {

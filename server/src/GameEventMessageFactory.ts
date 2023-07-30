@@ -2,6 +2,8 @@ import { Colour } from "./gameLogic/Enums/Colours";
 import { AreaType } from "./gameLogic/Models/AreaType";
 import { v4 as uuidv4 } from 'uuid';
 import { Player } from "./gameLogic/Models/Player";
+import { Game } from "./gameLogic/Models/Game";
+import LeaderboardCalculator from "./gameLogic/Controllers/Leaderboard/LeaderboardCalculator";
 
 export type GameEventMessage = {
     id: string,
@@ -31,7 +33,8 @@ export enum GameEventType {
     CHANGE_PLAYER = "CHANGE PLAYER",
     STARTING_REINFORCEMENTS_END = "STARTING REINFORCEMENTS END",
     TERRITORY_CARDS = "TERRITORY CARDS",
-    TRADE_TERRITORY_CARDS = "TRADE TERRITORY CARDS"
+    TRADE_TERRITORY_CARDS = "TRADE TERRITORY CARDS",
+    LEADERBOARD_UPDATE = "LEADERBOARD UPDATE"
 }
 
 
@@ -147,6 +150,15 @@ export default class GameEventMessageFactory {
             type: GameEventType.TERRITORY_CARDS,
             id: uuidv4(),
             cards: player.getTerritoryCards()
+        }
+    }
+
+    public static generateLeaderboardUpdateMessage(game: Game): GameEventMessage {
+        const leaderboardData = LeaderboardCalculator.getLeaderboard(game);
+        return {
+            type: GameEventType.LEADERBOARD_UPDATE,
+            id: uuidv4(),
+            leaderboardData
         }
     }
 }
