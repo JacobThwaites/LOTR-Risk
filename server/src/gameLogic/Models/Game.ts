@@ -1,5 +1,4 @@
 import TerritoryCardManager from '../Controllers/TerritoryCardManager';
-import { getAreas } from '../Enums/Areas';
 import { GameAreas } from '../utils/types';
 import { AreaType } from './AreaType';
 import { Player } from './Player';

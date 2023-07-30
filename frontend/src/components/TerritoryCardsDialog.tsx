@@ -12,7 +12,8 @@ import CustomButton from "./common/CustomButton";
 
 type Props = { 
   onClose: any, 
-  cards: TerritoryCard[]
+  cards: TerritoryCard[],
+  sendTradeTerritoryCardsMessage(selectedCards: TerritoryCard[]): void
 }
 
 export default function TerritoryCardsDialog(props: Props): JSX.Element {
@@ -32,10 +33,7 @@ export default function TerritoryCardsDialog(props: Props): JSX.Element {
   }
 
   function tradeCards(): void {
-    // TerritoryCardManager.exchangeCards(props.player, selectedCards as TradableCards);
-
-    // TODO: send websocket message
-    // props.updateGameState();
+    props.sendTradeTerritoryCardsMessage(selectedCards);
     props.onClose();
   }
 

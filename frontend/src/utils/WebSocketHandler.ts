@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { getUserID } from './userIDManager';
 import { AreaName } from '../gameLogic/Enums/AreaNames';
+import { TerritoryCard } from '../gameLogic/Models/TerritoryCard';
 
 export enum GameEventType {
     CLEAR_SELECTED_AREAS = "CLEAR SELECTED AREAS",
@@ -23,7 +24,8 @@ export enum GameEventType {
     UPDATE_AREA = "UPDATE AREA",
     CHANGE_PLAYER = "CHANGE PLAYER",
     STARTING_REINFORCEMENTS_END = "STARTING REINFORCEMENTS END",
-    TERRITORY_CARDS = "TERRITORY CARDS"
+    TERRITORY_CARDS = "TERRITORY CARDS",
+    TRADE_TERRITORY_CARDS = "TRADE TERRITORY CARDS"
 }
 
 export default class WebSocketHandler {
@@ -46,7 +48,7 @@ export default class WebSocketHandler {
         return messageUUID === this.previousMessageUUID;
     }   
 
-    sendMessage(message: any): void {
+    sendMessage(message: GameEventMessage): void {
         message.id = uuidv4(); 
         message.userID = getUserID();
         this.socket.send(JSON.stringify(message));
@@ -147,4 +149,19 @@ export default class WebSocketHandler {
 
         this.sendMessage(messageBody);
     }
+
+    sendTradeTerritoryCards(territoryCards: TerritoryCard[]): void {
+        const messageBody = {
+            type: GameEventType.TRADE_TERRITORY_CARDS,
+            territoryCards,
+            userID: getUserID(),
+        }
+        
+        this.sendMessage(messageBody);
+    }
+}
+
+type GameEventMessage = {
+    type: GameEventType,
+    [key: string]: any;
 }

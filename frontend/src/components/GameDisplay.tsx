@@ -25,6 +25,9 @@ import { Colour } from "../gameLogic/Enums/Colours";
 import areaDetails from "./svgPaths/AreaDetails";
 import { AreaName } from "../gameLogic/Enums/AreaNames";
 import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
+import { Symbol } from "../gameLogic/Enums/Symbols";
+
+const tempCards = [new TerritoryCard(Symbol.ARCHER), new TerritoryCard(Symbol.ARCHER), new TerritoryCard(Symbol.ARCHER)];
 
 export default function GameDisplay() {
     const { gameID } = useParams<{ gameID: string }>();
@@ -53,7 +56,8 @@ export default function GameDisplay() {
     const [userColour, setUserColour] = useState<Colour>();
     const [turnsRemaining, setTurnsRemaining] = useState<number>(1);
     const [playersLeftToJoin, setPlayersLeftToJoin] = useState<number>(1);
-    const [territoryCards, setTerritoryCards] = useState<TerritoryCard[]>([]);
+    // const [territoryCards, setTerritoryCards] = useState<TerritoryCard[]>([]);
+    const [territoryCards, setTerritoryCards] = useState<TerritoryCard[]>(tempCards);
 
     useEffect(() => {
         async function setupGame() {
@@ -368,6 +372,10 @@ export default function GameDisplay() {
         resetUnitMoveState();
     }
 
+    function sendTradeTerritoryCardsMessage(selectedCards: TerritoryCard[]): void {
+        webSocketHandler.current!.sendTradeTerritoryCards(selectedCards);
+    }
+
     function resetUnitMoveState(): void {
         setShouldDisplayUnitMoveButton(false);
         setAreaToMoveUnits(null);
@@ -487,6 +495,7 @@ export default function GameDisplay() {
                 <TerritoryCardsDialog
                     onClose={() => setShouldDisplayTerritoryCards(false)}
                     cards={territoryCards}
+                    sendTradeTerritoryCardsMessage={sendTradeTerritoryCardsMessage}
                 />
             )}
             {disconnectedPlayers.length > 0 && (

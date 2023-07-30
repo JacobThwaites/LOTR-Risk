@@ -1,5 +1,4 @@
 import { WebSocketServer } from "ws";
-import { getAreas } from "./gameLogic/Enums/Areas";
 import { Game } from "./gameLogic/Models/Game";
 import { broadcastMessage } from "./webSockets";
 import { CombatController } from "./gameLogic/Controllers/CombatController";
@@ -8,16 +7,13 @@ import { UnitMoveController } from "./gameLogic/Controllers/UnitMoveController";
 import GameEventMessageFactory, { GameEventType } from "./GameEventMessageFactory";
 import { WebSocketManager } from "./WebSocketManager";
 import { AreaName } from "./gameLogic/Enums/AreaNames";
+import TerritoryCardManager, { TradableCards } from "./gameLogic/Controllers/TerritoryCardManager";
+import { TerritoryCard } from "./gameLogic/Models/TerritoryCard";
+import { Symbol } from "./gameLogic/Enums/Symbols";
 
 export function updateGame(messageData: any, game: Game, wss: WebSocketServer, webSocketManager: WebSocketManager): void {
     let currentPlayer = game.getCurrentPlayer();
     const gameAreas = game.getAreas();
-    
-    // TODO: don't do this if player joined or disconnected message
-    if (currentPlayer.getUserID() !== messageData.userID && messageData.type !== GameEventType.PLAYER_JOINED) {
-        console.log("message sent from incorrect player");
-        return;
-    }
 
     switch (messageData.type) {
         case GameEventType.STARTING_REINFORCEMENT: {
@@ -76,6 +72,28 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
                 broadcastMessage(gameOverMessage, wss);
             }
 
+            break;
+        }
+        case GameEventType.TRADE_TERRITORY_CARDS: {
+            const { userID } = messageData;
+
+            const territoryCards = messageData.territoryCards.map((card: { symbol: string; }) => new TerritoryCard(card.symbol as Symbol));
+
+            if (!TerritoryCardManager.areCardsExchangeable(territoryCards as TradableCards)) {
+                break;
+            }
+
+            const players = game.getPlayers();
+            const player = players.filter(player => player.getUserID() === userID)[0];
+            TerritoryCardManager.exchangeCards(player, territoryCards as TradableCards);
+
+            const reinforcementsAvailable = player.getReinforcements();
+            const reinforcementsAvailableMessage = GameEventMessageFactory.generateReinforcementsAvailableMessage(reinforcementsAvailable);
+            webSocketManager.messageIndividualClient(game.getUUID(), userID, reinforcementsAvailableMessage);
+
+            const territoryCardMessage = GameEventMessageFactory.generateTerritoryCardMessage(player);
+            webSocketManager.messageIndividualClient(game.getUUID(), userID, territoryCardMessage);
+            
             break;
         }
         case GameEventType.CLEAR_SELECTED_AREAS: {
