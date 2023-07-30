@@ -1,6 +1,6 @@
 # Lord of the Rings Risk 
 
-A web-based implementation of the board game 'Lord of the Rings Risk', built using TypeScript and React.js. 
+A web-based implementation of the board game 'Lord of the Rings Risk', built using TypeScript, Node and React.js. 
 
 <img src='./public/gameplay-example.png' alt='gameplay image' width='375' height='450'>
 
