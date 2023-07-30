@@ -1,6 +1,6 @@
 # Lord of the Rings Risk - Server
 
-API for the Lord of the Rings Risk project. Built using TypeScript, Express and MySQL.
+API for the Lord of the Rings Risk project. Built using TypeScript and Express.
 
 ### Running Locally
 
