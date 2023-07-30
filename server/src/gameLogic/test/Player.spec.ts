@@ -57,9 +57,9 @@ describe('Player', () => {
         assert.equal(result, 1);
     });
 
-    it('should be able to remove an area', () => {
+    it('should be able to remove an area by name', () => {
         player.addArea(area1);
-        player.removeArea(0);
+        player.removeArea(area1.getName());
         const result = player.getAreas().length;
         assert.equal(result, 0);
     });

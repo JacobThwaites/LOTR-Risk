@@ -110,9 +110,7 @@ export class CombatController {
         }
 
         if (this.defendingArea.getUnits() < 1) {
-            attacker.addArea(this.defendingArea);
-            this.defendingArea.setPlayer(attacker);
-            this.game.handlePlayerCapturingArea();
+            this.game.handlePlayerCapturingArea(attacker, this.defendingArea);
         }
     }
 

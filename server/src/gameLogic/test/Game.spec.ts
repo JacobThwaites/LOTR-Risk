@@ -102,4 +102,19 @@ describe('Game', () => {
         game.handleNewTurn();
         assert.equal(player1.getTerritoryCards().length, 0);
     });
+
+    it('should update players list of areas after an area capture', () => {
+        const attacker = player1;
+        const defender = player2;
+
+        assert.equal(attacker.getAreas().length, 1);
+        assert.equal(defender.getAreas().length, 1);
+        assert.equal(area2.getPlayer(), defender);
+
+        game.handlePlayerCapturingArea(player1, area2);
+
+        assert.equal(attacker.getAreas().length, 2);
+        assert.equal(defender.getAreas().length, 0);
+        assert.equal(area2.getPlayer(), attacker);
+    });
 });

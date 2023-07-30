@@ -43,8 +43,14 @@ export class Game {
         return this.areas;
     }
 
-    public handlePlayerCapturingArea(): void {
+    public handlePlayerCapturingArea(attacker: Player, area: AreaType): void {
         this.hasPlayerCapturedAreaThisTurn = true;
+
+        const defender = area.getPlayer();
+        defender?.removeArea(area.getName());
+
+        attacker.addArea(area);
+        area.setPlayer(attacker);
     }
 
     public handleNewTurn() {

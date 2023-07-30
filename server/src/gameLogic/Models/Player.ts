@@ -81,8 +81,8 @@ export class Player {
         }
     }
 
-    removeArea(index: number) {
-        this.areas.splice(index, 1);
+    removeArea(areaName: AreaName) {
+        this.areas = this.areas.filter(a => a.getName() !== areaName);
     }
 
     addRegion(region: Region) {
