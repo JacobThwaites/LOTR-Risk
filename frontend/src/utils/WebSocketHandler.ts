@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { getUserID } from './userIDManager';
+import { AreaName } from '../gameLogic/Enums/AreaNames';
+import { TerritoryCard } from '../gameLogic/Models/TerritoryCard';
 
 export enum GameEventType {
     CLEAR_SELECTED_AREAS = "CLEAR SELECTED AREAS",
@@ -7,13 +9,24 @@ export enum GameEventType {
     COMBAT_RESULTS = "COMBAT RESULTS",
     STARTING_REINFORCEMENT = "STARTING REINFORCEMENT",
     REINFORCEMENT = "REINFORCEMENT",
+    REINFORCEMENTS_AVAILABLE = "REINFORCEMENTS AVAILABLE",
     END_TURN = "END TURN",
-    UNIT_MANEURVRE = "UNIT MANEUVRE",
+    UNIT_MOVE_SETUP = "UNIT MOVE SETUP",
+    UNIT_MOVE = "UNIT MOVE",
+    UNIT_MOVE_COMPLETE = "UNIT MOVE COMPLETE",
     TROOP_TRANSFER_SETUP = "TROOP TRANSFER SETUP",
     TROOP_TRANSFER = "TROOP TRANSFER",
+    TROOP_TRANSFER_COMPLETE = "TROOP TRANSFER COMPLETE",
     PLAYER_JOINED = "PLAYER JOINED",
     PLAYER_DISCONNECT = "PLAYER DISCONNECTED",
-    GAME_OVER_DISCONNECT = "GAME OVER DISCONNECTION"
+    GAME_OVER = "GAME OVER",
+    GAME_OVER_DISCONNECT = "GAME OVER DISCONNECTION",
+    UPDATE_AREA = "UPDATE AREA",
+    CHANGE_PLAYER = "CHANGE PLAYER",
+    STARTING_REINFORCEMENTS_END = "STARTING REINFORCEMENTS END",
+    TERRITORY_CARDS = "TERRITORY CARDS",
+    TRADE_TERRITORY_CARDS = "TRADE TERRITORY CARDS",
+    LEADERBOARD_UPDATE = "LEADERBOARD UPDATE"
 }
 
 export default class WebSocketHandler {
@@ -31,23 +44,15 @@ export default class WebSocketHandler {
         this.socket.close();
     }
 
+    // TODO: this won't be needed once new backend approach is implemented
     isMessageAlreadyProcessed(messageUUID: string): boolean {
         return messageUUID === this.previousMessageUUID;
     }   
 
-    sendMessage(message: any) {
+    sendMessage(message: GameEventMessage): void {
         message.id = uuidv4(); 
+        message.userID = getUserID();
         this.socket.send(JSON.stringify(message));
-    }
-
-    sendCombatInfo(attackingArea: string, defendingArea: string) {
-        const messageBody = {
-            type: GameEventType.COMBAT,
-            attackingArea,
-            defendingArea
-        }
-
-        this.sendMessage(messageBody);
     }
 
     sendCombatResults(attackingArea: string, defendingArea: string, results: string[]) {
@@ -95,11 +100,11 @@ export default class WebSocketHandler {
         this.sendMessage(messageBody);
     }
 
-    sendUnitManeuvre(areaToMoveUnits: string, areaToReceiveUnits: string, numUnits: number) {
+    sendUnitMove(origin: string, destination: string, numUnits: number) {
         const messageBody = {
-            type: GameEventType.UNIT_MANEURVRE,
-            areaToMoveUnits,
-            areaToReceiveUnits,
+            type: GameEventType.UNIT_MOVE,
+            origin,
+            destination,
             numUnits 
         }
 
@@ -114,11 +119,11 @@ export default class WebSocketHandler {
         this.sendMessage(messageBody);
     }
 
-    sendTroopTransfer(areaToMoveUnits: string, areaToReceiveUnits: string, numUnits: number) {
+    sendTroopTransfer(origin: string, destination: string, numUnits: number) {
         const messageBody = {
             type: GameEventType.TROOP_TRANSFER,
-            areaToMoveUnits,
-            areaToReceiveUnits,
+            origin,
+            destination,
             numUnits 
         }
 
@@ -133,4 +138,31 @@ export default class WebSocketHandler {
 
         this.sendMessage(messageBody);
     }
+
+    sendCombat(attackingArea: AreaName, defendingArea: AreaName, numAttackingDice: number) {     
+        const messageBody = {
+            type: GameEventType.COMBAT,
+            userID: getUserID(),
+            attackingArea,
+            defendingArea,
+            numAttackingDice
+        }
+
+        this.sendMessage(messageBody);
+    }
+
+    sendTradeTerritoryCards(territoryCards: TerritoryCard[]): void {
+        const messageBody = {
+            type: GameEventType.TRADE_TERRITORY_CARDS,
+            territoryCards,
+            userID: getUserID(),
+        }
+        
+        this.sendMessage(messageBody);
+    }
+}
+
+type GameEventMessage = {
+    type: GameEventType,
+    [key: string]: any;
 }

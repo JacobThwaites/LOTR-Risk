@@ -1,14 +1,12 @@
 import React from "react";
-import LeaderboardCalculator, { LeaderboardEntry as LeaderboardEntryData } from "../gameLogic/Controllers/Leaderboard/LeaderboardCalculator";
-import { Game } from "../gameLogic/Models/Game";
+import { LeaderboardEntry, LeaderboardEntry as LeaderboardEntryData } from "../gameLogic/Enums/LeaderboardEntry";
 
 type Props = {
-    game: Game
+    leaderboardData: LeaderboardEntry[]
 }
 
 export default function Leaderboard(props: Props): JSX.Element {
-    const leaderboardInfo = LeaderboardCalculator.getLeaderboard(props.game);
-    const entries = leaderboardInfo.map((entry: LeaderboardEntryData, i: number) => {
+    const entries = props.leaderboardData.map((entry: LeaderboardEntryData, i: number) => {
         return <LeaderboardRows entry={entry} key={i}/>
     })
 

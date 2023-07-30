@@ -1,12 +1,12 @@
 import express from 'express';
 import * as games from './games';
-import * as players from './players';
-import { WebSocketManager, onConnection } from './webSockets';
-import setupDatabase from './database/dbSetup';
+import { onConnection } from './webSockets';
+import setupDatabase from './data/dbSetup';
 import { WebSocket } from 'ws';
 import { enableCORS } from './cors';
 import { parse } from 'url';
 import { IncomingMessage } from 'http';
+import { WebSocketManager } from './WebSocketManager';
 
 setupDatabase();
 
@@ -67,16 +67,9 @@ if (process.env.NODE_ENV !== 'test') {
 // API Routes
 
 // Game 
-app.get('/api/game', games.allGames);
 app.get("/api/game/:uuid", games.getGameByUUID);
 app.post("/api/game/", games.createGame);
 app.patch('/api/game/:uuid', games.addUserToGame);
-
-// Player
-app.get('/api/player', players.allPlayers);
-app.get('/api/player/:id', players.getPlayerById);
-app.patch('/api/player/:id', players.addUserIDToPlayer);
-app.post("/api/player/", players.createPlayer);
 
 // Default response for any other request
 app.use(function (_req: express.Request, res: express.Response) {

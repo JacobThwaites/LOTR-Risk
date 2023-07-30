@@ -4,56 +4,66 @@ import Mountains from "./svgPaths/Mountains";
 import Bridges from "./svgPaths/Bridges";
 import Islands from "./svgPaths/Islands";
 import Strongholds from "./svgPaths/Strongholds";
-import { AreaType } from "../gameLogic/Models/AreaType";
-import { Player } from "../gameLogic/Models/Player";
 import AreaSelectValidator from "../utils/AreaSelectValidator";
+import { Colour } from "../gameLogic/Enums/Colours";
+import { AreaName } from "../gameLogic/Enums/AreaNames";
+import areaDetails from "./svgPaths/AreaDetails";
 
 type Props = {
-  attackingArea: any,
-  defendingArea: any,
-  troopTransferStart: AreaType | null,
-  troopTransferEnd: AreaType | null,
+  attackingArea: AreaName | null,
+  defendingArea: AreaName | null,
+  troopTransferStart: AreaName | null,
+  troopTransferEnd: AreaName | null,
   attackingDice: number,
-  currentPlayer: Player,
+  currentPlayerColour: Colour,
   onAreaSelect: any,
   isUsersTurn: boolean,
-  isCombatPhase: boolean
+  isCombatPhase: boolean,
+  userColour: Colour
 }
 
 export default function Map(props: Props): JSX.Element {
   const [isRendered, setIsRendered] = useState(false);
-  // TODO: useRef?
-  const areaSelectValidator = new AreaSelectValidator(props.isUsersTurn, props.isCombatPhase, props.attackingArea, props.troopTransferStart, props.currentPlayer);
+  const areaSelectValidator = new AreaSelectValidator(
+    props.isUsersTurn, 
+    props.isCombatPhase, 
+    props.attackingArea, 
+    props.troopTransferStart, 
+    props.currentPlayerColour,
+    props.userColour
+  );
 
   useEffect(() => {
     setIsRendered(true);
   }, []);
 
-  function onAreaSelect(area: AreaType): void {
-    if (isAreaClickable(area)) {
-      props.onAreaSelect(area);
+  function onAreaSelect(areaName: AreaName): void {
+    if (isAreaClickable(areaName as AreaName)) {
+      props.onAreaSelect(areaName as AreaName);
     }
   }
 
-  function isAreaClickable(area: AreaType): boolean {
+  function isAreaClickable(areaName: AreaName): boolean {
     if (!props.isUsersTurn || !isRendered) {
       return false;
     } else {
-      return areaSelectValidator.isAreaClickable(area);
+      return areaSelectValidator.isAreaClickable(areaName as AreaName);
     }
   }
 
-  function generateAreaClassName(a: any): string {
+  function generateAreaClassName(areaName: AreaName): string {
+    const areaDetail = areaDetails[areaName];
+
     let className;
-    if (a.area === props.attackingArea || a.area === props.troopTransferStart) {
+    if (areaName === props.attackingArea || areaName === props.troopTransferStart) {
       className = "attacker";
-    } else if (a.area === props.defendingArea || a.area === props.troopTransferEnd) {
+    } else if (areaName === props.defendingArea || areaName === props.troopTransferEnd) {
       className = "defender";
     } else {
-      className = a.region;
+      className = areaDetail.region;
     }
 
-    if (isAreaClickable(a.area)) {
+    if (isAreaClickable(areaName)) {
       className = `${className} clickable`;
     }
 

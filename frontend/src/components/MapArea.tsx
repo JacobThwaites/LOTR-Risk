@@ -1,32 +1,34 @@
 import React from "react";
-import CircleGenerator from '../utils/CircleGenerator';
-import "../sass/main.scss";
+import Circle from './common/Circle';
+import areaDetails from "./svgPaths/AreaDetails";
+import { AreaName } from "../gameLogic/Enums/AreaNames";
 
 type Props = {
   className: string,
-  id: string,
-  path: string,
-  centroid: {x: number, y: number}
+  areaName: string,
   onClick: any,
-  areaLogic: any,
   isRendered: boolean,
   clickable: boolean
 }
 
 export default function MapArea(props: Props) {
-  const circleGenerator = new CircleGenerator(props);  
+  const areaDetail = areaDetails[props.areaName as AreaName];
 
   return (
     <>
       <path
         className={'area ' + props.className}
         data-cy={props.clickable ? 'area-clickable' : 'area'}
-        id={props.id}
-        d={props.path}
+        id={props.areaName}
+        d={areaDetail.path}
         onClick={props.onClick}
         />
       {props.isRendered &&
-        circleGenerator.addCircleToMap(props.centroid, props.areaLogic)
+        <Circle 
+          centroid={areaDetail.centroid} 
+          colour={areaDetail.colour!}
+          units={areaDetail.units}
+        />
       }
     </>
   );

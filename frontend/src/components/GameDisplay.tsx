@@ -1,10 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
-import { GameGenerator } from "../gameLogic/Controllers/GameGenerator";
-import { CombatController } from "../gameLogic/Controllers/CombatController";
-import { ReinforcementController } from "../gameLogic/Controllers/ReinforcementController";
-import { UnitManeuverController } from "../gameLogic/Controllers/UnitManeuverController";
+import { UnitMoveController } from "../gameLogic/Controllers/UnitMoveController";
 import CombatHandler from "./CombatHandler";
-import UnitManeuverHandler from "./UnitManeuverHandler";
+import UnitMoveHandler from "./UnitMoveHandler";
 import Map from "./Map";
 import EndTurnButton from "./buttons/EndTurnButton";
 import ReinforcementsModal from "./ReinforcementsModal";
@@ -12,54 +9,53 @@ import GameOverModal from "./GameOverModal";
 import TurnInformation from "./TurnInformation";
 import { Combat } from '../gameLogic/Enums/Combat';
 import { CombatValidator } from "../gameLogic/Controllers/CombatValidator";
-import { Game } from "../gameLogic/Models/Game";
-import { Area } from "../gameLogic/Models/Area";
 import { useParams, useLocation } from "react-router";
 import { addUserIDToGame } from "../gameLogic/Controllers/requests";
-import { getAreas } from "../utils/playerAreaParser";
 import WebSocketHandler, { GameEventType } from "../utils/WebSocketHandler";
-import { Areas } from "../gameLogic/Enums/Areas";
-import { AreaType } from "../gameLogic/Models/AreaType";
 import WaitingForPlayers from "./WaitingForPlayers";
 import Leaderboard from "./Leaderboard";
 import RegionBonusInfo from "./RegionBonusInfo";
 import TerritoryCardsDialog from "./TerritoryCardsDialog";
-import { Player } from "../gameLogic/Models/Player";
 import makeWebSocketHandler from "../utils/makeWebSocketHandler";
 import TerritoryCardsButton from "./TerritoryCardsButton";
 import NotFound from "./NotFound";
 import { getUserID } from "../utils/userIDManager";
 import PlayerDisconnectModal from "./PlayerDisconnectModal";
-
-type PlayerResponseType = {
-    "id": string,
-    "name": string,
-    "areas": string,
-    "gameID": string
-}
+import { Colour } from "../gameLogic/Enums/Colours";
+import areaDetails from "./svgPaths/AreaDetails";
+import { AreaName } from "../gameLogic/Enums/AreaNames";
+import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
+import { LeaderboardEntry } from "../gameLogic/Enums/LeaderboardEntry";
 
 export default function GameDisplay() {
     const { gameID } = useParams<{ gameID: string }>();
-    const [game, setGame] = useState<Game | null>(null);
     const [isGameLoaded, setIsGameLoaded] = useState(false);
-    const [attackingArea, setAttackingArea] = useState<Area | null>(null);
-    const [defendingArea, setDefendingArea] = useState<Area | null>(null);
+    const [attackingArea, setAttackingArea] = useState<AreaName | null>(null);
+    const [defendingArea, setDefendingArea] = useState<AreaName | null>(null);
     const [attackingDice, setAttackingDice] = useState<number>(1);
-    const [shouldDisplayUnitManeuverButton, setShouldDisplayUnitManeuverButton] = useState<boolean>(false);
+    const [shouldDisplayUnitMoveButton, setShouldDisplayUnitMoveButton] = useState<boolean>(false);
     const [shouldDisplayReinforcementsModal, setShouldDisplayReinforcementsModal] = useState<boolean>(false);
     const [shouldDisplayTroopTransferButton, setShouldDisplayTroopTransferButton] = useState<boolean>(false);
     const [shouldHandleStartingReinforcements, setShouldHandleStartingReinforcements] = useState<boolean>(true);
     const [shouldDisplayTerritoryCards, setShouldDisplayTerritoryCards] = useState<boolean>(false);
-    const [areaToMoveUnits, setAreaToMoveUnits] = useState<Area | null>(null);
-    const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<Area | null>(null);
+    const [areaToMoveUnits, setAreaToMoveUnits] = useState<AreaName | null>(null);
+    const [areaToReceiveUnits, setAreaToReceiveUnits] = useState<AreaName | null>(null);
     const [unitsToMove, setUnitsToMove] = useState<number>(0);
     const [isGameOver, setIsGameOver] = useState<boolean>(false);
-    const [disconnectedPlayers, setDisconnectedPlayers] = useState<Player[]>([]);
+    const [disconnectedPlayers, setDisconnectedPlayers] = useState<Colour[]>([]);
     const ws = useRef<WebSocket | null>();
     const webSocketHandler = useRef<WebSocketHandler | null>();
     const isWebSocketConnected = useRef<boolean>(); 
     const location: { state: { gameType?: string } } = useLocation();
     const gameType = location.state ? location.state.gameType : "online";
+    const [reinforcementsAvailable, setReinforcementsAvailable] = useState<number>(0);
+    const [playerColours, setPlayerColours] = useState<Colour[]>([]);
+    const [currentPlayerColour, setCurrentPlayerColour] = useState<Colour>(Colour.BLACK);
+    const [userColour, setUserColour] = useState<Colour>();
+    const [turnsRemaining, setTurnsRemaining] = useState<number>(1);
+    const [playersLeftToJoin, setPlayersLeftToJoin] = useState<number>(1);
+    const [territoryCards, setTerritoryCards] = useState<TerritoryCard[]>([]);
+    const [leaderboardData, setLeadboardData] = useState<LeaderboardEntry[]>([]);
 
     useEffect(() => {
         async function setupGame() {
@@ -70,14 +66,21 @@ export default function GameDisplay() {
             }
 
             const json = await res.json();
-            const areaNames = getPlayerAreaNames(json.data.players);
-            const areas = getAreas(areaNames);
-            const playerIDs = json.data.players.map((p: any) => { return p.id });
-            const userIDs = json.data.players.map((p: any) => { return p.userID });
-            const game = GameGenerator.generateGame(areas, playerIDs, userIDs);
-            setGame(game);
+            const { players } = json.data;
+            const startingPlayer = players[0];
+
+            setCurrentPlayerColour(startingPlayer.colour);  
+            setReinforcementsAvailable(startingPlayer.reinforcements);          
+            setTurnsRemaining(json.data.maxTurns)
+            setupStartingAreaColours(players);
             setShouldDisplayReinforcementsModal(true);
             setIsGameLoaded(true);
+            
+            for (let i = 0; i < players.length; i++) {
+                if (players[i].userID === getUserID()) {
+                    setUserColour(players[i].colour);
+                }
+            }
         }
 
         setupGame();
@@ -129,65 +132,105 @@ export default function GameDisplay() {
         }
 
         switch (messageData.type) {
-            case GameEventType.COMBAT: {
-                const attackingArea = Areas[messageData.attackingArea];
-                const defendingArea = Areas[messageData.defendingArea];
-                setAttackingArea(attackingArea);
-                setDefendingArea(defendingArea);
-                break;
-            }
             case GameEventType.PLAYER_JOINED: {
-                const newDisconnectedPlayers = disconnectedPlayers.filter(p => p.getUserID() !== messageData.userID)
+                const newDisconnectedPlayers = disconnectedPlayers.filter(playerColour => playerColour !== messageData.colour)
                 setDisconnectedPlayers(newDisconnectedPlayers);
-                game!.addUserIDToPlayer(messageData.userID);
-                updateGameState(game!);
+                setPlayersLeftToJoin(messageData.playersLeftToJoin)
                 break;
             }
             case GameEventType.CLEAR_SELECTED_AREAS: {
-                setShouldDisplayUnitManeuverButton(false);
+                setShouldDisplayUnitMoveButton(false);
                 clearSelectedAreas();
                 break;
             }
             case GameEventType.STARTING_REINFORCEMENT: {
-                const area = Areas[messageData.areaName];
-                handleStartingReinforcements(area);
+                addReinforcements(messageData.areaName);
+                setReinforcementsAvailable(messageData.reinforcementsAvailable);
                 break;
             }
             case GameEventType.REINFORCEMENT: {
-                const area = Areas[messageData.areaName];
-                addReinforcements(area);
+                addReinforcements(messageData.areaName);
+                break;
+            }
+            case GameEventType.LEADERBOARD_UPDATE: {
+                setLeadboardData(messageData.leaderboardData);
+                break;
+            }
+            case GameEventType.REINFORCEMENTS_AVAILABLE: {
+                setReinforcementsAvailable(messageData.reinforcementsAvailable);
+
+                if (!messageData.reinforcementsAvailable) {
+                    setShouldDisplayReinforcementsModal(false);
+                }
                 break;
             }
             case GameEventType.COMBAT_RESULTS: {
-                updateAreasAfterCombat(messageData.attackingArea, messageData.defendingArea, messageData.results);
+                const { 
+                    attackingAreaName, 
+                    attackingAreaUnits, 
+                    attackingAreaColour,
+                    defendingAreaName,
+                    defendingAreaUnits, 
+                    defendingAreaColour
+                } = messageData;
+
+                updateAreaDetails(attackingAreaName, attackingAreaColour, attackingAreaUnits);
+                updateAreaDetails(defendingAreaName, defendingAreaColour, defendingAreaUnits);
+                
+                resetCombatState();
                 break;
             }
-            case GameEventType.UNIT_MANEURVRE: {
-                const areaToMoveUnits = Areas[messageData.areaToMoveUnits];
-                const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
-                onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
+            case GameEventType.UNIT_MOVE_COMPLETE: {
+                resetUnitMoveState();
                 break;
             }
             case GameEventType.TROOP_TRANSFER_SETUP: {
+                setAttackingArea(null);
+                setDefendingArea(null);
                 setShouldDisplayTroopTransferButton(true);
                 break;
             }
             case GameEventType.TROOP_TRANSFER: {
-                const areaToMoveUnits = Areas[messageData.areaToMoveUnits];
-                const areaToReceiveUnits = Areas[messageData.areaToReceiveUnits];
-                onMoveUnits(areaToMoveUnits, areaToReceiveUnits, messageData.numUnits);
+                onMoveUnits(messageData.origin, messageData.destination, messageData.numUnits);
+                break;
+            }
+            case GameEventType.TROOP_TRANSFER_COMPLETE: {
+                resetUnitMoveState();
                 break;
             }
             case GameEventType.END_TURN: {
-                handleEndTurn();
+                const { newCurrentPlayerColour, reinforcementsAvailable } = messageData;
+                handleEndTurn(newCurrentPlayerColour as Colour, reinforcementsAvailable);
                 break;
             }
             case GameEventType.PLAYER_DISCONNECT: {
-                handlePlayerDisconnect(messageData.user);
+                setDisconnectedPlayers([...disconnectedPlayers, messageData.userColour]);
                 break;
             }
             case GameEventType.GAME_OVER_DISCONNECT: {
                 setIsGameOver(true);
+                break;
+            }
+            case GameEventType.UPDATE_AREA: {
+                const { areaName, areaColour, areaUnits } = messageData;
+                updateAreaDetails(areaName, areaColour, areaUnits);
+                break;
+            }
+            case GameEventType.CHANGE_PLAYER: {
+                setCurrentPlayerColour(messageData.playerColour);   
+                break;
+            }
+            case GameEventType.STARTING_REINFORCEMENTS_END: {
+                setShouldDisplayReinforcementsModal(false);
+                setShouldHandleStartingReinforcements(false);
+                break;
+            }
+            case GameEventType.UNIT_MOVE_SETUP: {
+                setStateForUnitMove(messageData.attackingArea, messageData.defendingArea);
+                break;
+            }
+            case GameEventType.TERRITORY_CARDS: {
+                updateTerritoryCards(messageData.cards);
                 break;
             }
             default:
@@ -195,92 +238,71 @@ export default function GameDisplay() {
         }
     }
 
-    // Required as React doesn't see changes in useState if it's an Object.
-    function updateGameState(game: Game) {
-        const newGame = new Game([], 30);
-        Object.assign(newGame, game);
-        setGame(newGame);
-    }
-
-    function getPlayerAreaNames(playerData: Array<PlayerResponseType>): Array<string> {
-        const playerAreas = [];
-
-        for (let i = 0; i < playerData.length; i++) {
-            playerAreas.push(playerData[i].areas);
+    function setupStartingAreaColours(players: any) {
+        for (let i = 0; i < players.length; i++) {
+            const playerColour = players[i].colour;
+            setPlayerColours([...playerColours, playerColour]);
+            const playerAreas = players[i].areas;
+            for (let j = 0; j < playerAreas.length; j++) {
+                const areaName = playerAreas[j].name;
+                const areaDetail = areaDetails[areaName as AreaName];
+                areaDetail.colour = playerColour;
+            }
         }
-
-        return playerAreas;
     }
 
-    function onAreaSelect(area: Area): void {
+    function onAreaSelect(areaName: AreaName): void {
         if (shouldHandleStartingReinforcements) {
-            webSocketHandler.current!.sendStartingReinforcement(area.getName());
+            webSocketHandler.current!.sendStartingReinforcement(areaName);
         } else if (shouldDisplayReinforcementsModal) {
-            webSocketHandler.current!.sendReinforcement(area.getName());
+            webSocketHandler.current!.sendReinforcement(areaName);
         } else if (shouldDisplayTroopTransferButton) {
-            setAreaForTroopTransfer(area);
+            setAreaForTroopTransfer(areaName);
         } else {
-            setAreaForCombat(area);
+            setAreaForCombat(areaName);
         }
     }
 
-    function handleStartingReinforcements(area: Area): void {
-        const currentPlayer = game!.getCurrentPlayer();
-
-        addReinforcements(area);
-
-        if (currentPlayer!.getReinforcements() < 1) {
-            game!.changeCurrentPlayer();
-        }
-
-        updateGameState(game!);
-
-        if (!game!.playersHaveReinforcements()) {
-            setShouldDisplayReinforcementsModal(false);
-            setShouldHandleStartingReinforcements(false)
-        }
+    function addReinforcements(areaName: AreaName): void {
+        const areaDetail = areaDetails[areaName];
+        areaDetail.units++;
     }
 
-    function addReinforcements(area: Area): void {
-        const reinforcementController = createReinforcementController();
-        reinforcementController.addReinforcements(area);
-        updateGameState(game!);
-
-        if (!game!.playersHaveReinforcements()) {
-            setShouldDisplayReinforcementsModal(false);
-        }
-    }
-
-    function createReinforcementController(): ReinforcementController {
-        const currentPlayer = game!.getCurrentPlayer();
-        const reinforcementController = new ReinforcementController(currentPlayer!);
-        return reinforcementController;
-    }
-
-    function setAreaForTroopTransfer(area: Area): void {
-        if (areaToMoveUnits === area) {
+    function setAreaForTroopTransfer(areaName: AreaName): void {
+        if (areaToMoveUnits === areaName) {
             webSocketHandler.current!.sendClearAreaSelection();
-        } else if (areaToReceiveUnits === area) {
+        } else if (areaToReceiveUnits === areaName) {
             setAreaToReceiveUnits(null);
         } else if (areaToMoveUnits !== null) {
-            setAreaToReceiveUnits(area);
-            setShouldDisplayUnitManeuverButton(true);
+            setAreaToReceiveUnits(areaName);
+            setShouldDisplayUnitMoveButton(true);
         } else {
-            setAreaToMoveUnits(area);
+            setAreaToMoveUnits(areaName);
         }
     }
 
-    function setAreaForCombat(area: Area): void {
-        if (attackingArea === area) {
+    function setAreaForCombat(areaName: AreaName): void {
+        if (attackingArea === areaName) {
             webSocketHandler.current!.sendClearAreaSelection();
-        } else if (defendingArea === area) {
+        } else if (defendingArea === areaName) {
             setDefendingArea(null);
         } else if (attackingArea !== null) {
-            setDefendingArea(area);
-            webSocketHandler.current!.sendCombatInfo(attackingArea.getName(), area.getName());
+            setDefendingArea(areaName);
         } else {
-            setAttackingArea(area);
+            setAttackingArea(areaName);
         }
+    }
+
+    function updateTerritoryCards(cards: [{[symbol: string]: any}]) {
+        const newCards = [];
+
+        for (const card of cards) {
+            const { symbol } = card;
+            const territoryCardInstance = new TerritoryCard(symbol);
+            newCards.push(territoryCardInstance);
+        }
+
+        setTerritoryCards(newCards);
     }
 
     function clearSelectedAreas() {
@@ -290,38 +312,12 @@ export default function GameDisplay() {
         setAreaToReceiveUnits(null);
     }
 
-    function handleCombat(): void {
-        const combatController = new CombatController(
-            attackingArea!,
-            defendingArea!,
-            game!
-        );
-
-        const defendingDice = getMaxDefendingDice();
-        const results = combatController.getCombatResults(attackingDice, defendingDice);
-        webSocketHandler.current!.sendCombatResults(attackingArea!.getName(), defendingArea!.getName(), results);
+    function onCombatButtonClick(): void {
+        webSocketHandler.current!.sendCombat(attackingArea!, defendingArea!, attackingDice);
     }
 
-    async function updateAreasAfterCombat(attackingAreaName: string, defendingAreaName: string, results: string[]) {
-        const attackingArea = Areas[attackingAreaName];
-        const defendingArea = Areas[defendingAreaName];
-        const combatController = new CombatController(
-            attackingArea,
-            defendingArea,
-            game!
-        );
-
-        combatController.handleResults(results);
-
-        if (!defendingArea.hasUnitsRemaining()) {
-            await setStateForManeuvers(attackingArea, defendingArea);
-        }
-
-        resetCombatState();
-    }
-
-    function setStateForManeuvers(attackingArea: any, defendingArea: any): void {
-        setShouldDisplayUnitManeuverButton(true);
+    function setStateForUnitMove(attackingArea: AreaName, defendingArea: AreaName): void {
+        setShouldDisplayUnitMoveButton(true);
         setAreaToMoveUnits(attackingArea);
         setAreaToReceiveUnits(defendingArea);
     }
@@ -341,67 +337,49 @@ export default function GameDisplay() {
         }
     }
 
-    function handleEndTurn(): void {
-        game!.handleNewTurn();
-        updateGameState(game!);
+    function handleEndTurn(newCurrentPlayerColour: Colour, reinforcementsAvailable: number): void {
+        setCurrentPlayerColour(newCurrentPlayerColour);
         setShouldDisplayTroopTransferButton(false);
         setShouldDisplayReinforcementsModal(true);
+        setReinforcementsAvailable(reinforcementsAvailable);
         resetCombatState();
-        checkIfGameOver();
     }
 
-    function checkIfGameOver(): void {
-        const maxTurnsReached = game!.checkMaxTurnsReached();
-
-        if (maxTurnsReached) {
-            setIsGameOver(true);
-        }
-    }
-
-    function handlePlayerDisconnect(userID: string): void {
-        const player = getPlayerByUserID(userID);
-
-        if (player) {
-            const newDisconnectedPlayers = [...disconnectedPlayers, player];
-            setDisconnectedPlayers(newDisconnectedPlayers);
-        }
-    }
-
-    function getPlayerByUserID(userID: string): Player | null {
-        for (const player of game!.getPlayers()) {
-            if (player.getUserID() === userID) {
-                return player;
-            }
-        }
-
-        return null;
+    function updateAreaDetails(areaName: AreaName, areaColour: Colour, areaUnits: number): void {
+        const area = areaDetails[areaName as AreaName];
+        area.units = areaUnits;
+        area.colour = areaColour;
     }
 
     function onMoveUnitButtonClick(): void {
-        if (!UnitManeuverController.isManeuverValid(areaToMoveUnits!, unitsToMove)) {
+        if (!UnitMoveController.isMoveValid(areaToMoveUnits!, unitsToMove)) {
             return;
         }
 
         if (shouldDisplayTroopTransferButton) {
-            webSocketHandler.current!.sendTroopTransfer(areaToMoveUnits!.getName(), areaToReceiveUnits!.getName(), unitsToMove);
+            webSocketHandler.current!.sendTroopTransfer(areaToMoveUnits!, areaToReceiveUnits!, unitsToMove);
             webSocketHandler.current!.sendEndTurn()
         } else {
-            webSocketHandler.current!.sendUnitManeuvre(areaToMoveUnits!.getName(), areaToReceiveUnits!.getName(), unitsToMove);
+            webSocketHandler.current!.sendUnitMove(areaToMoveUnits!, areaToReceiveUnits!, unitsToMove);
         }
     }
 
-    function onMoveUnits(areaToMoveUnits: AreaType, areaToReceiveUnits: AreaType, numUnits: number): void {
-        const unitManeuverController = new UnitManeuverController(
-            areaToMoveUnits!,
-            areaToReceiveUnits!
+    function onMoveUnits(origin: AreaName, destination: AreaName, numUnits: number): void {
+        const unitMoveController = new UnitMoveController(
+            origin,
+            destination
         );
 
-        unitManeuverController.moveUnits(numUnits);
-        resetManeuverState();
+        unitMoveController.moveUnits(numUnits);
+        resetUnitMoveState();
     }
 
-    function resetManeuverState(): void {
-        setShouldDisplayUnitManeuverButton(false);
+    function sendTradeTerritoryCardsMessage(selectedCards: TerritoryCard[]): void {
+        webSocketHandler.current!.sendTradeTerritoryCards(selectedCards);
+    }
+
+    function resetUnitMoveState(): void {
+        setShouldDisplayUnitMoveButton(false);
         setAreaToMoveUnits(null);
         setAreaToReceiveUnits(null);
         setUnitsToMove(0);
@@ -409,12 +387,9 @@ export default function GameDisplay() {
 
     function getMaxAttackingDice(): number {
         const { MAX_ATTACKING_DICE } = Combat;
-        return Math.min(MAX_ATTACKING_DICE, attackingArea!.getUnits() - 1);
-    }
+        const attackingAreaDetail = areaDetails[attackingArea!];
 
-    function getMaxDefendingDice(): number {
-        const { MAX_DEFENDING_DICE } = Combat;
-        return Math.min(attackingDice, defendingArea!.getUnits(), MAX_DEFENDING_DICE);
+        return Math.min(MAX_ATTACKING_DICE, attackingAreaDetail.units - 1);
     }
 
     function isCombatButtonClickable(): boolean {
@@ -425,7 +400,7 @@ export default function GameDisplay() {
         return CombatValidator.isCombatValid(attackingArea!, attackingDice);
     }
 
-    function isUnitManeouvreInputDisabled(): boolean {
+    function isUnitMoveInputDisabled(): boolean {
         if (!isUsersTurn()) {
             return true;
         }
@@ -439,7 +414,7 @@ export default function GameDisplay() {
 
     function isEndTurnButtonDisabled(): boolean {
         return (
-            shouldDisplayUnitManeuverButton ||
+            shouldDisplayUnitMoveButton ||
             shouldDisplayReinforcementsModal ||
             shouldHandleStartingReinforcements ||
             !isUsersTurn()
@@ -447,7 +422,7 @@ export default function GameDisplay() {
     }
 
     function isUsersTurn(): boolean {
-        if (!game) {
+        if (!isGameLoaded) {
             return false;
         }
 
@@ -455,40 +430,17 @@ export default function GameDisplay() {
             return true;
         }
 
-        return currentPlayer.getUserID() === getUserID();
+        return currentPlayerColour === userColour;
     }
 
-    function getUserCards() {
-        const player = getUserPlayer();
-        return player!.getTerritoryCards();
-    }
-
-    function getUserPlayer(): Player {
-        if (gameType === 'local') {
-            return game!.getCurrentPlayer();
-        }
-
-        const players = game!.getPlayers();
-        for (let i = 0; i < players.length; i++) {
-            if (players[i].getUserID() === getUserID()) {
-                return players[i];
-            }
-        }
-
-        return players[0];
-    }
-
-    if (!game) {
+    if (!isGameLoaded) {
         return (<NotFound />);
     }
-
-    if (game.waitingForUsersToJoin() && gameType === 'online') {
-        const totalPlayersConnected = game!.getPlayers().reduce((acc, cur) => cur.getUserID() ? ++acc : acc, 0);
-        const playersLeftToJoin = game!.getPlayers().length - totalPlayersConnected;
+    
+    if (playersLeftToJoin && gameType === 'online') {
         return <WaitingForPlayers playersLeftToJoin={playersLeftToJoin} />
     }
 
-    const currentPlayer = game!.getCurrentPlayer();
     return (
         <div id='game-display'>
             <Map
@@ -497,40 +449,41 @@ export default function GameDisplay() {
                 attackingDice={attackingDice}
                 troopTransferStart={areaToMoveUnits}
                 troopTransferEnd={areaToReceiveUnits}
-                currentPlayer={currentPlayer!}
+                currentPlayerColour={currentPlayerColour}
                 onAreaSelect={onAreaSelect}
                 isUsersTurn={isUsersTurn()}
                 isCombatPhase={!shouldDisplayTroopTransferButton}
+                userColour={userColour!}
             />
             <TurnInformation
-                turnsRemaining={game!.getTurnsRemaining()}
-                playerName={`${currentPlayer!.getColour()} Player`}
+                turnsRemaining={turnsRemaining}
+                playerName={`${currentPlayerColour} Player`}
             />
             <RegionBonusInfo />
             {attackingArea && defendingArea && (
                 <CombatHandler
                     attackingDice={attackingDice}
                     maxAttackingDice={getMaxAttackingDice()}
-                    onCombatButtonClick={handleCombat}
+                    onCombatButtonClick={onCombatButtonClick}
                     setAttackingDice={setAttackingDice}
                     isCombatButtonClickable={isCombatButtonClickable()}
                     isUsersTurn={isUsersTurn()}
                 />
             )}
-            {(shouldDisplayUnitManeuverButton || shouldDisplayTroopTransferButton) && (
-                <UnitManeuverHandler
-                    max={areaToMoveUnits ? areaToMoveUnits.getUnits() - 1 : 0}
+            {(shouldDisplayUnitMoveButton || shouldDisplayTroopTransferButton) && (
+                <UnitMoveHandler
+                    areaToMoveUnits={areaToMoveUnits}
                     unitsToMove={unitsToMove}
                     onMoveUnits={onMoveUnitButtonClick}
                     setUnitsToMove={setUnitsToMove}
-                    isInputDisabled={isUnitManeouvreInputDisabled()}
-                    isInputEnabled={(shouldDisplayUnitManeuverButton) || (shouldDisplayTroopTransferButton && areaToMoveUnits !== null)}
+                    isInputDisabled={isUnitMoveInputDisabled()}
+                    isInputEnabled={(shouldDisplayUnitMoveButton) || (shouldDisplayTroopTransferButton && areaToMoveUnits !== null)}
                     label={shouldDisplayTroopTransferButton ? "Troop Transfers: " : "Unit Maneuvers: "}
                 />
             )}
             {shouldDisplayReinforcementsModal && (
                 <ReinforcementsModal
-                    reinforcementsAvailable={currentPlayer!.getReinforcements()}
+                    reinforcementsAvailable={reinforcementsAvailable}
                 />
             )}
             <EndTurnButton
@@ -538,24 +491,22 @@ export default function GameDisplay() {
                 isDisabled={isEndTurnButtonDisabled()}
                 shouldDisplayTroopTransferButton={shouldDisplayTroopTransferButton}
             />
-            <Leaderboard game={game} />
-            <TerritoryCardsButton onClick={() => setShouldDisplayTerritoryCards(true)} numCards={getUserCards().length} />
+            <Leaderboard leaderboardData={leaderboardData}/>
+            <TerritoryCardsButton onClick={() => setShouldDisplayTerritoryCards(true)} numCards={territoryCards.length} />
             {shouldDisplayTerritoryCards && (
                 <TerritoryCardsDialog
                     onClose={() => setShouldDisplayTerritoryCards(false)}
-                    cards={getUserCards()}
-                    player={getUserPlayer()}
-                    updateGameState={() => updateGameState(game!)}
-
+                    cards={territoryCards}
+                    sendTradeTerritoryCardsMessage={sendTradeTerritoryCardsMessage}
                 />
             )}
             {disconnectedPlayers.length > 0 && (
-                disconnectedPlayers.map(player =>
-                    <PlayerDisconnectModal key={player.getID()} playerColour={player.getColour()} />
+                disconnectedPlayers.map(colour =>
+                    <PlayerDisconnectModal key={colour} playerColour={colour} />
                 )
             )}
             {isGameOver && (
-                <GameOverModal game={game} />
+                <GameOverModal leaderboardData={leaderboardData} />
             )}
         </div>
     );

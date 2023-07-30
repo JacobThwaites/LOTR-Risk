@@ -1,30 +1,27 @@
 import React from "react";
 import MapArea from "./MapArea";
 import areaDetails from './svgPaths/AreaDetails';
+import { AreaName } from "../gameLogic/Enums/AreaNames";
 
 type Props = {
-  generateAreaClassName: any,
-  onClick: any,
-  isAreaClickable: any,
+  generateAreaClassName: (areaName: AreaName) => string,
+  onClick: (areaName: AreaName) => void,
+  isAreaClickable: (areaName: AreaName) => boolean,
   isRendered: boolean
 }
 
 const MapAreas: Function = (props: Props): JSX.Element[] => {
-  const areas = areaDetails.map(function(a) {
-    return (
+  const areas = Object.entries(areaDetails).map(
+    ([areaName, areaInfo]) => (
       <MapArea 
-        className={props.generateAreaClassName(a)}
-        id={a.area.getName()}
-        key={a.area.getName()}
-        path={a.path}
-        centroid={a.centroid}
-        onClick={() => props.onClick(a.area)}
-        clickable={props.isAreaClickable(a.area)}
-        areaLogic={a.area}
+        className={props.generateAreaClassName(areaName as AreaName)}
+        areaName={areaName}
+        onClick={() => props.onClick(areaName as AreaName)}
+        clickable={props.isAreaClickable(areaName as AreaName)}
         isRendered={props.isRendered}
       />
     )
-  });
+  );
   
   return areas;
 };

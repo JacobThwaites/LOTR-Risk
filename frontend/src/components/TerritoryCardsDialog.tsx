@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Dialog, DialogContent } from '@mui/material';
 import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
 import TerritoryCardManager, { TradableCards } from "../gameLogic/Controllers/TerritoryCardManager";
-import { Player } from "../gameLogic/Models/Player";
 import { Symbol } from "../gameLogic/Enums/Symbols";
 import eagle from '../assets/eagle.svg';
 import nazgul from '../assets/nazgul.png';
@@ -13,9 +12,8 @@ import CustomButton from "./common/CustomButton";
 
 type Props = { 
   onClose: any, 
-  cards: TerritoryCard[], 
-  player: Player,
-  updateGameState: any
+  cards: TerritoryCard[],
+  sendTradeTerritoryCardsMessage(selectedCards: TerritoryCard[]): void
 }
 
 export default function TerritoryCardsDialog(props: Props): JSX.Element {
@@ -35,8 +33,7 @@ export default function TerritoryCardsDialog(props: Props): JSX.Element {
   }
 
   function tradeCards(): void {
-    TerritoryCardManager.exchangeCards(props.player, selectedCards as TradableCards);
-    props.updateGameState();
+    props.sendTradeTerritoryCardsMessage(selectedCards);
     props.onClose();
   }
 

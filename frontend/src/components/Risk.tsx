@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import GameSetup from "./GameSetup";
 import { Redirect } from "react-router";
 import { saveGame } from "../gameLogic/Controllers/requests";
-import { convertPlayerAreasToString } from "../utils/playerAreaParser";
-import { setupAreaAssignments } from "../gameLogic/Controllers/AreaAssigner";
 
 export default function Risk() {
     const [numberOfPlayers, setNumberOfPlayers] = useState(0);
@@ -49,12 +47,15 @@ function GameRedirect(props: { numberOfPlayers: number, gameType: string }) {
 
     const getData = async () => {
         try {
-            const areas = setupAreaAssignments(props.numberOfPlayers);
-            const areaStrings = convertPlayerAreasToString(areas);
-            const res = await saveGame(props.numberOfPlayers, areaStrings);
-            const json = await res!.json()
-            const { id } = json.data;
-            setGameID(id);
+            const res = await saveGame(props.numberOfPlayers);
+
+            if (!res) {
+                throw new Error('Failed to create game');
+            }
+
+            const json = await res.json()
+            const { uuid } = json.data;
+            setGameID(uuid);
         } catch (err) {
             console.error(err);
         }

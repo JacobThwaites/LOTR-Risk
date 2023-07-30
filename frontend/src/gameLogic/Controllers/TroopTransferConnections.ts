@@ -1,24 +1,24 @@
+import areaDetails from "../../components/svgPaths/AreaDetails";
 import { Adjacencies } from "../Enums/AreaAdjacencies";
-import { AreaType } from "../Models/AreaType";
-import { Player } from "../Models/Player";
+import { AreaName } from "../Enums/AreaNames";
+import { Colour } from "../Enums/Colours";
 
-export function getConnectedAreasForTroopTransfer(area: AreaType, player: Player): Array<AreaType> {
-    const connected: Array<AreaType> = [];
+export function getConnectedAreasForTroopTransfer(startArea: AreaName, userColour: Colour): Array<AreaName> {
+    const connected: Array<AreaName> = [];
     const visited: any = {};
 
-    function dfs(area: AreaType) {
-        const areaName = area.getName();
+    function dfs(areaName: AreaName) {
         if (visited.hasOwnProperty(areaName)) {
             return;
         }
 
         visited[areaName] = true;
-
-        if (!player.ownsArea(area)) {
+        const areaDetail = areaDetails[areaName];
+        if (userColour !== areaDetail.colour) {
             return;
         }
 
-        connected.push(area);
+        connected.push(areaName);
         const adjacencies = Adjacencies[areaName];
 
         for (let i = 0; i < adjacencies.length; i++) {
@@ -26,6 +26,6 @@ export function getConnectedAreasForTroopTransfer(area: AreaType, player: Player
         }
     }
 
-    dfs(area);
+    dfs(startArea);
     return connected;
 }
