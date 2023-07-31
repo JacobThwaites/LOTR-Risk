@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders TerritoryCardsButton correctly 1`] = `
+<div>
+  <button
+    class="custom-button"
+    data-testid="show-territory-cards-button"
+    id="show-territory-cards-button"
+    title="Territory Cards"
+  >
+    <img
+      alt="Territory Cards"
+      id="show-territory-cards-button--img"
+      src="blank-cards.svg"
+    />
+    <div
+      class="show-territory-cards-button--num-cards"
+    >
+      2
+    </div>
+  </button>
+</div>
+`;

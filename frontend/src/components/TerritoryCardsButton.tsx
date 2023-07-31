@@ -6,7 +6,7 @@ export default function TerritoryCardsButton(props: { onClick: any, numCards: nu
     const label = (
         <>
             <img id='show-territory-cards-button--img' src={BlankCards} alt="Territory Cards"/>
-            <div id='show-territory-cards-button--num-cards'>{props.numCards}</div>
+            <div className='show-territory-cards-button--num-cards'>{props.numCards}</div>
         </>
     )
     return (
