@@ -1,73 +1,42 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import NumberOfPlayersSelector from "./NumberOfPlayersSelector";
 import GameTypeSelector from "./GameTypeSelector";
 
 type Props = {
-  onSubmitGameType: Function,
+  shouldDisplayChooseGameType: boolean, 
   numberOfPlayers: number,
-  onChangeNumberOfPlayers: Function,
-  onSubmitNumberOfPlayers: Function,
-  shouldDisplayChooseGameType: boolean,
+  onSubmitGameType(gameType: string): void,
+  onChangeNumberOfPlayers(number: number, b: any, a: { name: string; }): void,
+  onSubmitNumberOfPlayers(): void,
   shouldDisplayNumberOfPlayersSelector: boolean
 }
 
-type State = {
-  numberOfPlayers: number | null,
-  gameType: string
-}
+export default function GameSetup(props: Props): JSX.Element {
+  const [gameType, setGameType] = useState<string>('online');
 
-export default class GameSetup extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      numberOfPlayers: null,
-      gameType: 'online',
-    };
-
-    this.selectGameType = this.selectGameType.bind(this);
-    this.onSubmitGameType = this.onSubmitGameType.bind(this);
+  function selectGameType(gameType: string) {
+    setGameType(gameType);
   }
 
-  selectGameType(gameType: string) {
-    this.setState({ gameType });
+  function onSubmitGameType() {
+    props.onSubmitGameType(gameType);
   }
 
-  onSubmitGameType() {
-    const { gameType } = this.state;
-    this.props.onSubmitGameType(gameType);
-  }
-
-  renderChooseGameType() {
-    const { gameType } = this.state;
+  if (props.shouldDisplayChooseGameType) {
     return (
       <GameTypeSelector 
         gameType={gameType}
-        selectGameType={this.selectGameType}
-        onSubmitGameType={this.onSubmitGameType}
+        selectGameType={selectGameType}
+        onSubmitGameType={onSubmitGameType}
       />
     )
   }
 
-  renderNumberOfPlayerSelector() {
-    const { numberOfPlayers } = this.props;
-    return (
-      <NumberOfPlayersSelector
-        numberOfPlayers={numberOfPlayers}
-        onChange={this.props.onChangeNumberOfPlayers}
-        onSubmit={this.props.onSubmitNumberOfPlayers}
-      />
-    );
-  }
-
-  render() {
-    const {
-      shouldDisplayChooseGameType,
-    } = this.props;
-
-    if (shouldDisplayChooseGameType) {
-      return this.renderChooseGameType();
-    }
-
-    return this.renderNumberOfPlayerSelector();
-  }
+  return (
+    <NumberOfPlayersSelector
+      numberOfPlayers={props.numberOfPlayers}
+      onChange={props.onChangeNumberOfPlayers}
+      onSubmit={props.onSubmitNumberOfPlayers}
+    />
+  );
 }
