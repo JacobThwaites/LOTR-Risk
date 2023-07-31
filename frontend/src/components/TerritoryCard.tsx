@@ -27,7 +27,7 @@ export default function TerritoryCard(props: { card: TerritoryCardModel, index: 
   
     const symbol = props.card.getSymbolValue();
     return (
-      <div className={className} key={props.index} onClick={props.onClick}>
+      <div className={className} key={props.index} onClick={props.onClick} data-testid={className}>
         <div className='territory-card--card_symbol'>
           <img className={`symbol-${symbol}`} src={getImageSource(symbol)} alt={symbol}/>
         </div>

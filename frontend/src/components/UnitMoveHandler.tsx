@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import UnitInput from "./common/UnitInput";
 import MoveUnitsButton from "./buttons/MoveUnitsButton";
 import { AreaName } from "../gameLogic/Enums/AreaNames";

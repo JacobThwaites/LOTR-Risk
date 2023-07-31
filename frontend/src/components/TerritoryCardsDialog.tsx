@@ -37,7 +37,7 @@ export default function TerritoryCardsDialog(props: Props): JSX.Element {
   })
 
   return (
-    <Dialog onClose={props.onClose} open={true} fullWidth maxWidth='sm' className='territory-cards' scroll='paper'>
+    <Dialog onClose={props.onClose} open={true} fullWidth maxWidth='sm' className='territory-cards' scroll='paper' data-testid='territory-cards'>
       <h1 className='territory-cards--header'>Territory Cards</h1>
       <DialogContent>
         <div className='territory-cards--list'>
