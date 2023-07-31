@@ -8,7 +8,7 @@ type Props = {
   areInputsDisabled: boolean
 }
 
-export default function CombatInputs(props: Props) {
+export default function CombatInput(props: Props) {
   return (
     <div className="combat-handler__dice-input">
       <label>Attacking Dice: </label>

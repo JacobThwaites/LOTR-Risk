@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import CombatButton from "./buttons/CombatButton";
-import CombatInputs from "./CombatInputs";
+import CombatInput from "./CombatInput";
 
 type Props = {
   maxAttackingDice: number,
@@ -14,7 +14,7 @@ type Props = {
 export default function CombatHandler(props: Props) {
   return (
     <div className="combat-handler">
-      <CombatInputs 
+      <CombatInput
         maxAttackingDice={props.maxAttackingDice}
         attackingDice={props.attackingDice}
         setAttackingDice={props.setAttackingDice}
