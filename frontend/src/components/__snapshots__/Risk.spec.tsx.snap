@@ -35,6 +35,7 @@ exports[`renders Risk correctly 1`] = `
             className="svg-inline--fa fa-globe fa-w-16 font-awesome-icon--checked"
             data-icon="globe"
             data-prefix="fas"
+            data-testid="game-type-selector--option_online"
             focusable="false"
             onClick={[Function]}
             role="img"
@@ -76,6 +77,7 @@ exports[`renders Risk correctly 1`] = `
             className="svg-inline--fa fa-desktop fa-w-18 font-awesome-icon"
             data-icon="desktop"
             data-prefix="fas"
+            data-testid="game-type-selector--option_local"
             focusable="false"
             onClick={[Function]}
             role="img"
@@ -98,6 +100,7 @@ exports[`renders Risk correctly 1`] = `
   </div>
   <button
     className="custom-button"
+    data-testid="game-type-selector--button"
     disabled={false}
     id="game-type-selector--button"
     onClick={[Function]}

@@ -22,6 +22,7 @@ export default function RadioButtonIcon(props: Props) {
         />
         <FontAwesomeIcon
           // value={props.value}
+          data-testid={props.id}
           className={props.checked ? 'font-awesome-icon--checked' : 'font-awesome-icon'}
           onClick={() => props.onClick(props.value)}
           icon={props.icon}

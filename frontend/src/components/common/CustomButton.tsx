@@ -10,7 +10,7 @@ type Props = {
 
 export default function CustomButton(props: Props): JSX.Element {
     return (
-        <button disabled={props.disabled} id={props.id} className='custom-button' onClick={props.onClick} title={props.title}>
+        <button disabled={props.disabled} id={props.id} data-testid={props.id} className='custom-button' onClick={props.onClick} title={props.title}>
             {props.label}
         </button>
     )
