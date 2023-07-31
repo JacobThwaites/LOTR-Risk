@@ -6,6 +6,6 @@ type Props = {
 
 export default function TurnsRemaining(props: Props) {
     return (
-        <h1 id='turns-remaining'>Turns Remaining: {props.turns}</h1>
+        <h1 id='turns-remaining' data-testid='turns-remaining'>Turns Remaining: {props.turns}</h1>
     )
 }
