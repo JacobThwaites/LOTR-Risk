@@ -1,0 +1,76 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders RegionBonusInfo correctly 1`] = `
+<div
+  className="region-bonus-info"
+>
+  <h1
+    className="region-bonus-info--header"
+  >
+    Region Bonuses
+  </h1>
+  <p
+    className="region-bonus-info--region eriador"
+  >
+    eriador
+     +
+    3
+  </p>
+  <p
+    className="region-bonus-info--region arnor"
+  >
+    arnor
+     +
+    7
+  </p>
+  <p
+    className="region-bonus-info--region rhun"
+  >
+    rhun
+     +
+    2
+  </p>
+  <p
+    className="region-bonus-info--region mirkwood"
+  >
+    mirkwood
+     +
+    4
+  </p>
+  <p
+    className="region-bonus-info--region rohan"
+  >
+    rohan
+     +
+    4
+  </p>
+  <p
+    className="region-bonus-info--region rhovanion"
+  >
+    rhovanion
+     +
+    4
+  </p>
+  <p
+    className="region-bonus-info--region gondor"
+  >
+    gondor
+     +
+    7
+  </p>
+  <p
+    className="region-bonus-info--region mordor"
+  >
+    mordor
+     +
+    2
+  </p>
+  <p
+    className="region-bonus-info--region haradwaith"
+  >
+    haradwaith
+     +
+    2
+  </p>
+</div>
+`;
