@@ -1,25 +1,20 @@
 import React, { useState } from "react";
 import { Dialog, DialogContent } from '@mui/material';
-import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
+import { TerritoryCard as TerritoryCardModel } from "../gameLogic/Models/TerritoryCard";
 import TerritoryCardManager, { TradableCards } from "../gameLogic/Controllers/TerritoryCardManager";
-import { Symbol } from "../gameLogic/Enums/Symbols";
-import eagle from '../assets/eagle.svg';
-import nazgul from '../assets/nazgul.png';
-import archer from '../assets/archer.svg';
-import wildCard from '../assets/wild-card.png';
 import CustomButton from "./common/CustomButton";
-
+import TerritoryCard from "./TerritoryCards";
 
 type Props = { 
   onClose: any, 
-  cards: TerritoryCard[],
-  sendTradeTerritoryCardsMessage(selectedCards: TerritoryCard[]): void
+  cards: TerritoryCardModel[],
+  sendTradeTerritoryCardsMessage(selectedCards: TerritoryCardModel[]): void
 }
 
 export default function TerritoryCardsDialog(props: Props): JSX.Element {
-  const [selectedCards, setSelectedCards] = useState<TerritoryCard[]>([]);
+  const [selectedCards, setSelectedCards] = useState<TerritoryCardModel[]>([]);
 
-  function onCardSelect(card: TerritoryCard): void {
+  function onCardSelect(card: TerritoryCardModel): void {
     if (selectedCards.includes(card)) {
       const newCards = selectedCards.filter(c => c !== card);
       setSelectedCards(newCards);
@@ -38,7 +33,7 @@ export default function TerritoryCardsDialog(props: Props): JSX.Element {
   }
 
   const cards = props.cards.map((card, i) => {
-    return <Card key={i} card={card} index={i} isSelected={selectedCards.includes(card)} onClick={() => onCardSelect(card)} />
+    return <TerritoryCard key={i} card={card} index={i} isSelected={selectedCards.includes(card)} onClick={() => onCardSelect(card)} />
   })
 
   return (
@@ -51,37 +46,5 @@ export default function TerritoryCardsDialog(props: Props): JSX.Element {
       </DialogContent>
       <CustomButton id='territory-cards--button' onClick={tradeCards} label='Exchange Cards' disabled={!areSelectedCardsExchangeable()} />
     </Dialog>
-  );
-}
-
-function Card(props: { card: TerritoryCard, index: number, isSelected: boolean, onClick: any }): JSX.Element {
-  let className = 'territory-cards--card';
-
-  if (props.isSelected) {
-    className += ' selected';
-  }
-
-  function getImageSource(symbol: Symbol): string {
-    if (symbol === Symbol.ARCHER) {
-      return archer;
-    } else if (symbol === Symbol.CAVALRY) {
-      return nazgul;
-    } else if (symbol === Symbol.EAGLE) {
-      return eagle;
-    } else {
-      return wildCard;
-    }
-  }
-
-  const symbol = props.card.getSymbolValue();
-  return (
-    <div className={className} key={props.index} onClick={props.onClick}>
-      <div className='territory-card--card_symbol'>
-        <img className={`symbol-${symbol}`} src={getImageSource(symbol)} alt={symbol}/>
-      </div>
-      <p>
-        {symbol}
-      </p>
-    </div>
   );
 }
