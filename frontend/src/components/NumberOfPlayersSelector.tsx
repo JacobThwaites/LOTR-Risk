@@ -10,7 +10,7 @@ type Props = {
 
 export default function NumberOfPlayersSelector(props: Props) {
     return (
-        <div id='number-of-players' data-cy='number-of-players'>
+        <div id='number-of-players' data-testid='number-of-players'>
             <label id='number-of-players--header'>Select number of players:</label>
             <NumberSelector 
                 autoFocus

@@ -17,6 +17,7 @@ export default function NumberSelector(props: Props) {
     <NumericInput 
       className='number-selector'
       id={props.id}
+      data-testid={props.id}
       name={props.name}
       min={props.min || 1} 
       max={props.max} 
