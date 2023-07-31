@@ -13,6 +13,7 @@ export default function SvgCircle(props: Props) {
   return (
     <>
       <circle
+        data-testid='circle'
         cx={props.coordinates.x}
         cy={props.coordinates.y}
         r="30"

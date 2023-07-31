@@ -7,8 +7,7 @@ type Props = {
   className: string,
   areaName: string,
   onClick: any,
-  isRendered: boolean,
-  clickable: boolean
+  isRendered: boolean
 }
 
 export default function MapArea(props: Props) {
@@ -18,7 +17,6 @@ export default function MapArea(props: Props) {
     <>
       <path
         className={'area ' + props.className}
-        data-cy={props.clickable ? 'area-clickable' : 'area'}
         id={props.areaName}
         d={areaDetail.path}
         onClick={props.onClick}

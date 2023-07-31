@@ -17,7 +17,6 @@ const MapAreas: Function = (props: Props): JSX.Element[] => {
         className={props.generateAreaClassName(areaName as AreaName)}
         areaName={areaName}
         onClick={() => props.onClick(areaName as AreaName)}
-        clickable={props.isAreaClickable(areaName as AreaName)}
         isRendered={props.isRendered}
       />
     )

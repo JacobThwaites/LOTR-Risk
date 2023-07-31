@@ -1,38 +1,47 @@
-import { render, fireEvent, screen } from '@testing-library/react';
 import '@testing-library/jest-dom'
 import React from 'react';
-import renderer from 'react-test-renderer';
+import { render } from '@testing-library/react'
 import MapArea from './MapArea';
-import ReactDOM from 'react-dom/client';
+import { AreaName } from '../gameLogic/Enums/AreaNames';
 
-beforeEach(() => {
-    Object.defineProperty(window.SVGElement.prototype, 'getBBox', {
-        writable: true,
-        value: () => ({
-            x: 0,
-            y: 0,
-            width: 0,
-            height: 0
-        })
-    });
+it('renders MapArea correctly', async () => {
+    const { container } = render(
+        <MapArea 
+            className={'asdf'}
+            areaName={AreaName.ANDRAST}
+            onClick={() => {}}
+            isRendered={true}
+        />
+    );
+    expect(container).toMatchSnapshot();
+});
 
-    Object.defineProperty(window.SVGGraphicsElement.prototype, 'getBBox', {
-        writable: true,
-        value: () => ({
-            x: 0,
-            y: 0,
-            width: 0,
-            height: 0
-        })
-    });
+it('renders circle with area units after isRendered prop is true', async () => {
+    let isRendered = false;
 
-})
+    const { container, rerender } = render(
+        <MapArea 
+            className={'asdf'}
+            areaName={AreaName.ANDRAST}
+            onClick={() => {}}
+            isRendered={isRendered}
+        />
+    );
 
-it('renders MapArea correctly', () => {
-    // const component = renderer.create(
-    //     <MapArea className='asdf' id="asdf" onClick={jest.fn()} isRendered={true} clickable={true} path="" areaLogic={''} />
-    // );
-    // let tree = component.toJSON();
-    // expect(tree).toMatchSnapshot();
-    expect(true).toBeTruthy();
+    let areaUnits = container.getElementsByClassName('areaUnits');
+    expect(areaUnits).toHaveLength(0);
+
+    isRendered = true;
+
+    rerender(
+        <MapArea 
+            className={'asdf'}
+            areaName={AreaName.ANDRAST}
+            onClick={() => {}}
+            isRendered={isRendered}
+        />
+    );
+
+    areaUnits = container.getElementsByClassName('areaUnits');
+    expect(areaUnits).toHaveLength(1);
 });
