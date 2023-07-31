@@ -477,7 +477,6 @@ export default function GameDisplay() {
                     onMoveUnits={onMoveUnitButtonClick}
                     setUnitsToMove={setUnitsToMove}
                     isInputDisabled={isUnitMoveInputDisabled()}
-                    isInputEnabled={(shouldDisplayUnitMoveButton) || (shouldDisplayTroopTransferButton && areaToMoveUnits !== null)}
                     label={shouldDisplayTroopTransferButton ? "Troop Transfers: " : "Unit Maneuvers: "}
                 />
             )}

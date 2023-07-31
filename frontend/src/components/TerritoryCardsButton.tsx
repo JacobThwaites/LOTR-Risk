@@ -5,7 +5,7 @@ import CustomButton from "./common/CustomButton";
 export default function TerritoryCardsButton(props: { onClick: any, numCards: number }): JSX.Element {
     const label = (
         <>
-            <img id='show-territory-cards-button--img' src={BlankCards} alt="asdf"/>
+            <img id='show-territory-cards-button--img' src={BlankCards} alt="Territory Cards"/>
             <div id='show-territory-cards-button--num-cards'>{props.numCards}</div>
         </>
     )

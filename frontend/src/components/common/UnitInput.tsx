@@ -18,7 +18,6 @@ function UnitInput(props: Props) {
       onChange={props.onChange}
       value={props.value}
       disabled={props.disabled}
-
     />
   );
 }

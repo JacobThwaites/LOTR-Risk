@@ -11,7 +11,6 @@ type Props = {
   setUnitsToMove: Dispatch<SetStateAction<number>>,
   isInputDisabled: boolean,
   label: string,
-  isInputEnabled: boolean
 }
 
 export default function UnitMoveHandler(props: Props) {
