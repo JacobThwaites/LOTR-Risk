@@ -6,6 +6,8 @@ type Props = {
 }
 
 export default function Leaderboard(props: Props): JSX.Element {
+    console.log(props.leaderboardData);
+    
     const entries = props.leaderboardData.map((entry: LeaderboardEntryData, i: number) => {
         return <LeaderboardRows entry={entry} key={i}/>
     })
@@ -34,7 +36,7 @@ function LeaderboardHeaders(): JSX.Element {
 
 function LeaderboardRows(props: { entry: LeaderboardEntryData }): JSX.Element {
     return (
-        <div className="leaderboard--row">
+        <div className="leaderboard--row" data-testid={`leaderboard--row--${props.entry.colour}`}>
             <p>{props.entry.colour} Player</p>
             <p>{props.entry.areasControlled}</p>
             <p>{props.entry.totalUnits}</p>

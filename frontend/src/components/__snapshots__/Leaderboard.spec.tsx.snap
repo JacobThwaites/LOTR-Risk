@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Leaderboard correctly 1`] = `
+<div>
+  <div
+    class="leaderboard"
+  >
+    <h1
+      class="leaderboard--title"
+    >
+      Leaderboard
+    </h1>
+    <div
+      class="leaderboard--table"
+    >
+      <div
+        class="leaderboard--headers"
+      >
+        <p>
+          Player
+        </p>
+        <p>
+          Areas
+        </p>
+        <p>
+          Units
+        </p>
+      </div>
+      <div
+        class="leaderboard--row"
+        data-testid="leaderboard--row--green"
+      >
+        <p>
+          green
+           Player
+        </p>
+        <p>
+          1
+        </p>
+        <p>
+          2
+        </p>
+      </div>
+      <div
+        class="leaderboard--row"
+        data-testid="leaderboard--row--black"
+      >
+        <p>
+          black
+           Player
+        </p>
+        <p>
+          2
+        </p>
+        <p>
+          2
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
