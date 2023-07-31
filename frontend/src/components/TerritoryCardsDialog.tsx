@@ -3,7 +3,7 @@ import { Dialog, DialogContent } from '@mui/material';
 import { TerritoryCard as TerritoryCardModel } from "../gameLogic/Models/TerritoryCard";
 import TerritoryCardManager, { TradableCards } from "../gameLogic/Controllers/TerritoryCardManager";
 import CustomButton from "./common/CustomButton";
-import TerritoryCard from "./TerritoryCards";
+import TerritoryCard from "./TerritoryCard";
 
 type Props = { 
   onClose: any, 
