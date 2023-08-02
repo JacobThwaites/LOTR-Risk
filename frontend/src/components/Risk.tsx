@@ -53,7 +53,7 @@ function GameRedirect(props: { numberOfPlayers: number, gameType: string }) {
                 throw new Error('Failed to create game');
             }
 
-            const json = await res.json()
+            const json = await res.json();
             const { uuid } = json.data;
             setGameID(uuid);
         } catch (err) {

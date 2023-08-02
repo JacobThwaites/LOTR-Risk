@@ -1,7 +1,6 @@
 import { getUserID } from "../../utils/userIDManager";
 
 export async function saveGame(numPlayers: number) {
-
     try {
         const body = {
             numPlayers: numPlayers,

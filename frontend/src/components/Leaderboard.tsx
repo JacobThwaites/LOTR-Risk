@@ -6,8 +6,6 @@ type Props = {
 }
 
 export default function Leaderboard(props: Props): JSX.Element {
-    console.log(props.leaderboardData);
-    
     const entries = props.leaderboardData.map((entry: LeaderboardEntryData, i: number) => {
         return <LeaderboardRows entry={entry} key={i}/>
     })
