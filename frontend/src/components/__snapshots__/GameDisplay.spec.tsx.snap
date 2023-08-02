@@ -1,6 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders Waiting for players page after game load 1`] = `
+exports[`renders game not found page if invalid gameID is provided 1`] = `
+<div>
+  <div
+    class="not-found"
+    data-testid="not-found"
+  >
+    <h1>
+      Game Not Found
+    </h1>
+    <p>
+      No game could be found with the given URL
+    </p>
+    <a
+      href="/"
+    >
+      Click here to return home
+    </a>
+  </div>
+</div>
+`;
+
+exports[`renders waiting for players page after online game load 1`] = `
 <div>
   <div
     data-testid="waiting-for-players-screen"
