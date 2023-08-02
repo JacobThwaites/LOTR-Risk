@@ -442,7 +442,7 @@ export default function GameDisplay() {
     }
 
     return (
-        <div id='game-display'>
+        <div id='game-display' data-testid='game-display'>
             <Map
                 attackingArea={attackingArea}
                 defendingArea={defendingArea}
