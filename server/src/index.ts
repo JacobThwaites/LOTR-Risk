@@ -2,17 +2,14 @@ import express from 'express';
 import * as games from './games';
 import { onConnection } from './webSockets';
 import setupDatabase from './data/dbSetup';
-import { WebSocket } from 'ws';
 import { enableCORS } from './cors';
-import { parse } from 'url';
-import { IncomingMessage } from 'http';
 import { WebSocketManager } from './WebSocketManager';
+import { makeWebSocketServer } from './makeWebSocketServer';
 
 setupDatabase();
 
 const app = express();
 const http = require('http');
-const server = http.createServer(app);
 
 
 const HTTP_PORT = 8000;
@@ -21,21 +18,8 @@ const WEBSOCKETS_PORT = 8001;
 // Web Sockets
 
 const webSocketManager = new WebSocketManager();
+const server = makeWebSocketServer(app, webSocketManager);
 
-server.on('upgrade', function (request: IncomingMessage, socket: any, head: Buffer) {
-    const { pathname } = parse(request.url!);
-
-    if (!pathname) {
-        return;
-    }
-
-    const gameID = pathname.substring(pathname.length - 8);
-    const wss = webSocketManager.getGameServer(gameID);
-
-    wss.handleUpgrade(request, socket, head, function (ws: WebSocket) {
-        wss.emit('connection', ws, request);
-    });
-});
 
 app.use('/api/game/:gameID', (req: any, res, next) => {
     const { gameID } = req.params;
