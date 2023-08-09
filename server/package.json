@@ -52,6 +52,9 @@
     },
     "transformIgnorePatterns": [
       "node_modules/(?!variables/.*)"
+    ],
+    "testPathIgnorePatterns": [
+      "/dist/"
     ]
   }
 }
