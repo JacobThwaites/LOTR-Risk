@@ -1,7 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
 import { getUserID } from './userIDManager';
 import { AreaName } from '../gameLogic/Enums/AreaNames';
 import { TerritoryCard } from '../gameLogic/Models/TerritoryCard';
+import { sendMessage } from './sendWebSocketMessage';
 
 export enum GameEventType {
     CLEAR_SELECTED_AREAS = "CLEAR SELECTED AREAS",
@@ -49,12 +49,6 @@ export default class WebSocketHandler {
         return messageUUID === this.previousMessageUUID;
     }   
 
-    sendMessage(message: GameEventMessage): void {
-        message.id = uuidv4(); 
-        message.userID = getUserID();
-        this.socket.send(JSON.stringify(message));
-    }
-
     sendCombatResults(attackingArea: string, defendingArea: string, results: string[]) {
         const messageBody = {
             type: GameEventType.COMBAT_RESULTS,
@@ -63,7 +57,7 @@ export default class WebSocketHandler {
             results
         }
 
-        this.sendMessage(messageBody);
+        sendMessage(messageBody, this.socket);
     }
 
     sendClearAreaSelection() {
@@ -71,7 +65,7 @@ export default class WebSocketHandler {
             type: GameEventType.CLEAR_SELECTED_AREAS
         }
 
-        this.sendMessage(messageBody);
+        sendMessage(messageBody, this.socket);
     }
 
     sendStartingReinforcement(areaName: string) {
@@ -80,7 +74,7 @@ export default class WebSocketHandler {
             areaName
         }
 
-        this.sendMessage(messageBody);
+        sendMessage(messageBody, this.socket);
     }
 
     sendReinforcement(areaName: string) {
@@ -89,7 +83,7 @@ export default class WebSocketHandler {
             areaName
         }
 
-        this.sendMessage(messageBody);
+        sendMessage(messageBody, this.socket);
     }
 
     sendEndTurn() {
@@ -97,7 +91,7 @@ export default class WebSocketHandler {
             type: GameEventType.END_TURN
         }
 
-        this.sendMessage(messageBody);
+        sendMessage(messageBody, this.socket);
     }
 
     sendUnitMove(origin: string, destination: string, numUnits: number) {
@@ -108,7 +102,7 @@ export default class WebSocketHandler {
             numUnits 
         }
 
-        this.sendMessage(messageBody);
+        sendMessage(messageBody, this.socket);
     }
 
     sendTroopTransferSetup() {
@@ -116,7 +110,7 @@ export default class WebSocketHandler {
             type: GameEventType.TROOP_TRANSFER_SETUP
         };
 
-        this.sendMessage(messageBody);
+        sendMessage(messageBody, this.socket);
     }
 
     sendTroopTransfer(origin: string, destination: string, numUnits: number) {
@@ -127,7 +121,7 @@ export default class WebSocketHandler {
             numUnits 
         }
 
-        this.sendMessage(messageBody);
+        sendMessage(messageBody, this.socket);
     }
 
     sendPlayerJoinedNotification() {     
@@ -136,7 +130,7 @@ export default class WebSocketHandler {
             userID: getUserID()
         }
 
-        this.sendMessage(messageBody);
+        sendMessage(messageBody, this.socket);
     }
 
     sendCombat(attackingArea: AreaName, defendingArea: AreaName, numAttackingDice: number) {     
@@ -148,7 +142,7 @@ export default class WebSocketHandler {
             numAttackingDice
         }
 
-        this.sendMessage(messageBody);
+        sendMessage(messageBody, this.socket);
     }
 
     sendTradeTerritoryCards(territoryCards: TerritoryCard[]): void {
@@ -158,11 +152,6 @@ export default class WebSocketHandler {
             userID: getUserID(),
         }
         
-        this.sendMessage(messageBody);
+        sendMessage(messageBody, this.socket);
     }
-}
-
-type GameEventMessage = {
-    type: GameEventType,
-    [key: string]: any;
 }

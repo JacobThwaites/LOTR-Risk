@@ -26,6 +26,8 @@ import areaDetails from "./svgPaths/AreaDetails";
 import { AreaName } from "../gameLogic/Enums/AreaNames";
 import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
 import { LeaderboardEntry } from "../gameLogic/Enums/LeaderboardEntry";
+import makeWebSocket from "../utils/makeWebSocket";
+
 
 export default function GameDisplay() {
     const { gameID } = useParams<{ gameID: string }>();
@@ -102,8 +104,11 @@ export default function GameDisplay() {
     }, [gameID, isGameLoaded]);
 
     function connectSockets() {
-        const socket = new WebSocket(`ws://${process.env.REACT_APP_BASE_URL}/api/game/${gameID}`);
+        const socket = makeWebSocket(gameID);
         const socketHandler = makeWebSocketHandler(gameID, socket);
+
+        webSocketHandler.current = socketHandler;
+        ws.current = socket;
 
         socket.onopen = () => {
             webSocketHandler.current!.sendPlayerJoinedNotification();
@@ -116,10 +121,6 @@ export default function GameDisplay() {
         socket.onclose = () => {
             console.log('Closed socket connection');
         }
-
-        webSocketHandler.current = socketHandler;
-
-        ws.current = socket;
     }
 
     function processWebSocketMessage(event: MessageEvent): void {
