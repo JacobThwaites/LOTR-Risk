@@ -7,7 +7,6 @@ export function makeWebSocketServer(app: any, webSocketManager: WebSocketManager
 
     server.on('upgrade', function (request: IncomingMessage, socket: any, head: Buffer) {
         const { pathname } = parse(request.url!);
-    
         if (!pathname) {
             return;
         }

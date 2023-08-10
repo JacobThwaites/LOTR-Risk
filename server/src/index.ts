@@ -1,12 +1,9 @@
 import express from 'express';
 import * as games from './games';
 import { onConnection } from './webSockets';
-import setupDatabase from './data/dbSetup';
 import { enableCORS } from './cors';
 import { WebSocketManager } from './WebSocketManager';
 import { makeWebSocketServer } from './makeWebSocketServer';
-
-setupDatabase();
 
 const app = express();
 const http = require('http');
