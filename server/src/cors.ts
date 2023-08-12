@@ -1,3 +1,4 @@
+require('dotenv').config()
 import cors from 'cors';
 
 export function enableCORS(app: any) {
