@@ -7,7 +7,6 @@ import { AreaName } from '../Enums/AreaNames';
 
 export class Player {
     private userID: string;
-    private isGood: boolean;
     private units: number;
     private reinforcements: number;
     private territoryCards: Array<TerritoryCard>;
@@ -19,7 +18,6 @@ export class Player {
         userID: string
         ) {
         this.userID = userID;
-        this.isGood = colour === (Colour.GREEN || Colour.YELLOW);
         this.units = 0;
         this.reinforcements = 0;
         this.territoryCards = [];
