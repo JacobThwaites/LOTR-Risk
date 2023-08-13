@@ -161,4 +161,13 @@ export default class GameEventMessageFactory {
             leaderboardData
         }
     }
+
+    public static generatePlayerDisconnectMessage(disconnectedPlayerColour: Colour | undefined, game: Game): GameEventMessage {
+        return { 
+            id: uuidv4(), 
+            type: GameEventType.PLAYER_DISCONNECT, 
+            userColour: disconnectedPlayerColour, 
+            playersLeftToJoin: game.getNumPlayersLeftToJoin()
+        };
+    }
 }

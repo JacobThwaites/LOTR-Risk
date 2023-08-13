@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import WebSocketWithID from "./WebSocketWithID";
 import PlayerDisconnectionTracker from "./PlayerDisconnectionTracker";
 import { broadcastMessage } from "./webSockets";
-import { GameEventMessage, GameEventType } from "./GameEventMessageFactory";
+import GameEventMessageFactory, { GameEventMessage, GameEventType } from "./GameEventMessageFactory";
 import { activeGames } from "./data/ActiveGames";
 import { Player } from "./gameLogic/Models/Player";
 import { Game } from "./gameLogic/Models/Game";
@@ -113,13 +113,8 @@ export class WebSocketManager {
         const game = activeGames.getGameByID(gameID);
         const server = this.getGameServer(gameID);
         const disconnectedPlayer = this.getDisconnectedPlayer(gameID, webSocketWithID);
-        const message = { 
-            id: uuidv4(), 
-            type: GameEventType.PLAYER_DISCONNECT, 
-            userColour: disconnectedPlayer?.getColour(), 
-            playersLeftToJoin: game.getNumPlayersLeftToJoin()
-        };
-        broadcastMessage(message, server);
+        const disconnectionMessage = GameEventMessageFactory.generatePlayerDisconnectMessage(disconnectedPlayer?.getColour(), game);
+        broadcastMessage(disconnectionMessage, server);
     }
 
     private getDisconnectedPlayer(gameID: string, webSocketWithID: WebSocketWithID): Player | null {
