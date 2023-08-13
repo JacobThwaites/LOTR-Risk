@@ -36,6 +36,30 @@ class ActiveGames {
     public deleteGame(id: string): void {
         delete this.gamesInProgress[id];
     }
+
+    public hasGameStarted(gameID: string): boolean {
+        const game = this.getGameByID(gameID);
+        const players = game.getPlayers();
+
+        for (let i = 0; i < players.length; i++) {
+            if (players[i].getUserID() === '') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public removeUserIDFromGame(userID: string, gameID: string): void {
+        const game = this.getGameByID(gameID);
+        const players = game.getPlayers();
+    
+        for (const player of players) {
+            if (player.getUserID() === userID) {
+                player.setUserID('');
+            }
+        }
+    }
 }
 
 export const activeGames = new ActiveGames();

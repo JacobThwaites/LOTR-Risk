@@ -7,6 +7,7 @@ import { broadcastMessage } from "./webSockets";
 import { GameEventMessage, GameEventType } from "./GameEventMessageFactory";
 import { activeGames } from "./data/ActiveGames";
 import { Player } from "./gameLogic/Models/Player";
+import { Game } from "./gameLogic/Models/Game";
 const ws = require('ws');
 
 export class WebSocketManager {
@@ -85,23 +86,39 @@ export class WebSocketManager {
 
     private createHeartbeatTimeout(webSocketWithID: WebSocketWithID, gameID: string, pingInterval: NodeJS.Timer) {
         return setTimeout(() => {
-            this.broadcastPlayerDisconnect(gameID, webSocketWithID);
-            this.removeClient(webSocketWithID, gameID);
-            this.startDisconnectTimeout(webSocketWithID.getID(), gameID);
-
-            const server = this.getGameServer(gameID);
-            if (!server.clients.size) {
-                this.removeGameServer(gameID);
-            }
+            this.handleUserDisconnection(webSocketWithID, gameID);
 
             clearInterval(pingInterval);
         }, 10000);
     }
 
+    private handleUserDisconnection(webSocketWithID: WebSocketWithID, gameID: string) {
+        if (activeGames.hasGameStarted(gameID)) {
+            this.startDisconnectTimeout(webSocketWithID.getID(), gameID);
+        } else {
+            const userID = webSocketWithID.getID();
+            activeGames.removeUserIDFromGame(userID, gameID);
+        }
+        
+        this.broadcastPlayerDisconnect(gameID, webSocketWithID);
+        this.removeClient(webSocketWithID, gameID);
+        const server = this.getGameServer(gameID);
+        if (!server.clients.size) {
+            this.removeGameServer(gameID);
+            activeGames.deleteGame(gameID);
+        }
+    }
+
     private broadcastPlayerDisconnect(gameID: string, webSocketWithID: WebSocketWithID): void {
+        const game = activeGames.getGameByID(gameID);
         const server = this.getGameServer(gameID);
         const disconnectedPlayer = this.getDisconnectedPlayer(gameID, webSocketWithID);
-        const message = { id: uuidv4(), type: GameEventType.PLAYER_DISCONNECT, userColour: disconnectedPlayer?.getColour() };
+        const message = { 
+            id: uuidv4(), 
+            type: GameEventType.PLAYER_DISCONNECT, 
+            userColour: disconnectedPlayer?.getColour(), 
+            playersLeftToJoin: game.getNumPlayersLeftToJoin()
+        };
         broadcastMessage(message, server);
     }
 
@@ -127,4 +144,16 @@ export class WebSocketManager {
         const message = { id: uuidv4(), type: GameEventType.GAME_OVER_DISCONNECT, userID };
         broadcastMessage(message, server);
     }
+}
+
+function hasGameStarted(game: Game): boolean {
+    const players = game.getPlayers();
+
+    for (const player of players) {
+        if (player.getUserID() === '') {
+            return false;
+        }
+    }
+
+    return true;
 }

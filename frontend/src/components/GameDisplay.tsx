@@ -206,6 +206,7 @@ export default function GameDisplay() {
             }
             case GameEventType.PLAYER_DISCONNECT: {
                 setDisconnectedPlayers([...disconnectedPlayers, messageData.userColour]);
+                setPlayersLeftToJoin(messageData.playersLeftToJoin);
                 break;
             }
             case GameEventType.GAME_OVER_DISCONNECT: {
