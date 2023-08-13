@@ -140,15 +140,3 @@ export class WebSocketManager {
         broadcastMessage(message, server);
     }
 }
-
-function hasGameStarted(game: Game): boolean {
-    const players = game.getPlayers();
-
-    for (const player of players) {
-        if (player.getUserID() === '') {
-            return false;
-        }
-    }
-
-    return true;
-}
