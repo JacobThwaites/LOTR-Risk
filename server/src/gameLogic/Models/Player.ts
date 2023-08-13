@@ -28,51 +28,51 @@ export class Player {
         this.colour = colour;
     }
 
-    getUserID(): string {
+    public getUserID(): string {
         return this.userID;
     }
 
-    setUserID(userID: string) {
+    public setUserID(userID: string) {
         this.userID = userID;
     }
     
-    getUnits(): number {
+    public getUnits(): number {
         return this.units;
     }
 
-    getAreas(): Array<AreaType> {
+    public getAreas(): Array<AreaType> {
         return this.areas;
     }
 
-    getTotalAreas(): number {
+    public getTotalAreas(): number {
         return this.areas.length;
     }
 
-    getColour(): Colour {
+    public getColour(): Colour {
         return this.colour;
     }
 
-    getTerritoryCards() {
+    public getTerritoryCards() {
         return this.territoryCards;
     }
 
-    addTerritoryCard(card: TerritoryCard) {
+    public addTerritoryCard(card: TerritoryCard) {
         this.territoryCards.push(card);
     }
 
-    removeTerritoryCardByIndex(index: number) {
+    public removeTerritoryCardByIndex(index: number) {
         this.territoryCards.splice(index, 1);
     }
 
-    addUnits(numberOfUnits: number) {
+    public addUnits(numberOfUnits: number) {
         this.units += numberOfUnits;
     }
 
-    removeUnits(numberOfUnits: number) {
+    public removeUnits(numberOfUnits: number) {
         this.units -= numberOfUnits;
     }
 
-    addArea(area: AreaType) {
+    public addArea(area: AreaType) {
         this.areas.push(area);
         const regionForArea = getRegionForArea(area);
 
@@ -81,7 +81,7 @@ export class Player {
         }
     }
 
-    removeArea(area: AreaType) {
+    public removeArea(area: AreaType) {
         this.areas = this.areas.filter(a => a !== area);
 
         const areaRegion = getRegionForArea(area);
@@ -92,24 +92,24 @@ export class Player {
         }
     }
 
-    addRegion(region: Region) {
+    public addRegion(region: Region) {
         this.regions.push(region);
     }
 
-    removeRegion(region: Region) {
+    public removeRegion(region: Region) {
         this.regions = this.regions.filter(r => r !== region);
     }
 
-    getReinforcements(): number {
+    public getReinforcements(): number {
         return this.reinforcements;
     }
 
-    addReinforcementsForNewTurn() {
+    public addReinforcementsForNewTurn() {
         const totalReinforcements = this.calculateTotalReinforcements();
         this.addReinforcements(totalReinforcements);
     }
 
-    calculateTotalReinforcements(): number {
+    public calculateTotalReinforcements(): number {
         let totalReinforcements = 0;
         totalReinforcements += this.calculateAreaBonus();
         totalReinforcements += this.calculateRegionBonus();
@@ -117,7 +117,7 @@ export class Player {
         return totalReinforcements;
     }
 
-    calculateAreaBonus(): number {
+    public calculateAreaBonus(): number {
         let bonusUnits = this.areas.length / 3;
         if (bonusUnits < 3) {
             bonusUnits = 3;
@@ -125,7 +125,7 @@ export class Player {
         return Math.floor(bonusUnits);
     }
 
-    calculateRegionBonus(): number {
+    public calculateRegionBonus(): number {
         let bonusUnits = 0;
         
         for (let i = 0; i < this.regions.length; i++) {
@@ -134,32 +134,28 @@ export class Player {
         return bonusUnits;
     }
 
-    addLeader(area: AreaType) {
+    public addLeader(area: AreaType) {
         if (!area.getHasLeader()) {
             area.changeHasLeader();
         }
     }
 
-    addReinforcements(reinforcements: number) {
+    public addReinforcements(reinforcements: number) {
         this.reinforcements += reinforcements;
         this.units += reinforcements;
     }
 
-    addReinforcementsToArea(area: AreaType) {
+    public addReinforcementsToArea(area: AreaType) {
         if (this.reinforcements >= 1) {
             this.reinforcements -= 1;
             area.addUnits(1);
         }
     }
 
-    addStartingUnits() {
+    public addStartingUnits() {
         for (let i = 0; i < this.areas.length; i++) {   
             this.addReinforcementsToArea(this.areas[i]);
         }
-    }
-
-    public ownsArea(area: AreaType): boolean {
-        return this.areas.includes(area);
     }
 
     private ownsRegion(region: Region): boolean {
