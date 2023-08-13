@@ -7,7 +7,6 @@ import { broadcastMessage } from "./webSockets";
 import GameEventMessageFactory, { GameEventMessage, GameEventType } from "./GameEventMessageFactory";
 import { activeGames } from "./data/ActiveGames";
 import { Player } from "./gameLogic/Models/Player";
-import { Game } from "./gameLogic/Models/Game";
 const ws = require('ws');
 
 export class WebSocketManager {

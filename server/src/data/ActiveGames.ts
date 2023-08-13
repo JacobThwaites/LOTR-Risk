@@ -39,6 +39,11 @@ class ActiveGames {
 
     public hasGameStarted(gameID: string): boolean {
         const game = this.getGameByID(gameID);
+
+        if (!game) {
+            return false;
+        }
+
         const players = game.getPlayers();
 
         for (let i = 0; i < players.length; i++) {
@@ -52,6 +57,11 @@ class ActiveGames {
 
     public removeUserIDFromGame(userID: string, gameID: string): void {
         const game = this.getGameByID(gameID);
+
+        if (!game) {
+            return;
+        }
+        
         const players = game.getPlayers();
     
         for (const player of players) {
