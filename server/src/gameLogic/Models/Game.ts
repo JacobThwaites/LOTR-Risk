@@ -47,7 +47,7 @@ export class Game {
         this.hasPlayerCapturedAreaThisTurn = true;
 
         const defender = area.getPlayer();
-        defender?.removeArea(area.getName());
+        defender?.removeArea(area);
 
         attacker.addArea(area);
         area.setPlayer(attacker);

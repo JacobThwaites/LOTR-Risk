@@ -1,12 +1,15 @@
 import { Area } from '../Models/Area';
 import { Player } from '../Models/Player';
 import { Region } from '../Models/Region';
+import { Regions } from '../Enums/Regions';
 import { Colour } from '../Enums/Colours';
 import { AreaName } from '../Enums/AreaNames';
 import { TerritoryCard } from '../Models/TerritoryCard';
 import { Symbol } from '../Enums/Symbols';
 import { assert } from 'chai';
 import 'mocha';
+import { getAreas } from '../Enums/Areas';
+import { AreaType } from '../Models/AreaType';
 
 describe('Player', () => {
     let area1: Area;
@@ -18,6 +21,7 @@ describe('Player', () => {
     let card1: TerritoryCard;
     let player: Player;
     let region: Region;
+    let regionAreas: Area[];
     beforeEach(function() {
         area1 = new Area(AreaName.HARONDOR);
         area2 = new Area(AreaName.UMBAR);
@@ -25,8 +29,9 @@ describe('Player', () => {
         area4 = new Area(AreaName.HARAD);
         area5 = new Area(AreaName.NEAR_HARAD);
         area6 = new Area(AreaName.KHAND);
-        const areaNames = [area1.getName(), area2.getName(), area3.getName(), area4.getName(), area5.getName(), area6.getName()];
-        region = new Region('haradwaith', areaNames, 2);
+        regionAreas = [area1, area2, area3, area4, area5, area6];
+        const regionAreaNames = [area1.getName(), area2.getName(), area3.getName(), area4.getName(), area5.getName(), area6.getName()];
+        region = new Region('haradwaith', regionAreaNames, 2);
         card1 = new TerritoryCard(Symbol.ARCHER);
         player = new Player(Colour.GREEN, '');
         player.addUnits(10);
@@ -57,11 +62,31 @@ describe('Player', () => {
         assert.equal(result, 1);
     });
 
+    it('should add a region when it adds an area if it owns all areas in the region', () => {
+        for (const area of regionAreas) {
+            player.addArea(area);
+        }
+
+        assert.equal(player.calculateRegionBonus(), region.getBonusUnits());
+    });
+
     it('should be able to remove an area by name', () => {
         player.addArea(area1);
-        player.removeArea(area1.getName());
+        player.removeArea(area1);
         const result = player.getAreas().length;
         assert.equal(result, 0);
+    });
+
+    it('should remove a region when it removes and area if it no longer owns that area', () => {
+        const region = Regions['HARADWAITH'];
+
+        const regionAreas = getAreasForRegion(region);
+        for (const area of regionAreas) {
+            player.addArea(area);
+        }
+
+        player.removeArea(area1);
+        assert.equal(player.calculateRegionBonus(), 0);
     });
 
     it('should be able to get more units', () => {
@@ -135,3 +160,10 @@ describe('Player', () => {
         assert.isTrue(areasHaveOneUnit);
     });
 });
+
+function getAreasForRegion(region: Region): AreaType[] {
+    const areas = Object.values(getAreas());
+    const regionAreas = areas.filter(area => region.getAreaNames().includes(area.getName()));
+
+    return regionAreas;
+}

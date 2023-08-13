@@ -81,16 +81,23 @@ export class Player {
         }
     }
 
-    removeArea(areaName: AreaName) {
-        this.areas = this.areas.filter(a => a.getName() !== areaName);
+    removeArea(area: AreaType) {
+        this.areas = this.areas.filter(a => a !== area);
+
+        const areaRegion = getRegionForArea(area);
+        console.log('areaRegion: ' + areaRegion.getName());
+        
+        if (this.ownsRegion(areaRegion)) {
+            this.removeRegion(areaRegion);
+        }
     }
 
     addRegion(region: Region) {
         this.regions.push(region);
     }
 
-    removeRegion(index: number) {
-        this.regions.splice(index, 1);
+    removeRegion(region: Region) {
+        this.regions = this.regions.filter(r => r !== region);
     }
 
     getReinforcements(): number {
