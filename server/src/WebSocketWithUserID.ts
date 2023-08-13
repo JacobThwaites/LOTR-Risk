@@ -1,6 +1,6 @@
 import WebSocket from 'ws';
 
-export default class WebSocketWithID {
+export default class WebSocketWithUserID {
     private id: string;
     private webSocketInstance: WebSocket;
 

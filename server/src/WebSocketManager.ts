@@ -1,7 +1,7 @@
 import { WebSocketServer, WebSocket } from "ws";
 import { countdownManager } from "./CountdownManager";
 import { v4 as uuidv4 } from 'uuid';
-import WebSocketWithID from "./WebSocketWithID";
+import WebSocketWithUserID from "./WebSocketWithUserID";
 import PlayerDisconnectionTracker from "./PlayerDisconnectionTracker";
 import { broadcastMessage } from "./webSockets";
 import GameEventMessageFactory, { GameEventMessage, GameEventType } from "./GameEventMessageFactory";
@@ -41,13 +41,13 @@ export class WebSocketManager {
         countdownManager.cancelCountdown(userID);
     }
 
-    public addClient(gameID: string, ws: WebSocketWithID) {
+    public addClient(gameID: string, ws: WebSocketWithUserID) {
         this.clients[gameID][ws.getID()] = ws.getWebSocketInstance();
     }
 
-    public removeClient(webSocketWithID: WebSocketWithID, gameID: string): void {
-        webSocketWithID.getWebSocketInstance().close();
-        delete this.clients[gameID][webSocketWithID.getID()];
+    public removeClient(webSocketWithUserID: WebSocketWithUserID, gameID: string): void {
+        webSocketWithUserID.getWebSocketInstance().close();
+        delete this.clients[gameID][webSocketWithUserID.getID()];
     }
 
     public messageIndividualClient(gameID: string, userID: string, messageData: GameEventMessage): void {
@@ -69,38 +69,38 @@ export class WebSocketManager {
         return this.clients[gameID].hasOwnProperty(userID);
     }
 
-    public checkClientHeartbeat(webSocketWithID: WebSocketWithID, gameID: string) {
-        const ws = webSocketWithID.getWebSocketInstance();
+    public checkClientHeartbeat(webSocketWithUserID: WebSocketWithUserID, gameID: string) {
+    const ws = webSocketWithUserID.getWebSocketInstance();
         const pingInterval = setInterval(() => {
             ws.ping();
         }, 5000);
 
         ws.on('pong', () => {
             clearTimeout(pingTimeout);
-            pingTimeout = this.createHeartbeatTimeout(webSocketWithID, gameID, pingInterval);
+            pingTimeout = this.createHeartbeatTimeout(webSocketWithUserID, gameID, pingInterval);
         });
 
-        let pingTimeout = this.createHeartbeatTimeout(webSocketWithID, gameID, pingInterval);
+        let pingTimeout = this.createHeartbeatTimeout(webSocketWithUserID, gameID, pingInterval);
     }
 
-    private createHeartbeatTimeout(webSocketWithID: WebSocketWithID, gameID: string, pingInterval: NodeJS.Timer) {
+    private createHeartbeatTimeout(webSocketWithUserID: WebSocketWithUserID, gameID: string, pingInterval: NodeJS.Timer) {
         return setTimeout(() => {
-            this.handleUserDisconnection(webSocketWithID, gameID);
+            this.handleUserDisconnection(webSocketWithUserID, gameID);
 
             clearInterval(pingInterval);
         }, 10000);
     }
 
-    private handleUserDisconnection(webSocketWithID: WebSocketWithID, gameID: string) {
+    private handleUserDisconnection(webSocketWithUserID: WebSocketWithUserID, gameID: string) {
         if (activeGames.hasGameStarted(gameID)) {
-            this.startDisconnectTimeout(webSocketWithID.getID(), gameID);
+            this.startDisconnectTimeout(webSocketWithUserID.getID(), gameID);
         } else {
-            const userID = webSocketWithID.getID();
+            const userID = webSocketWithUserID.getID();
             activeGames.removeUserIDFromGame(userID, gameID);
         }
         
-        this.broadcastPlayerDisconnect(gameID, webSocketWithID);
-        this.removeClient(webSocketWithID, gameID);
+        this.broadcastPlayerDisconnect(gameID, webSocketWithUserID);
+        this.removeClient(webSocketWithUserID, gameID);
         const server = this.getGameServer(gameID);
         if (!server.clients.size) {
             this.removeGameServer(gameID);
@@ -108,16 +108,16 @@ export class WebSocketManager {
         }
     }
 
-    private broadcastPlayerDisconnect(gameID: string, webSocketWithID: WebSocketWithID): void {
+    private broadcastPlayerDisconnect(gameID: string, webSocketWithUserID: WebSocketWithUserID): void {
         const game = activeGames.getGameByID(gameID);
         const server = this.getGameServer(gameID);
-        const disconnectedPlayer = this.getDisconnectedPlayer(gameID, webSocketWithID);
+        const disconnectedPlayer = this.getDisconnectedPlayer(gameID, webSocketWithUserID);
         const disconnectionMessage = GameEventMessageFactory.generatePlayerDisconnectMessage(disconnectedPlayer?.getColour(), game);
         broadcastMessage(disconnectionMessage, server);
     }
 
-    private getDisconnectedPlayer(gameID: string, webSocketWithID: WebSocketWithID): Player | null {
-        const userID = webSocketWithID.getID();
+    private getDisconnectedPlayer(gameID: string, webSocketWithUserID: WebSocketWithUserID): Player | null {
+        const userID = webSocketWithUserID.getID();
         return activeGames.getPlayerByUserID(gameID, userID);
     }
 

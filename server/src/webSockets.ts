@@ -1,5 +1,5 @@
 import { WebSocketServer, WebSocket } from "ws";
-import WebSocketWithID from "./WebSocketWithID";
+import WebSocketWithUserID from "./WebSocketWithUserID";
 import { updateGame } from "./gameEventProcessor";
 import { WebSocketManager } from "./WebSocketManager";
 import { GameEventMessage } from "./GameEventMessageFactory";
@@ -11,8 +11,8 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
     const game = gameQueries.getByUUID(gameID);
 
     return (ws: WebSocket) => {
-        const webSocketWithID = new WebSocketWithID(ws);
-        webSocketManager.checkClientHeartbeat(webSocketWithID, gameID);
+        const webSocketWithUserID = new WebSocketWithUserID(ws);
+        webSocketManager.checkClientHeartbeat(webSocketWithUserID, gameID);
 
         ws.on('message', function (data: Buffer) {
             const messageData = parseMessageBuffer(data);
@@ -27,7 +27,7 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
 
             if (messageData.type === 'PLAYER JOINED') {
                 if (webSocketManager.isUserAlreadyInGame(messageData.userID, gameID)) {
-                    // webSocketManager.removeClient(webSocketWithID, gameID);
+                    // webSocketManager.removeClient(WebSocketWithUserID, gameID);
                     webSocketManager.onPlayerReconnect(messageData.userID);
                 } else {
                     game.addUserIDToPlayer(messageData.userID);
@@ -35,14 +35,14 @@ export const onConnection = (wss: WebSocketServer, webSocketManager: WebSocketMa
 
                 messageData.playersLeftToJoin = game.getNumPlayersLeftToJoin();
                 
-                webSocketWithID.setID(messageData.userID);
-                webSocketManager.addClient(gameID, webSocketWithID);
+                webSocketWithUserID.setID(messageData.userID);
+                webSocketManager.addClient(gameID, webSocketWithUserID);
                 broadcastMessage(messageData, wss);
             }
         });
 
         ws.on('close', function () {
-            webSocketManager.removeClient(webSocketWithID, gameID);
+            webSocketManager.removeClient(webSocketWithUserID, gameID);
         })
     }
 };
