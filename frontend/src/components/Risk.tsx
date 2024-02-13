@@ -48,13 +48,12 @@ function GameRedirect(props: { numberOfPlayers: number, gameType: string }) {
     const getData = async () => {
         try {
             const res = await saveGame(props.numberOfPlayers);
-
             if (!res) {
                 throw new Error('Failed to create game');
             }
 
             const json = await res.json();
-            const { uuid } = json.data;
+            const { uuid } = json;
             setGameID(uuid);
         } catch (err) {
             console.error(err);

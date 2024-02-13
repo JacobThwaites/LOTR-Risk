@@ -80,7 +80,7 @@ export function updateGame(messageData: any, game: Game, wss: WebSocketServer, w
         case GameEventType.TRADE_TERRITORY_CARDS: {
             const { userID } = messageData;
 
-            const territoryCards = messageData.territoryCards.map((card: { symbol: string; }) => new TerritoryCard(card.symbol as Symbol));
+            const territoryCards = messageData.territoryCards.map((card: string) => new TerritoryCard(card as Symbol));
 
             if (!TerritoryCardManager.areCardsExchangeable(territoryCards as TradableCards)) {
                 break;

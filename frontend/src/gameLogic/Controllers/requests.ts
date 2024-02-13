@@ -6,8 +6,7 @@ export async function saveGame(numPlayers: number) {
             numPlayers: numPlayers,
             userID: getUserID() 
         }
-
-        return fetch(`http://${process.env.REACT_APP_BASE_URL}/api/game`, {
+        return fetch(`http://${process.env.REACT_APP_SERVER_URL}/api/game`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -25,7 +24,7 @@ export async function addUserIDToGame(gameID: string): Promise<any> {
     try {
         const userID = getUserID();
 
-        const res = await fetch(`http://${process.env.REACT_APP_BASE_URL}/api/game/${gameID}`, {
+        const res = await fetch(`http://${process.env.REACT_APP_SERVER_URL}/api/game/${gameID}`, {
             method: 'PATCH',
             headers: {
                 'Accept': 'application/json',

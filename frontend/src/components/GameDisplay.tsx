@@ -68,12 +68,12 @@ export default function GameDisplay() {
             }
 
             const json = await res.json();
-            const { players } = json.data;
+            const { players } = json;
             const startingPlayer = players[0];
 
             setCurrentPlayerColour(startingPlayer.colour);  
             setReinforcementsAvailable(startingPlayer.reinforcements);          
-            setTurnsRemaining(json.data.maxTurns)
+            setTurnsRemaining(json.maxTurns)
             setupStartingAreaColours(players);
             setShouldDisplayReinforcementsModal(true);
             setIsGameLoaded(true);
@@ -125,12 +125,7 @@ export default function GameDisplay() {
 
     function processWebSocketMessage(event: MessageEvent): void {
         const messageData = JSON.parse(event.data);
-
-        if (webSocketHandler.current!.isMessageAlreadyProcessed(messageData.id)) {
-            return;
-        } else {
-            webSocketHandler.current!.previousMessageUUID = messageData.id;
-        }
+        console.log(messageData);
 
         switch (messageData.type) {
             case GameEventType.PLAYER_JOINED: {
@@ -348,6 +343,12 @@ export default function GameDisplay() {
     }
 
     function updateAreaDetails(areaName: AreaName, areaColour: Colour, areaUnits: number): void {
+        console.log("updating area");
+        console.log(areaName);
+        console.log(areaUnits);
+        
+        
+        
         const area = areaDetails[areaName as AreaName];
         area.units = areaUnits;
         area.colour = areaColour;
