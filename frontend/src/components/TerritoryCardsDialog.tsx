@@ -1,30 +1,33 @@
 import React, { useState } from "react";
 import { Dialog, DialogContent } from '@mui/material';
-import { TerritoryCard as TerritoryCardModel } from "../gameLogic/Models/TerritoryCard";
 import TerritoryCardManager, { TradableCards } from "../gameLogic/Controllers/TerritoryCardManager";
 import CustomButton from "./common/CustomButton";
 import TerritoryCard from "./TerritoryCard";
 
 type Props = { 
   onClose: any, 
-  cards: TerritoryCardModel[],
-  sendTradeTerritoryCardsMessage(selectedCards: TerritoryCardModel[]): void
+  cards: string[],
+  sendTradeTerritoryCardsMessage(selectedCards: string[]): void
 }
 
 export default function TerritoryCardsDialog(props: Props): JSX.Element {
-  const [selectedCards, setSelectedCards] = useState<TerritoryCardModel[]>([]);
+  const [selectedCardIndexes, setSelectedCardIndexes] = useState<number[]>([]);
+  const selectedCards = props.cards.filter((card, i) => selectedCardIndexes.includes(i));
 
-  function onCardSelect(card: TerritoryCardModel): void {
-    if (selectedCards.includes(card)) {
-      const newCards = selectedCards.filter(c => c !== card);
-      setSelectedCards(newCards);
-    } else if (TerritoryCardManager.isNewCardValidWithExistingCards(selectedCards, card)) {
-      setSelectedCards([...selectedCards, card]);
+  function onCardSelect(index: number): void {
+    if (selectedCardIndexes.includes(index)) {
+      const newCardIndexes = selectedCardIndexes.filter(i => i !== index);
+      setSelectedCardIndexes(newCardIndexes);
+    } else {
+      const card = props.cards[index];
+      if (TerritoryCardManager.isNewCardValidWithExistingCards(selectedCards, card)) {
+        setSelectedCardIndexes([...selectedCardIndexes, index]);
+      }
     }
   }
 
   function areSelectedCardsExchangeable(): boolean {
-    return selectedCards.length === 3 && TerritoryCardManager.areCardsExchangeable(selectedCards as TradableCards);
+    return selectedCardIndexes.length === 3 && TerritoryCardManager.areCardsExchangeable(selectedCards as TradableCards);
   }
 
   function tradeCards(): void {
@@ -33,7 +36,7 @@ export default function TerritoryCardsDialog(props: Props): JSX.Element {
   }
 
   const cards = props.cards.map((card, i) => {
-    return <TerritoryCard key={i} card={card} index={i} isSelected={selectedCards.includes(card)} onClick={() => onCardSelect(card)} />
+    return <TerritoryCard key={i} card={card} index={i} isSelected={selectedCardIndexes.includes(i)} onClick={() => onCardSelect(i)} />
   })
 
   return (

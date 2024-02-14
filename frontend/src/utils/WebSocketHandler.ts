@@ -1,6 +1,5 @@
 import { getUserID } from './userIDManager';
 import { AreaName } from '../gameLogic/Enums/AreaNames';
-import { TerritoryCard } from '../gameLogic/Models/TerritoryCard';
 import { sendMessage } from './sendWebSocketMessage';
 
 export enum GameEventType {
@@ -145,7 +144,7 @@ export default class WebSocketHandler {
         sendMessage(messageBody, this.socket);
     }
 
-    sendTradeTerritoryCards(territoryCards: TerritoryCard[]): void {
+    sendTradeTerritoryCards(territoryCards: string[]): void {
         const messageBody = {
             type: GameEventType.TRADE_TERRITORY_CARDS,
             territoryCards,

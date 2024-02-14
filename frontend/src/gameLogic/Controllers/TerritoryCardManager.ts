@@ -1,10 +1,7 @@
-import { Symbol } from "../Enums/Symbols";
-import { TerritoryCard } from "../Models/TerritoryCard";
-
-export type TradableCards = [TerritoryCard, TerritoryCard, TerritoryCard];
+export type TradableCards = [string, string, string];
 
 export default class TerritoryCardManager {
-    public static isNewCardValidWithExistingCards(existingCards: TerritoryCard[], newCard: TerritoryCard): boolean {
+    public static isNewCardValidWithExistingCards(existingCards: string[], newCard: string): boolean {
         const cards = [...existingCards, newCard];
         
         if (cards.length > 3) {
@@ -26,26 +23,26 @@ export default class TerritoryCardManager {
     private static getBonusForCards(cards: TradableCards): number {
         const cardCounts = this.getCardCounts(cards);
 
-        if (cardCounts[Symbol.WILD_CARD] >= 2) {
+        if (cardCounts["WILD_CARD"] >= 2) {
             return 10;
         }
 
-        const archerCount = cardCounts[Symbol.ARCHER] + cardCounts[Symbol.WILD_CARD];
+        const archerCount = cardCounts["ARCHER"] + cardCounts["WILD_CARD"];
         if (archerCount === 3) {
             return 4;
         }
 
-        const cavalryCount = cardCounts[Symbol.CAVALRY] + cardCounts[Symbol.WILD_CARD];
+        const cavalryCount = cardCounts["CAVALRY"] + cardCounts["WILD_CARD"];
         if (cavalryCount === 3) {
             return 6;
         }
 
-        const eagleCount = cardCounts[Symbol.EAGLE] + cardCounts[Symbol.WILD_CARD];
+        const eagleCount = cardCounts["EAGLE"] + cardCounts["WILD_CARD"];
         if (eagleCount === 3) {
             return 8;
         }
 
-        const uniqueCount = (cardCounts[Symbol.ARCHER] + cardCounts[Symbol.CAVALRY] + cardCounts[Symbol.EAGLE] + cardCounts[Symbol.WILD_CARD]);
+        const uniqueCount = (cardCounts["ARCHER"] + cardCounts["CAVALRY"] + cardCounts["EAGLE"] + cardCounts["WILD_CARD"]);
         if (this.isUniqueCount(cardCounts) && uniqueCount === 3) {
             return 10;
         }
@@ -54,26 +51,25 @@ export default class TerritoryCardManager {
     }
 
     private static getCardCounts(cards: TradableCards): any {
-        const counts = {[Symbol.ARCHER]: 0, [Symbol.CAVALRY]: 0, [Symbol.EAGLE]: 0, [Symbol.WILD_CARD]: 0};
+        const counts: any = {"ARCHER": 0, "CAVALRY": 0, "EAGLE": 0, "WILD_CARD": 0};
 
-        for (let i = 0; i < cards.length; i++) {
-            const symbol = cards[i].getSymbolValue();
-            counts[symbol]++;
+        for (const card of cards) {
+            counts[card]++;
         }
 
         return counts;
     }
 
     private static isUniqueCount(cardCounts: any): boolean {
-        if (cardCounts[Symbol.ARCHER] > 1) {
+        if (cardCounts["ARCHER"] > 1) {
             return false;
         } 
         
-        if (cardCounts[Symbol.CAVALRY] > 1) {
+        if (cardCounts["CAVALRY"] > 1) {
             return false;
         } 
 
-        if (cardCounts[Symbol.EAGLE] > 1) {
+        if (cardCounts["EAGLE"] > 1) {
             return false;
         } 
 

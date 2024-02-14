@@ -56,7 +56,7 @@ export default function GameDisplay() {
     const [userColour, setUserColour] = useState<Colour>();
     const [turnsRemaining, setTurnsRemaining] = useState<number>(1);
     const [playersLeftToJoin, setPlayersLeftToJoin] = useState<number>(1);
-    const [territoryCards, setTerritoryCards] = useState<TerritoryCard[]>([]);
+    const [territoryCards, setTerritoryCards] = useState<string[]>([]);
     const [leaderboardData, setLeadboardData] = useState<LeaderboardEntry[]>([]);
 
     useEffect(() => {
@@ -227,7 +227,7 @@ export default function GameDisplay() {
                 break;
             }
             case GameEventType.TERRITORY_CARDS: {
-                updateTerritoryCards(messageData.cards);
+                setTerritoryCards(messageData.cards)
                 break;
             }
             default:
@@ -288,18 +288,6 @@ export default function GameDisplay() {
         } else {
             setAttackingArea(areaName);
         }
-    }
-
-    function updateTerritoryCards(cards: [{[symbol: string]: any}]) {
-        const newCards = [];
-
-        for (const card of cards) {
-            const { symbol } = card;
-            const territoryCardInstance = new TerritoryCard(symbol);
-            newCards.push(territoryCardInstance);
-        }
-
-        setTerritoryCards(newCards);
     }
 
     function clearSelectedAreas() {
@@ -377,7 +365,7 @@ export default function GameDisplay() {
         resetUnitMoveState();
     }
 
-    function sendTradeTerritoryCardsMessage(selectedCards: TerritoryCard[]): void {
+    function sendTradeTerritoryCardsMessage(selectedCards: string[]): void {
         webSocketHandler.current!.sendTradeTerritoryCards(selectedCards);
     }
 

@@ -1,38 +1,35 @@
 import React from "react";
-import { TerritoryCard as TerritoryCardModel } from "../gameLogic/Models/TerritoryCard";
-import { Symbol } from "../gameLogic/Enums/Symbols";
 import eagle from '../assets/eagle.svg';
 import nazgul from '../assets/nazgul.png';
 import archer from '../assets/archer.svg';
 import wildCard from '../assets/wild-card.png';
 
-export default function TerritoryCard(props: { card: TerritoryCardModel, index: number, isSelected: boolean, onClick: any }): JSX.Element {
+export default function TerritoryCard(props: { card: string, index: number, isSelected: boolean, onClick: any }): JSX.Element {
     let className = 'territory-cards--card';
   
     if (props.isSelected) {
       className += ' selected';
     }
   
-    function getImageSource(symbol: Symbol): string {
-      if (symbol === Symbol.ARCHER) {
+    function getImageSource(symbol: string): string {
+      if (symbol === "ARCHER") {
         return archer;
-      } else if (symbol === Symbol.CAVALRY) {
+      } else if (symbol === "CAVALRY") {
         return nazgul;
-      } else if (symbol === Symbol.EAGLE) {
+      } else if (symbol === "EAGLE") {
         return eagle;
       } else {
         return wildCard;
       }
     }
   
-    const symbol = props.card.getSymbolValue();
     return (
       <div className={className} key={props.index} onClick={props.onClick} data-testid={className}>
         <div className='territory-card--card_symbol'>
-          <img className={`symbol-${symbol}`} src={getImageSource(symbol)} alt={symbol}/>
+          <img className={`symbol-${props.card}`} src={getImageSource(props.card)} alt={props.card}/>
         </div>
         <p>
-          {symbol}
+          {props.card}
         </p>
       </div>
     );
