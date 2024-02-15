@@ -1,6 +1,6 @@
 from game_logic.models.Game import Game
 from game_logic.models.Player import Player
-from controllers.game_setup import generate_game
+from game_logic.controllers.game_setup import generate_game
 
 class ActiveGames:
     def __init__(self):

@@ -4,7 +4,7 @@ from game_logic.models.Player import Player
 from game_logic.models.Area import Area
 from game_logic.models.Stronghold import Stronghold
 from game_logic.models.Game import Game
-from controllers.combat_logic import CombatController
+from game_logic.controllers.combat_logic import CombatController
 
 
 def mock_attacker_winning(attacking_rolls: int, defending_rolls: int):
@@ -24,7 +24,7 @@ class TestCombatLogic(unittest.TestCase):
         self.game = Game([self.attacker, self.defender], self.areas)
                 
     # TODO: fix mocking function
-    @patch('controllers.combat_logic.CombatController.first_dice_combat', autospec=True)
+    @patch('game_logic.controllers.combat_logic.CombatController.first_dice_combat', autospec=True)
     def test_remove_units_from_defender_if_attacker_wins(self, mock_attacker_winning):
         self.attacker.units = 2
         self.defender.units = 2

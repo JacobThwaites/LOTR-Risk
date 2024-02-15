@@ -1,6 +1,6 @@
 import unittest
 from game_logic.models.Player import Player
-from controllers.territory_cards import exchange_territory_cards, are_cards_exchangable
+from game_logic.controllers.territory_cards import exchange_territory_cards, are_cards_exchangable
 
 class TestTerritoryCardController(unittest.TestCase):
     def setUp(self):

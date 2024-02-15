@@ -2,8 +2,8 @@ import unittest
 from game_logic.models.Game import Game
 from game_logic.models.Player import Player
 from game_logic.models.Area import Area
-from enums.areas import get_areas
-from controllers.game_setup import generate_players, assign_areas, generate_game
+from game_logic.enums.areas import get_areas
+from game_logic.controllers.game_setup import generate_players, assign_areas, generate_game
 
 
 class TestGameSetup(unittest.TestCase):

@@ -2,7 +2,7 @@ import unittest
 from game_logic.models.Game import Game
 from game_logic.models.Player import Player
 from game_logic.models.Area import Area
-from ActiveGames import ActiveGames
+from game_logic.ActiveGames import ActiveGames
 
 
 class TestActiveGames(unittest.TestCase):
