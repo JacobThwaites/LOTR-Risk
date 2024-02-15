@@ -83,8 +83,14 @@ class TestCombatLogic(unittest.TestCase):
         self.assertEqual(combat_controller.get_defender_bonus(), 2)
         
     def test_changes_area_owner_if_no_defending_units_remaining(self):
-        # TODO: implement test
-        self.assertTrue(False)
+        self.defending_area.units = 1
+        combat_controller = CombatController(
+            self.attacking_area, self.defending_area, self.game)
+        self.assertEqual(self.defending_area.player, self.defender)
+        
+        combat_controller.handle_results(["attacker"])
+        self.assertEqual(self.defending_area.units, 0)
+        self.assertEqual(self.defending_area.player, self.attacker)
 
 if __name__ == '__main__':
     unittest.main()
