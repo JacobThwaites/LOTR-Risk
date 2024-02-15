@@ -12,6 +12,11 @@ This project requires TypeScript, Python3 and Docker to run locally.
 ### Running Locally
 
 Frontend: 
+Create a `.env` file inside the frontend directory with the following property:
+```
+REACT_APP_SERVER_URL="localhost:8000"
+```
+
 Inside the frontend directory run:
 ```zsh
 npm install
