@@ -4,12 +4,9 @@ from ninja.errors import HttpError
 from django.http import JsonResponse
 from .ActiveGames import active_games
 from .serializers import serialize_game
-# from django.contrib.auth.tokens import default_token_generator
 
 api = NinjaAPI()
 
-# TODO: change this to match websocket
-# TODO: add tests for these routes
 
 @api.get('/game/{id}')
 def get_game(request, id: str):
