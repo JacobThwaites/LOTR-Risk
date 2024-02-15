@@ -1,30 +1,35 @@
-# Lord of the Rings Risk - Server
+# Lord of the Risk server
 
-API for the Lord of the Rings Risk project. Built using TypeScript and Express.
+Server for the online Lord of the Rings Risk. Written using Python and Django. 
 
-### Running Locally
+## Setup 
 
-1. Install the required packages using
+To start the venv: 
+```bash
+python3 -m venv venv
 ```
-npm install
+```bash
+source venv/bin/activate
 ```
-
-2. Compile the TypeScript files to JavaScript using the command: 
-``` 
-npm run tsc
-```
-This should output the compiled files to the 'dist' directory
-
-3. Run the server using: 
-```
-npm run start
+```bash
+pip3 install -r requirements.txt
 ```
 
-### Testing
 
-Tests for the API are written using Jest and Supertest.
-
-They can be run using the command: 
+To stop the venv run:
+```bash
+deactivate
 ```
-npm run test
+docker build -t api .
+docker run -d --name lotr-server api
+
+docker-compose build
+docker-compose up
+
+## Testing 
+Tests are written using the ```unittest``` library.
+They can be run locally using:
+
+```bash
+python3 run_tests.py
 ```
