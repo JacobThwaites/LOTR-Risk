@@ -5,7 +5,7 @@ from game_logic.leaderboard import get_leaderboard
 from api.ActiveGames import active_games
 
 
-def generate_leaderboard_update_message(game: Game):
+def leaderboard_update(game: Game):
     leaderboard_data = get_leaderboard(game)
     return {
         "type": "LEADERBOARD_UPDATE",
@@ -14,7 +14,7 @@ def generate_leaderboard_update_message(game: Game):
     }
     
 
-def generate_player_joined_message(game_id: str):
+def player_joined(game_id: str):
     game = active_games.get_game_by_id(game_id)
     
     if not game:
@@ -27,7 +27,7 @@ def generate_player_joined_message(game_id: str):
     }
     
 
-def generate_area_update_message(area: Area):
+def area_update(area: Area):
     return {
         "type": "UPDATE AREA",
         "areaName": area.name,
@@ -36,60 +36,60 @@ def generate_area_update_message(area: Area):
     }
     
 
-def generate_change_player_message(player_colour: str):
+def change_player(player_colour: str):
     return {
         "type": "CHANGE PLAYER",
         "playerColour": player_colour
     }
 
 
-def generate_reinforcements_available_message(reinforcements: int):
+def reinforcements_available(reinforcements: int):
     return {
         "type": "REINFORCEMENTS AVAILABLE",
         "reinforcementsAvailable": reinforcements
     }
 
 
-def generate_end_of_starting_reinforcements_message():
+def end_of_starting_reinforcements():
     return {
         "type": "STARTING REINFORCEMENTS END"
     }
 
 
-def generate_area_reinforcement_message(area: Area):
+def area_reinforcement(area: Area):
     return {
         "type": "REINFORCEMENT",
         "areaName": area.name
     }
 
 
-def generate_territory_card_message(player: Player):
+def territory_card(player: Player):
     return {
         "type": "TERRITORY CARDS",
         "cards": player.territory_cards
     }
 
 
-def generate_end_turn_message(new_current_player_colour: str):
+def end_turn(new_current_player_colour: str):
     return {
         "type": "END TURN",
         "newCurrentPlayerColour": new_current_player_colour
     }
 
 
-def generate_game_over_message():
+def game_over():
     return {
         "type": "GAME OVER"
     }
     
 
-def generate_clear_selected_areas_message():
+def clear_selected_areas():
     return {
         "type": "CLEAR SELECTED AREAS"
     }
     
 
-def generate_combat_results_message(attacking_area: Area, defending_area: Area):
+def combat_results(attacking_area: Area, defending_area: Area):
     return {
         "type": "COMBAT RESULTS",
         "attackingAreaName": attacking_area.name,
@@ -101,7 +101,7 @@ def generate_combat_results_message(attacking_area: Area, defending_area: Area):
     }
 
 
-def generate_unit_move_setup_message(attacking_area: Area, defending_area: Area):
+def unit_move_setup(attacking_area: Area, defending_area: Area):
     return {
         "type": "UNIT MOVE SETUP",
         "attackingArea": attacking_area.name,
@@ -109,26 +109,26 @@ def generate_unit_move_setup_message(attacking_area: Area, defending_area: Area)
     }
 
 
-def generate_unit_move_complete_message():
+def unit_move_complete():
     return {
         "type": "UNIT MOVE COMPLETE",
     }
 
 
-def generate_troop_transfer_complete_message():
+def troop_transfer_complete():
     return {
         "type": "TROOP TRANSFER COMPLETE",
     }
 
 
-def generate_territory_cards_message(player: Player):
+def territory_cards(player: Player):
     return {
         "type": "TERRITORY CARDS",
         "cards": player.territory_cards
     }
 
 
-def generate_leaderboard_update_message(game: Game):
+def leaderboard_update(game: Game):
     leaderboard_data = get_leaderboard(game)
     return {
         "type": "LEADERBOARD UPDATE",
@@ -136,19 +136,19 @@ def generate_leaderboard_update_message(game: Game):
     }
 
 
-def generate_player_disconnect_message(user_colour: str, num_players_left_to_join: int):
+def player_disconnect(user_colour: str, num_players_left_to_join: int):
     return {
         "type": "PLAYER DISCONNECT",
         "userColour": user_colour,
         "playersLeftToJoin": num_players_left_to_join
     }
 
-def generate_troop_transfer_setup_message():
+def troop_transfer_setup():
     return {
         "type": "TROOP TRANSFER SETUP"
     }
 
-def generate_troop_transfer_complete_message():
+def troop_transfer_complete():
     return {
         "type": "TROOP TRANSFER COMPLETE"
     }
