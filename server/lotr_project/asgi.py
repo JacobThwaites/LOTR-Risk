@@ -13,13 +13,11 @@ from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
-from websocket_routing.routing import websocket_urlpatterns
+from websocket_server.routing import websocket_urlpatterns
 
 django_asgi_app = get_asgi_application()
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-
-import websocket_server.routing
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.lotr_project.settings")
 
 application = ProtocolTypeRouter(
     {

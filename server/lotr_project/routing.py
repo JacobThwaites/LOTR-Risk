@@ -1,11 +1,15 @@
 from channels.routing import ProtocolTypeRouter, URLRouter
-from django.urls import path
-from websocket_server import consumers
 from django.core.asgi import get_asgi_application
+
+
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+from channels.security.websocket import AllowedHostsOriginValidator
+from websocket_server.routing import websocket_urlpatterns
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
-    "websocket": URLRouter([
-        path("game_event/<game_id>/", consumers.GameEventConsumer.as_asgi()),
-    ]),
+    "websocket": AllowedHostsOriginValidator(
+        AuthMiddlewareStack(URLRouter(websocket_urlpatterns))
+    ),
 })

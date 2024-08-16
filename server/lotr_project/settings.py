@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -156,4 +157,15 @@ CHANNEL_LAYERS = {
             "hosts": [("redis", 6379)],
         },
     },
+}
+
+CELERYBEAT_SCHEDULE = {
+    'prune-presence': {
+        'task': 'channels_presence.tasks.prune_presences',
+        'schedule': timedelta(seconds=60)
+    },
+    'prune-rooms': {
+        'task': 'channels_presence.tasks.prune_rooms',
+        'schedule': timedelta(seconds=600)
+    }
 }
