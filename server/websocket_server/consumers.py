@@ -9,10 +9,6 @@ import uuid
 class GameEventConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.user_uuid = self.scope.get('query_string').decode('utf-8')
-        print('user_uuid')
-        print(self.user_uuid)
-
-        self.user_id = str(uuid.uuid4())
         self.game_id = self.scope["url_route"]["kwargs"]["game_id"]
         self.room_group_name = f"game_event_{self.game_id}"
 
@@ -31,7 +27,6 @@ class GameEventConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         print('asdf')
         print(self.user_id)
-        # TODO: use user_id here instead of one generated in frontend
         game = active_games.get_game_by_id(self.game_id)
         player = active_games.get_player_by_user_id(self.game_id, self.user_id)
         # TODO: use user_id to track heartbeat and disconnection etc.
@@ -56,11 +51,6 @@ class GameEventConsumer(AsyncWebsocketConsumer):
         print('message')
         print(message)
         await self.process_message(message)
-
-    # Receive message from room group
-    async def game_event_message(self, message):
-        print('game_event_message')
-        print(message)
     
     async def forward_group_message(self, event):
         await self.send(json.dumps(event['message'], default=str))
@@ -71,6 +61,7 @@ class GameEventConsumer(AsyncWebsocketConsumer):
         
         outbound_messages = []
         if message["type"] == "PLAYER JOINED":
+            self.user_id = message['userID']
             if message["userID"] in [p.user_id for p in game.players]:
                 # TODO: handle player reconnect
                 print("handle player reconnect")
