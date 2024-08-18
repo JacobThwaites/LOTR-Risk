@@ -4,7 +4,6 @@ from api.ActiveGames import active_games
 import websocket_server.game_event_messages as game_event_messages
 from game_logic.controllers.territory_cards import are_cards_exchangable, exchange_territory_cards
 from game_logic.controllers.combat_logic import CombatController
-import uuid
 
 class GameEventConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -25,15 +24,12 @@ class GameEventConsumer(AsyncWebsocketConsumer):
         )
 
     async def disconnect(self, close_code):
-        print('asdf')
-        print(self.user_id)
         game = active_games.get_game_by_id(self.game_id)
         player = active_games.get_player_by_user_id(self.game_id, self.user_id)
-        # TODO: use user_id to track heartbeat and disconnection etc.
-        # TODO: update num players left after player joins
-        # Leave room group
+        
         message = game_event_messages.player_disconnect(
             player.colour, game.num_players_left_to_join())
+        
         await self.channel_layer.group_send(
             self.room_group_name,
             {
@@ -44,12 +40,8 @@ class GameEventConsumer(AsyncWebsocketConsumer):
         
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
         
-
-    # Receive message from WebSocket
     async def receive(self, text_data):
         message = json.loads(text_data)
-        print('message')
-        print(message)
         await self.process_message(message)
     
     async def forward_group_message(self, event):

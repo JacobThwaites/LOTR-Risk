@@ -130,7 +130,7 @@ CHANNEL_LAYERS = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Your frontend's URL
+    "http://localhost:3000",
 ]
 
 CORS_ALLOW_METHODS = [
