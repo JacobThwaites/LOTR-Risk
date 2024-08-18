@@ -7,7 +7,8 @@ def serialize_game(game: Game):
         "uuid": game.uuid,
         "players": [serialize_player(p) for p in game.players],
         "currentTurn": 0,
-        "maxTurns": 30
+        "maxTurns": 30,
+        "gameType": game.type
     }
     
 def serialize_player(player: Player):

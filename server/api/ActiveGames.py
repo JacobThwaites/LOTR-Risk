@@ -6,8 +6,8 @@ class ActiveGames:
     def __init__(self):
         self.games_in_progress = {}
 
-    def create_game(self, num_players: int, user_id: str) -> Game:
-        game = generate_game(num_players, user_id)
+    def create_game(self, num_players: int, user_id: str, game_type: str) -> Game:
+        game = generate_game(num_players, user_id, game_type)
         self.games_in_progress[game.uuid] = game
         return game
     

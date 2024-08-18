@@ -9,7 +9,7 @@ import GameOverModal from "./GameOverModal";
 import TurnInformation from "./TurnInformation";
 import { Combat } from '../gameLogic/Enums/Combat';
 import { CombatValidator } from "../gameLogic/Controllers/CombatValidator";
-import { useParams, useLocation } from "react-router";
+import { useParams } from "react-router";
 import { addUserIDToGame } from "../gameLogic/Controllers/requests";
 import WebSocketHandler, { GameEventType } from "../utils/WebSocketHandler";
 import WaitingForPlayers from "./WaitingForPlayers";
@@ -24,7 +24,6 @@ import PlayerDisconnectModal from "./PlayerDisconnectModal";
 import { Colour } from "../gameLogic/Enums/Colours";
 import areaDetails from "./svgPaths/AreaDetails";
 import { AreaName } from "../gameLogic/Enums/AreaNames";
-import { TerritoryCard } from "../gameLogic/Models/TerritoryCard";
 import { LeaderboardEntry } from "../gameLogic/Enums/LeaderboardEntry";
 import makeWebSocket from "../utils/makeWebSocket";
 
@@ -48,8 +47,7 @@ export default function GameDisplay() {
     const ws = useRef<WebSocket | null>();
     const webSocketHandler = useRef<WebSocketHandler | null>();
     const isWebSocketConnected = useRef<boolean>(); 
-    const location: { state: { gameType?: string } } = useLocation();
-    const gameType = location.state ? location.state.gameType : "online";
+    const [gameType, setGameType] = useState<'online' | 'local' | null>(null);
     const [reinforcementsAvailable, setReinforcementsAvailable] = useState<number>(0);
     const [playerColours, setPlayerColours] = useState<Colour[]>([]);
     const [currentPlayerColour, setCurrentPlayerColour] = useState<Colour>(Colour.BLACK);
@@ -73,10 +71,11 @@ export default function GameDisplay() {
 
             setCurrentPlayerColour(startingPlayer.colour);  
             setReinforcementsAvailable(startingPlayer.reinforcements);          
-            setTurnsRemaining(json.maxTurns)
+            setTurnsRemaining(json.maxTurns);
             setupStartingAreaColours(players);
             setShouldDisplayReinforcementsModal(true);
             setIsGameLoaded(true);
+            setGameType(json.gameType);
             
             for (let i = 0; i < players.length; i++) {
                 if (players[i].userID === getUserID()) {

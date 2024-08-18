@@ -5,10 +5,11 @@ from typing import List, Dict
 from game_logic.controllers.territory_cards import give_player_territory_card
 
 class Game:
-    def __init__(self, players: List[Player], areas: Dict[str, Area]):
+    def __init__(self, players: List[Player], areas: Dict[str, Area], type: str):
         self.uuid = str(uuid.uuid4())[:8]
         self.players = players
         self.areas = areas
+        self.type = type
         self.current_turn = 0
         self.current_players_turn = 0
         self.has_player_captured_area_this_turn = False

@@ -5,11 +5,11 @@ from game_logic.models.Game import Game
 from game_logic.enums.areas import get_areas
 import random
 
-def generate_game(num_players: int, game_creator_user_id: str) -> Game:
+def generate_game(num_players: int, game_creator_user_id: str, game_type: str) -> Game:
     players = generate_players(num_players, game_creator_user_id)
     areas = get_areas()
     assign_areas(players, areas)
-    game = Game(players, areas)
+    game = Game(players, areas, game_type)
     game.assign_starting_units()
     return game
 

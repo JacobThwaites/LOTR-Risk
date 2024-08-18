@@ -8,7 +8,7 @@ export default function Risk() {
     const [shouldDisplayChooseGameType, setShouldDisplayChooseGameType] = useState(true);
     const [shouldDisplayNumberOfPlayersSelector, setShouldDisplayNumberOfPlayersSelector] = useState(false);
     const [shouldDisplayGameSetup, setShouldDisplayGameSetup] = useState(true);
-    const [gameType, setGameType] = useState('online');
+    const [gameType, setGameType] = useState<'online' | 'local'>('online');
 
     function onNumberSelect(number: number, b: any, a: { name: string }) {
         setNumberOfPlayers(number);
@@ -18,7 +18,7 @@ export default function Risk() {
         setShouldDisplayGameSetup(false);
     }
 
-    function onSubmitGameType(gameType: string) {
+    function onSubmitGameType(gameType: 'online' | 'local') {
         setGameType(gameType);
         setShouldDisplayChooseGameType(false);
         setShouldDisplayNumberOfPlayersSelector(true);
@@ -42,12 +42,12 @@ export default function Risk() {
     return <GameRedirect numberOfPlayers={numberOfPlayers} gameType={gameType}/>
 }
 
-function GameRedirect(props: { numberOfPlayers: number, gameType: string }) {
+function GameRedirect(props: { numberOfPlayers: number, gameType: 'online' | 'local' }) {
     const [gameID, setGameID] = useState('');
 
     const getData = async () => {
         try {
-            const res = await saveGame(props.numberOfPlayers);
+            const res = await saveGame(props.numberOfPlayers, props.gameType);
             if (!res) {
                 throw new Error('Failed to create game');
             }
@@ -71,8 +71,7 @@ function GameRedirect(props: { numberOfPlayers: number, gameType: string }) {
     return (
         <Redirect
             to={{
-                pathname: gameID,
-                state: { numberOfPlayers: props.numberOfPlayers, gameID: gameID, gameType: props.gameType },
+                pathname: gameID
             }}
         />
     );
