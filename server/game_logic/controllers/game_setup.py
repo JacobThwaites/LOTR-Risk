@@ -5,21 +5,20 @@ from game_logic.models.Game import Game
 from game_logic.enums.areas import get_areas
 import random
 
-def generate_game(num_players: int, game_creator_user_id: str, game_type: str) -> Game:
-    players = generate_players(num_players, game_creator_user_id)
+def generate_game(num_players: int, game_type: str) -> Game:
+    players = generate_players(num_players)
     areas = get_areas()
     assign_areas(players, areas)
     game = Game(players, areas, game_type)
     game.assign_starting_units()
     return game
 
-def generate_players(num_players: int, game_creator_user_id: str) -> List[Player]:
+def generate_players(num_players: int) -> List[Player]:
     players = []
     
     for i in range(num_players):
-        user_id = game_creator_user_id if i == 0 else ""
         colour = generate_colour(i)
-        players.append(Player(colour, user_id))
+        players.append(Player(colour))
     
     return players
 

@@ -21,12 +21,11 @@ def get_game(request, id: str):
 
 class GameIn(Schema):
     numPlayers: int
-    userID: str
     gameType: str
 
 @api.post('/game')
 def create_game(request, payload: GameIn):
-    game = active_games.create_game(payload.numPlayers, payload.userID, payload.gameType)
+    game = active_games.create_game(payload.numPlayers, payload.gameType)
     serialized_game = serialize_game(game)
     return JsonResponse(serialized_game)
 

@@ -11,7 +11,6 @@ class GameEventConsumer(AsyncWebsocketConsumer):
         self.game_id = self.scope["url_route"]["kwargs"]["game_id"]
         self.room_group_name = f"game_event_{self.game_id}"
 
-        # Join room group
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
         
@@ -23,7 +22,7 @@ class GameEventConsumer(AsyncWebsocketConsumer):
             }
         )
 
-    async def disconnect(self, close_code):
+    async def disconnect(self, _):
         game = active_games.get_game_by_id(self.game_id)
         player = active_games.get_player_by_user_id(self.game_id, self.user_id)
         

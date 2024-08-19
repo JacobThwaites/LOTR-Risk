@@ -32,15 +32,13 @@ class TestGameSetup(unittest.TestCase):
             for area in player.areas:
                 self.assertEqual(area.player, player)
     
-    def test_creates_game_with_specified_num_players_and_user_id(self):
+    def test_creates_game_with_specified_num_players(self):
         num_players = 3
-        user_id = "user_id"
-        game = generate_game(num_players, user_id)
+        game = generate_game(num_players)
         self.assertEqual(len(game.players), num_players)
-        self.assertEqual(game.players[0].user_id, user_id)
     
     def test_generate_game_assigns_areas_and_starting_units(self):
-        game = generate_game(4, "")   
+        game = generate_game(4)   
         
         for player in game.players:
             self.assertEqual(len(player.areas), 16)

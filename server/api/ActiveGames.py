@@ -6,8 +6,8 @@ class ActiveGames:
     def __init__(self):
         self.games_in_progress = {}
 
-    def create_game(self, num_players: int, user_id: str, game_type: str) -> Game:
-        game = generate_game(num_players, user_id, game_type)
+    def create_game(self, num_players: int, game_type: str) -> Game:
+        game = generate_game(num_players, game_type)
         self.games_in_progress[game.uuid] = game
         return game
     
@@ -45,6 +45,7 @@ class ActiveGames:
         for player in game.players:
             if not player.user_id:
                 player.user_id = user_id
+                game.players_connected.append(player.colour)
                 return game
 
     def remove_user_id_from_game(self, game_id: str, user_id: str):
@@ -52,5 +53,6 @@ class ActiveGames:
         for player in game.players:
             if player.user_id == user_id:
                 player.user_id = ""
+                game.players_connected.remove(player.colour)
             
 active_games = ActiveGames()

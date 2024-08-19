@@ -4,8 +4,8 @@ from game_logic.utils import get_region_for_area
 import math
 
 class Player():
-    def __init__(self, colour: str, user_id: str):
-        self.user_id = user_id
+    def __init__(self, colour: str):
+        self.user_id = ""
         self.units = 0
         self.colour = colour
         self.reinforcements = 0
