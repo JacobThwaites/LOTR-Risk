@@ -13,6 +13,7 @@ class Game:
         self.current_turn = 0
         self.current_players_turn = 0
         self.has_player_captured_area_this_turn = False
+        self.players_connected = []
         
     def handle_new_turn(self):
         if self.has_player_captured_area_this_turn:
@@ -79,9 +80,4 @@ class Game:
                 return
             
     def num_players_left_to_join(self):
-        total = 0
-        
-        for player in self.players:
-            total += 1 if not player.user_id else 0
-            
-        return total
+        return len(self.players) - len(self.players_connected)

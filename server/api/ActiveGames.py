@@ -45,7 +45,6 @@ class ActiveGames:
         for player in game.players:
             if not player.user_id:
                 player.user_id = user_id
-                game.players_connected.append(player.colour)
                 return game
 
     def remove_user_id_from_game(self, game_id: str, user_id: str):
@@ -53,6 +52,19 @@ class ActiveGames:
         for player in game.players:
             if player.user_id == user_id:
                 player.user_id = ""
-                game.players_connected.remove(player.colour)
+    
+    def add_user_to_players_connected(self, game_id: str, user_id: str):
+        game = self.get_game_by_id(game_id)
+        colour = [player.colour for player in game.players if player.user_id == user_id][0]
+        game.players_connected.append(colour)
+        return game.players_connected
+        
+    def remove_user_from_players_connected(self, game_id: str, user_id: str):
+        game = self.get_game_by_id(game_id)
+        colour = [player.colour for player in game.players if player.user_id == user_id][0]
+        game.players_connected.remove(colour)
+        
+        if len(game.players_connected) == 0:
+            del self.games_in_progress[game_id]
             
 active_games = ActiveGames()

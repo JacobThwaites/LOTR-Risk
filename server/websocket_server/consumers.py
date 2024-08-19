@@ -7,7 +7,6 @@ from game_logic.controllers.combat_logic import CombatController
 
 class GameEventConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.user_uuid = self.scope.get('query_string').decode('utf-8')
         self.game_id = self.scope["url_route"]["kwargs"]["game_id"]
         self.room_group_name = f"game_event_{self.game_id}"
 
@@ -25,6 +24,7 @@ class GameEventConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, _):
         game = active_games.get_game_by_id(self.game_id)
         player = active_games.get_player_by_user_id(self.game_id, self.user_id)
+        active_games.remove_user_from_players_connected(self.game_id, self.user_id)
         
         message = game_event_messages.player_disconnect(
             player.colour, game.num_players_left_to_join())
@@ -53,11 +53,8 @@ class GameEventConsumer(AsyncWebsocketConsumer):
         outbound_messages = []
         if message["type"] == "PLAYER JOINED":
             self.user_id = message['userID']
-            if message["userID"] in [p.user_id for p in game.players]:
-                # TODO: handle player reconnect
-                print("handle player reconnect")
-            else:
-                active_games.add_user_id_to_game(self.game_id, message["userID"])
+            
+            active_games.add_user_to_players_connected(self.game_id, self.user_id)
 
             outbound_messages = [
                 game_event_messages.leaderboard_update(active_games.get_game_by_id(self.game_id)),
