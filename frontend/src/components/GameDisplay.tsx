@@ -330,12 +330,6 @@ export default function GameDisplay() {
     }
 
     function updateAreaDetails(areaName: AreaName, areaColour: Colour, areaUnits: number): void {
-        console.log("updating area");
-        console.log(areaName);
-        console.log(areaUnits);
-        
-        
-        
         const area = areaDetails[areaName as AreaName];
         area.units = areaUnits;
         area.colour = areaColour;
@@ -443,7 +437,7 @@ export default function GameDisplay() {
                 onAreaSelect={onAreaSelect}
                 isUsersTurn={isUsersTurn()}
                 isCombatPhase={!shouldDisplayTroopTransferButton}
-                userColour={userColour!}
+                userColour={gameType === 'online' ? userColour! : currentPlayerColour}
             />
             <TurnInformation
                 turnsRemaining={turnsRemaining}

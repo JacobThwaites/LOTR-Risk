@@ -48,14 +48,14 @@ export default function NewGame() {
                 <div className="new-game--selector">
                     <label className="new-game--label">Game Type: </label>
                     {gameTypeOptions.map(o => {
-                        return <div className={generateClassName(o, gameType)} onClick={() => setGameType(o as GameType)}>{o}</div>
+                        return <div key={o} className={generateClassName(o, gameType)} onClick={() => setGameType(o as GameType)}>{o}</div>
                     })}
                 </div>
                 <div className="new-game--selector">
                     <label className="new-game--label">Number of Players: </label>
                     <div className="new-game--selector_options">
                         {numberOfPlayerOptions.map(n => {
-                            return <div className={generateClassName(n, numberOfPlayers)} onClick={() => setNumberOfPlayers(n)}>{n}</div>
+                            return <div key={n} className={generateClassName(n, numberOfPlayers)} onClick={() => setNumberOfPlayers(n)}>{n}</div>
                         })}
                     </div>
                 </div>

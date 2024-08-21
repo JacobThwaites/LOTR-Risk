@@ -14,6 +14,7 @@ const MapAreas: Function = (props: Props): JSX.Element[] => {
   const areas = Object.entries(areaDetails).map(
     ([areaName, areaInfo]) => (
       <MapArea 
+        key={areaName}
         className={props.generateAreaClassName(areaName as AreaName)}
         areaName={areaName}
         onClick={() => props.onClick(areaName as AreaName)}
