@@ -4,7 +4,6 @@ export async function saveGame(numPlayers: number, gameType: 'online' | 'local')
     try {
         const body = {
             numPlayers: numPlayers,
-            userID: getUserID(),
             gameType
         }
         return fetch(`http://${process.env.REACT_APP_SERVER_URL}/api/game`, {
