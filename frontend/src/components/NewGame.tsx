@@ -3,9 +3,11 @@ import CustomButton from "./common/CustomButton";
 import { saveGame } from "../gameLogic/Controllers/requests";
 import { useHistory } from "react-router-dom";
 
+type GameType = 'online' | 'local';
+
 export default function NewGame() {
     const [numberOfPlayers, setNumberOfPlayers] = useState(2);
-    const [gameType, setGameType] = useState<'online' | 'local'>('online');
+    const [gameType, setGameType] = useState<GameType>('online');
 
     const navigate = useHistory();
 
@@ -46,7 +48,7 @@ export default function NewGame() {
                 <div className="new-game--selector">
                     <label className="new-game--label">Game Type: </label>
                     {gameTypeOptions.map(o => {
-                        return <div className={generateClassName(o, gameType)} onClick={() => setGameType(o as 'online' | 'local')}>{o}</div>
+                        return <div className={generateClassName(o, gameType)} onClick={() => setGameType(o as GameType)}>{o}</div>
                     })}
                 </div>
                 <div className="new-game--selector">
