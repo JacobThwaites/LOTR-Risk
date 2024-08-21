@@ -7,10 +7,12 @@ export default function Home() {
 
     return (
         <div id="about-page">
-            <h1>Lord of the Risk</h1>
-            <p>Welcome to Lord of the Risk! An online version of The Lord of the Rings Risk.</p>
-            <CustomButton label="New Game" onClick={() => navigate.push('/new-game')}/>
+            <h1 id="about-page--header">Lord of the Risk</h1>
+            <div id="about-page--body">
+                <p id="about-page--description">Welcome to Lord of the Risk! An online version of The Lord of the Rings Risk.</p>
+                <p id="about-page--description">You can create a new game by clicking the link below!</p>
+                <CustomButton label="New Game" onClick={() => navigate.push('/new-game')}/>
+            </div>
         </div>
-
     )
 }

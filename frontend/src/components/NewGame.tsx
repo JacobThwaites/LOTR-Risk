@@ -62,7 +62,7 @@ export default function NewGame() {
 
                 <CustomButton 
                     id='new-game--submit-button'
-                    label='Submit'
+                    label='Create'
                     onClick={() => createGame()}
                 />
             </div>

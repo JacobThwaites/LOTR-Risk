@@ -1,0 +1,20 @@
+#about-page {
+    &--header {
+        text-align: center;
+        font-size: 5rem;
+        padding-bottom: 5rem;
+    }
+
+    &--body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &--description {
+        font-size: 2rem;
+    }
+
+    & button {
+        align-self: center;
+    }
+}
