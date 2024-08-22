@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
+import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import Home from "./Home";
 import GameDisplay from "./components/GameDisplay";
 import NotFound from './components/NotFound';
@@ -10,12 +10,12 @@ import './sass/main.scss';
 
 const routing = (
   <Router>
-    <Switch>
-      <Route exact path="/" component={Home} />
-      <Route exact path="/new-game" component={NewGame} />
-      <Route path="/:gameID" component={GameDisplay} />
-      <Route component={NotFound} />
-    </Switch>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/new-game" element={<NewGame />} />
+      <Route path="/:gameID" element={<GameDisplay />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   </Router>
 );
 

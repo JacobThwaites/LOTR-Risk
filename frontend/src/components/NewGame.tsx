@@ -1,7 +1,7 @@
 import React, { useState} from "react";
 import CustomButton from "./common/CustomButton";
 import { saveGame } from "../gameLogic/Controllers/requests";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 type GameType = 'online' | 'local';
 
@@ -9,7 +9,7 @@ export default function NewGame() {
     const [numberOfPlayers, setNumberOfPlayers] = useState(2);
     const [gameType, setGameType] = useState<GameType>('online');
 
-    const navigate = useHistory();
+    const navigate = useNavigate();
 
     const gameTypeOptions = ['online', 'local'];
     const numberOfPlayerOptions = [2,3,4];
@@ -34,7 +34,7 @@ export default function NewGame() {
             const json = await res.json();
             const { uuid } = json;
 
-            navigate.push(`/${uuid}`);
+            navigate(`/${uuid}`);
         } catch (err) {
             console.error(err);
         }

@@ -1,18 +1,13 @@
 import React from 'react';
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Dialog } from '@mui/material';
 import { LeaderboardEntry } from '../gameLogic/Enums/LeaderboardEntry';
 import Leaderboard from './Leaderboard';
 
 export default function GameOverModal(props: { leaderboardData: LeaderboardEntry[] }) {
-    const history = useHistory();
-  
-    const redirectToHome = () =>{ 
-        let path = `/`; 
-        history.push(path);
-    }
-
+    const navigate = useNavigate();
     const winner = props.leaderboardData[0];
+    
     return (
         <Dialog open={true} fullWidth maxWidth='sm' className='game-over'>
             <h1 className='game-over--title'>GAME OVER!!</h1>
@@ -20,7 +15,7 @@ export default function GameOverModal(props: { leaderboardData: LeaderboardEntry
             <div className='game-over--leaderboard'>
                 <Leaderboard leaderboardData={props.leaderboardData}/>
             </div>
-            <button className='game-over--button' onClick={redirectToHome}>Home</button>
+            <button className='game-over--button' onClick={() => navigate('/')}>Home</button>
         </Dialog>
 
     )
