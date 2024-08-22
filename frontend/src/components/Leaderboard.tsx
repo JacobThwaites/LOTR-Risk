@@ -35,7 +35,7 @@ function LeaderboardHeaders(): JSX.Element {
 function LeaderboardRows(props: { entry: LeaderboardEntryData }): JSX.Element {
     return (
         <div className="leaderboard--row" data-testid={`leaderboard--row--${props.entry.colour}`}>
-            <p>{props.entry.colour} Player</p>
+            <p className={`user-colour--${props.entry.colour}`}>{props.entry.colour}</p>
             <p>{props.entry.areasControlled}</p>
             <p>{props.entry.totalUnits}</p>
         </div>

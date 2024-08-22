@@ -24,3 +24,19 @@ label {
     font-family: "party-business";
     src: url(../../assets/PartyBusiness.ttf) format('truetype');
 }
+
+.user-colour--BLACK {
+    color: $color-black;
+}
+
+.user-colour--RED {
+    color: $color-red;
+}
+
+.user-colour--GREEN {
+    color: $color-mirkwood-green;
+}
+
+.user-colour--YELLOW {
+    color: $color-haradwaith-yellow;;
+}

@@ -16,7 +16,7 @@ export default function TurnInformation(props: Props) {
       <TurnsRemaining turns={props.turnsRemaining} />
       {props.isOnlineGame && 
         <div>
-          You are the <b className={`turn-information--colour-${props.userColour}`}>{props.userColour}</b> player
+          You are the <b className={`user-colour--${props.userColour}`}>{props.userColour}</b> player
         </div>
       }
       <CurrentPlayer playerName={props.playerName} />
