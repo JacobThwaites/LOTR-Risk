@@ -18,7 +18,7 @@
     "react-numeric-input": "^2.2.3",
     "react-router-dom": "^6.26.1",
     "typescript": "^5.5.4",
-    "uuid": "^9.0.0",
+    "uuid": "^10.0.0",
     "ws": "^8.12.0"
   },
   "scripts": {
@@ -64,9 +64,9 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-test-renderer": "^18.0.0",
     "@types/uuid": "^9.0.0",
-    "eslint-config-prettier": "^6.11.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-config-react": "^1.1.7",
-    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-prettier": "^5.1.2",
     "react-is": "^17.0.1",
     "sass": "^1.57.1",
     "@svgr/core": "^8.1.0",
