@@ -1,4 +1,9 @@
 import React from "react";
+import bridgeImage from "../../assets/testbridge.png";
+import diagonalBridge2 from "../../assets/diagonal-bridge-2.png";
+import horizontalBridge from "../../assets/horizontal-bridge.png";
+import horizontalBridge2 from "../../assets/horizontal-bridge-2.png";
+import verticalBridge from "../../assets/vertical-bridge.png";
 
 export default function Bridges() {
   return (
@@ -16,7 +21,7 @@ export default function Bridges() {
           <image
             width="1024"
             height="576"
-            href={require("../../assets/testbridge.png")}
+            href={bridgeImage}
           />
         </pattern>
         <pattern
@@ -31,7 +36,7 @@ export default function Bridges() {
           <image
             width="1024"
             height="576"
-            href={require("../../assets/diagonal-bridge-2.png")}
+            href={diagonalBridge2}
           />
         </pattern>
         <pattern
@@ -46,7 +51,7 @@ export default function Bridges() {
           <image
             width="1024"
             height="576"
-            href={require("../../assets/horizontal-bridge.png")}
+            href={horizontalBridge}
           />
         </pattern>
         <pattern
@@ -61,7 +66,7 @@ export default function Bridges() {
           <image
             width="1024"
             height="576"
-            href={require("../../assets/horizontal-bridge-2.png")}
+            href={horizontalBridge2}
           />
         </pattern>
         <pattern
@@ -76,7 +81,7 @@ export default function Bridges() {
           <image
             width="1024"
             height="576"
-            href={require("../../assets/vertical-bridge.png")}
+            href={verticalBridge}
           />
         </pattern>
       </defs>

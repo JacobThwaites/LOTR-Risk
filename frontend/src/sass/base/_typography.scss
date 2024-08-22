@@ -17,12 +17,12 @@ label {
 
 @font-face {
     font-family: "ringbearer";
-    src: url(../../assets/Ringbearer.ttf) format('truetype');
+    src: url('@/assets/Ringbearer.ttf') format('truetype');
 }
 
 @font-face {
     font-family: "party-business";
-    src: url(../../assets/PartyBusiness.ttf) format('truetype');
+    src: url("@/assets/PartyBusiness.ttf") format('truetype');
 }
 
 .user-colour--BLACK {

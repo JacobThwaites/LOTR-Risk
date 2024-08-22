@@ -1,4 +1,6 @@
 import React from "react";
+import mountains from "../assets/mountains.png";
+import mountains2 from "../assets/mountains2.png";
 
 function MountainImages() {
   return (
@@ -15,7 +17,7 @@ function MountainImages() {
         <image
           width="1024"
           height="576"
-          href={require("../assets/mountains2.png")}
+          href={mountains2}
           alt="some mountains"
         />
       </pattern>
@@ -32,7 +34,7 @@ function MountainImages() {
         <image
           width="1024"
           height="576"
-          href={require("../assets/mountains.png")}
+          href={mountains}
           alt="some mountains"
         />
       </pattern>
@@ -49,7 +51,7 @@ function MountainImages() {
         <image
           width="1024"
           height="576"
-          href={require("../assets/mountains2.png")}
+          href={mountains2}
           alt="some mountains"
         />
       </pattern>
