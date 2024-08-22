@@ -9,4 +9,20 @@
     @media only screen and (max-width: 450px) { 
         padding-top: 1rem;
     };
+
+    &--colour-BLACK {
+        color: $color-black;
+    }
+
+    &--colour-RED {
+        color: $color-red;
+    }
+
+    &--colour-GREEN {
+        color: $color-mirkwood-green;
+    }
+
+    &--color-YELLOW {
+        color: $color-haradwaith-yellow;
+    }
 }

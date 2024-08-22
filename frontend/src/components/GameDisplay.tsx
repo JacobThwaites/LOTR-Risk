@@ -442,6 +442,8 @@ export default function GameDisplay() {
             <TurnInformation
                 turnsRemaining={turnsRemaining}
                 playerName={`${currentPlayerColour} Player`}
+                userColour={userColour}
+                isOnlineGame={gameType === 'online'}
             />
             <RegionBonusInfo />
             {attackingArea && defendingArea && (
