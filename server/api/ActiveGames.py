@@ -18,6 +18,9 @@ class ActiveGames:
         return self.games_in_progress[id]
     
     def get_player_by_user_id(self, game_id: str, user_id: str) -> Player:
+        if game_id not in self.games_in_progress:
+            return False
+        
         game = self.games_in_progress[game_id]
         
         for player in game.players:
@@ -56,7 +59,10 @@ class ActiveGames:
     def add_user_to_players_connected(self, game_id: str, user_id: str):
         game = self.get_game_by_id(game_id)
         colour = [player.colour for player in game.players if player.user_id == user_id][0]
-        game.players_connected.append(colour)
+        
+        if colour not in game.players_connected:
+            game.players_connected.append(colour) 
+
         return game.players_connected
         
     def remove_user_from_players_connected(self, game_id: str, user_id: str):

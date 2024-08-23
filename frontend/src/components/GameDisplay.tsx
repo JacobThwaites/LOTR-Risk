@@ -59,7 +59,7 @@ export default function GameDisplay() {
 
     useEffect(() => {
         async function setupGame() {
-            const res = await addUserIDToGame(gameID);
+            const res = await addUserIDToGame(gameID!);
 
             if (!res.ok) {
                 return;
@@ -103,8 +103,8 @@ export default function GameDisplay() {
     }, [gameID, isGameLoaded]);
 
     function connectSockets() {
-        const socket = makeWebSocket(gameID);
-        const socketHandler = makeWebSocketHandler(gameID, socket);
+        const socket = makeWebSocket(gameID!);
+        const socketHandler = makeWebSocketHandler(gameID!, socket);
 
         webSocketHandler.current = socketHandler;
         ws.current = socket;

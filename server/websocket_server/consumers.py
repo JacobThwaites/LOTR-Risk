@@ -24,6 +24,10 @@ class GameEventConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, _):
         game = active_games.get_game_by_id(self.game_id)
         player = active_games.get_player_by_user_id(self.game_id, self.user_id)
+        
+        if not player:
+            return 
+        
         active_games.remove_user_from_players_connected(self.game_id, self.user_id)
         
         message = game_event_messages.player_disconnect(
